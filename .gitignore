@@ -1,3 +1,32 @@
+#-------------------------
+# Operating Specific Junk Files
+#-------------------------
+
+# OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# OS X Thumbnails
+._*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# IDEs and editors
+/.idea
+/.vscode
+
+# Configurations
+/.env.local
+/.env.staging
+/.env.production
+
 /node_modules
 /public/hot
 /public/storage
@@ -8,6 +37,7 @@
 composer.lock
 .env.backup
 .phpunit.result.cache
+/nginx/conf.d/app.conf
 Homestead.json
 Homestead.yaml
 npm-debug.log
@@ -22,3 +52,25 @@ init_db.sql
 .config/configstore
 public/images/
 /mysql/docker-entrypoint-initdb.d/**.sql
+/storage/*.key
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/cache/data/*
+!storage/framework/cache/.gitignore
+/bootstrap/cache/*
+!.gitignore
+# Ignore all log files.
+*.log
+# Ignore Composer's files
+/composer.phar
+/vendor/
+composer.lock
+# Ignore all .nupkg files and the packages directory.
+packages/
+*.nupkg
+package-lock.json
+
+# Excluding temporary files
+*.tmp
+*.temp
+*.swp
