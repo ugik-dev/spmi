@@ -15,12 +15,12 @@ class CreateTargetsTable extends Migration
     {
         Schema::create('targets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('l1_id');
+            $table->unsignedBigInteger('l1_id')->nullable();
             $table->foreign('l1_id')
                 ->references('id')
                 ->on('l1_s')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('prodi_id');
+            $table->unsignedBigInteger('prodi_id')->nullable();
             $table->foreign('prodi_id')
                 ->references('id')
                 ->on('prodis')
