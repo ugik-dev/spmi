@@ -4,21 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Berkas;
 use App\Element;
-use App\ElementParent;
-use App\ElementItem;
 use App\Indikator;
-use App\Jenjang;
 use App\Prodi;
 use App\Score;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 
 class ElementController extends Controller
 {
     public function index(Request $request, $prodi)
     {
+
         $p = Prodi::where('kode', $prodi)->first();
-        // dd
         $element = Element::where('prodi_id', $p->id)->get();
 
         return view('element.index', [
@@ -30,105 +26,9 @@ class ElementController extends Controller
         ]);
     }
 
-    public function prodi(Request $request, $prodi)
+    public function tambahElement()
     {
-        $p = Prodi::where('kode', $prodi)->first();
-        // $element = ElementItem::select('elements.id')->where('prodi_id', $p->id)
-        //     ->leftJoin('elements_parent', 'bobot', '=', 'elements_parent.id')->get();
-        // $element = Indikator::with(['l1', 'l2', 'l3', 'l4', 'elements_parent'])
-        //     ->leftJoin('elements_item', 'elements_item.elements_parent_id', '=', 'elements_parent.id')
-        //     ->get();
-        $element = ElementItem::GetElement();
-        // dd($this->susunElement($element));
-
-        return view('element.index_prodi', [
-            'p' => $p,
-            'e' => $element,
-            'count_element' => $element->count(),
-            'count_berkas' => $element->sum("count_berkas"),
-            'score_hitung' => $element->sum("score_hitung"),
-        ]);
-    }
-
-    function susunElement($element)
-    {
-        $arr = [];
-
-        foreach ($element as $e) {
-            if (!empty($e->l4_name))
-                $e = $this->inspekKode($e->l4_name);
-            else  if (!empty($e->l3_name))
-                $e = $this->inspekKode($e->l3_name);
-            else  if (!empty($e->l2_name))
-                $e = $this->inspekKode($e->l2_name);
-            else  if (!empty($e->l1_name))
-                $e =  $this->inspekKode($e->l1_name);
-            // return $e;
-
-            // if (!empty($e[3])) {
-            //     $arr[$e[0]][]
-            //     // LV4
-            // } else if (!empty($e[2])) {
-            //     // LV 3
-            // } else if (!empty($e[1])) {
-            //     // LV 2
-            // } else if (!empty($e[0])) {
-            //     // LV 1
-            // }
-            // // dd($e);
-        }
-
-        return $arr;
-    }
-
-    function inspekKode($k)
-    {
-        $kode = explode(' ', $k);
-        if (!empty($kode[0])) {
-
-            $kode = explode('.', $kode[0]);
-            return $kode;
-        } else {
-            echo "Kesalahan pada " . $k;
-            die();
-        }
-    }
-    public function listElement(Request $requestm, $jenjang)
-    {
-        $j = Jenjang::where('kode', $jenjang)->first();
-        $element = Indikator::with(['l1', 'l2', 'l3', 'l4', 'elements_parent'])->where('jenjang_id', $j->id)->get();
-        return view('element.index_parent', [
-            'j' => $j,
-            'e' => $element,
-            'count_element' => $element->count(),
-        ]);
-    }
-
-    public function tambahElementParent(Request $req)
-    {
-        $filter = [];
-        if (!empty($req->jenjang)) $filter['jenjang_id'] = $req->jenjang;
-        return view(
-            'element.tambah_parent',
-            [
-                'filter' => $filter
-            ]
-        );
-    }
-
-
-    public function tambahElement(Request $req)
-    {
-        $filter = [];
-        if (!empty($req->prodi)) $filter['prodi'] = $req->prodi;
-        if (!empty($req->prodi)) $filter['jenjang_id'] = $req->jenjang;
-        // dd($filter);
-        return view(
-            'element.tambah',
-            [
-                'filter' => $filter
-            ]
-        );
+        return view('element.tambah');
     }
 
     public function store(Request $request)
@@ -136,92 +36,71 @@ class ElementController extends Controller
 
         $prodi = Prodi::where('id', $request->prodi_id)->first();
         $row = [];
-        // $row = [
-        //     'prodi_id' => $request->prodi_id,
-        //     'l1_id' => $request->l1_id,
-        //     'l2_id' => $request->l2_id,
-        //     'l3_id' => $request->l3_id,
-        //     'l4_id' => $request->l4_id,
-        //     'score_berkas' => 0,
-        //     'score_hitung' => 0,
-        //     'count_berkas' => 0,
-        //     'indikator_id' => $request->ind_id,
-        // ];
 
-        for ($i = 0; $i < count($request->bobot); $i++) {
-            $row[] = [
-                'prodi_id' => $request->prodi_id,
-                'l1_id' => $request->l1_id,
-                'l2_id' => $request->l2_id,
-                'l3_id' => $request->l3_id,
-                'l4_id' => $request->l4_id,
-                'bobot' => floatval($request->bobot[$i]),
-                'deskripsi' => $request->deskripsi[$i],
-                'score_berkas' => 0,
-                'score_hitung' => 0,
-                'count_berkas' => 0,
-                'indikator_id' => $request->ind_id,
-            ];
+        if ($request->l1_id & $request->l2_id == null & $request->l3_id == null & $request->l4_id == null) {
+            for ($i = 0; $i < count($request->l1_id); $i++) {
+                $row[] = [
+                    'prodi_id' => $request->prodi_id,
+                    'l1_id' => $request->l1_id[$i],
+                    'l2_id' => 0,
+                    'l3_id' => 0,
+                    'l4_id' => 0,
+                    'bobot' => floatval($request->bobot),
+                    'score_berkas' => 0,
+                    'score_hitung' => 0,
+                    'count_berkas' => 0,
+                    'indikator_id' => $request->ind_id,
+                ];
+            }
+        } elseif ($request->l1_id & $request->l2_id & $request->l3_id == null & $request->l4_id == null) {
+            for ($i = 0; $i < count($request->l1_id); $i++) {
+                $row[] = [
+                    'prodi_id' => $request->prodi_id,
+                    'l1_id' => $request->l1_id[$i],
+                    'l2_id' => $request->l2_id[$i],
+                    'l3_id' => 0,
+                    'l4_id' => 0,
+                    'bobot' => floatval($request->bobot),
+                    'score_berkas' => 0,
+                    'score_hitung' => 0,
+                    'count_berkas' => 0,
+                    'indikator_id' => $request->ind_id,
+                ];
+            }
+        } elseif ($request->l1_id & $request->l2_id & $request->l3_id & $request->l4_id == null) {
+            for ($i = 0; $i < count($request->l1_id); $i++) {
+                $row[] = [
+                    'prodi_id' => $request->prodi_id,
+                    'l1_id' => $request->l1_id[$i],
+                    'l2_id' => $request->l2_id[$i],
+                    'l3_id' => $request->l3_id[$i],
+                    'l4_id' => 0,
+                    'bobot' => floatval($request->bobot),
+                    'score_berkas' => 0,
+                    'score_hitung' => 0,
+                    'count_berkas' => 0,
+                    'indikator_id' => $request->ind_id,
+                ];
+            }
+        } elseif ($request->l1_id & $request->l2_id & $request->l3_id & $request->l4_id) {
+            for ($i = 0; $i < count($request->l1_id); $i++) {
+                $row[] = [
+                    'prodi_id' => $request->prodi_id,
+                    'l1_id' => $request->l1_id[$i],
+                    'l2_id' => $request->l2_id[$i],
+                    'l3_id' => $request->l3_id[$i],
+                    'l4_id' => $request->l4_id[$i],
+                    'bobot' => floatval($request->bobot),
+                    'score_berkas' => 0,
+                    'score_hitung' => 0,
+                    'count_berkas' => 0,
+                    'indikator_id' => $request->ind_id,
+                ];
+            }
+        } else {
+            echo "Ada Kesalahan pada Sistem";
+            die;
         }
-
-        // if ($request->l1_id && $request->l2_id == null && $request->l3_id == null && $request->l4_id == null) {
-        //     for ($i = 0; $i < count($request->l1_id); $i++) {
-        //         $row[] = [
-        //             'prodi_id' => $request->prodi_id,
-        //             'l1_id' => $request->l1_id[$i],
-        //             'bobot' => floatval($request->bobot),
-        //             'score_berkas' => 0,
-        //             'score_hitung' => 0,
-        //             'count_berkas' => 0,
-        //             'indikator_id' => $request->ind_id,
-        //         ];
-        //     }
-        // } elseif ($request->l1_id && $request->l2_id && $request->l3_id == null && $request->l4_id == null) {
-        //     for ($i = 0; $i < count($request->l1_id); $i++) {
-        //         $row[] = [
-        //             'prodi_id' => $request->prodi_id,
-        //             'l1_id' => $request->l1_id[$i],
-        //             'l2_id' => $request->l2_id[$i],
-        //             'bobot' => floatval($request->bobot),
-        //             'score_berkas' => 0,
-        //             'score_hitung' => 0,
-        //             'count_berkas' => 0,
-        //             'indikator_id' => $request->ind_id,
-        //         ];
-        //     }
-        // } elseif ($request->l1_id && $request->l2_id && $request->l3_id && $request->l4_id == null) {
-        //     for ($i = 0; $i < count($request->l1_id); $i++) {
-        //         $row[] = [
-        //             'prodi_id' => $request->prodi_id,
-        //             'l1_id' => $request->l1_id[$i],
-        //             'l2_id' => $request->l2_id[$i],
-        //             'l3_id' => $request->l3_id[$i],
-        //             'bobot' => floatval($request->bobot),
-        //             'score_berkas' => 0,
-        //             'score_hitung' => 0,
-        //             'count_berkas' => 0,
-        //             'indikator_id' => $request->ind_id,
-        //         ];
-        //     }
-        // } elseif ($request->l1_id && $request->l2_id && $request->l3_id && $request->l4_id) {
-        //     for ($i = 0; $i < count($request->l1_id); $i++) {
-        //         $row[] = [
-        //             'prodi_id' => $request->prodi_id,
-        //             'l1_id' => $request->l1_id[$i],
-        //             'l2_id' => $request->l2_id[$i],
-        //             'l3_id' => $request->l3_id[$i],
-        //             'l4_id' => $request->l4_id[$i],
-        //             'bobot' => floatval($request->bobot),
-        //             'score_berkas' => 0,
-        //             'score_hitung' => 0,
-        //             'count_berkas' => 0,
-        //             'indikator_id' => $request->ind_id,
-        //         ];
-        //     }
-        // } else {
-        //     echo "Ada Kesalahan pada Sistem";
-        //     die;
-        // }
 
         Element::insert($row);
         session()->flash('pesan', '<div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -230,30 +109,7 @@ class ElementController extends Controller
         </button>
         <strong>Element Berhasil Dibuat</strong>
     </div>');
-        return redirect()->route('element-prodi', $prodi->kode);
-    }
-
-    public function storeparent(Request $request)
-    {
-
-        $row = [];
-        for ($i = 0; $i < count($request->bobot); $i++) {
-            $row[] = [
-                'jenjang_id' => $request->jenjang_id,
-                'bobot' => floatval($request->bobot[$i]),
-                'deskripsi' => $request->deskripsi[$i],
-                'indikator_id' => $request->ind_id,
-            ];
-        }
-
-        ElementParent::insert($row);
-        session()->flash('pesan', '<div class="alert alert-info alert-dismissible fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Element Berhasil Dibuat</strong>
-    </div>');
-        return redirect()->route('element-list');
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function unggahBerkas(Element $element)
@@ -261,7 +117,7 @@ class ElementController extends Controller
         return view('element.unggah-berkas', [
             'element' => $element,
             'score' => Score::where('indikator_id', $element->indikator_id)->get(),
-            'indikator' => Indikator::where('id', $element->indikator_id)->with(['l1', 'l2', 'l3', 'l4'])->first(),
+            'indikator' => Indikator::where('id', $element->indikator_id)->first(),
         ]);
     }
 
@@ -364,7 +220,7 @@ class ElementController extends Controller
         </button>
         <strong>Berkas berhasil di simpan</strong>
     </div>');
-        return redirect()->route('element-prodi', $prodi->kode);
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function lihatBerkas(Element $element)
@@ -418,7 +274,7 @@ class ElementController extends Controller
         ]);
 
         session()->flash('pesan', $pesan);
-        return redirect()->route('element-prodi', $prodi->kode);
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function unggul(Element $element)
@@ -456,7 +312,7 @@ class ElementController extends Controller
         ]);
 
         session()->flash('pesan', $pesan);
-        return redirect()->route('element-prodi', $prodi->kode);
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function baik(Element $element)
@@ -494,7 +350,7 @@ class ElementController extends Controller
         ]);
 
         session()->flash('pesan', $pesan);
-        return redirect()->route('element-prodi', $prodi->kode);
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function resetData(Element $element)
@@ -520,7 +376,7 @@ class ElementController extends Controller
             <span aria-hidden="true">&times;</span>
         </button>
         <strong>Data Berhasil Direset</strong></div>');
-        return redirect()->route('element-prodi', $prodi->kode);
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function konfirHapus(Element $element)
@@ -541,7 +397,7 @@ class ElementController extends Controller
             <span aria-hidden="true">&times;</span>
         </button>
         <strong>Data Berhasil Dihapus</strong></div>');
-        return redirect()->route('element-prodi', $prodi->kode);
+        return redirect()->route('element-' . $prodi->kode);
     }
 
     public function detailElement(Element $element)
@@ -559,14 +415,5 @@ class ElementController extends Controller
         ]);
 
         return redirect()->to('/element/detail/' . $element->id);
-    }
-
-    public function putPenilaianAuditor(Element $element, Request $request)
-    {
-
-        $element->update([
-            'ket_auditor' => $request->ket_auditor,
-        ]);
-        return redirect()->to('/element/lihat-berkas/' . $element->id);
     }
 }
