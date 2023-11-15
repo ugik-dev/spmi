@@ -28,3 +28,6 @@
 ## PhpMyadmin
 
 docker run --name my-phpmyadmin -d --network spmi_app-network -e PMA_HOST=laravel-db -e PMA_USER=spmi -e PMA_PASSWORD=spmi -p 8080:80 phpmyadmin
+
+### Troubleshoot
+- Untuk permasalahan seperti class yang tidak ditemukan (not found), bisa running **composer dump-autoload** dan/atau **php artisan cache:clear**
