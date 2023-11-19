@@ -9,6 +9,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return response()->json(['a' => 's']);
+        return view('dashboard.index');
     }
 }
