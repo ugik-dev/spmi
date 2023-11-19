@@ -14,9 +14,7 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">LPM Smart System</h1>
                                 </div>
-                                @if (session()->has('pesan'))
-                                    {!! session()->get('pesan') !!}
-                                @endif
+                                @include('partials.session')
                                 <form action="{{ url('proses') }}" class="user" method="POST">
                                     @csrf
                                     <div class="form-group">
