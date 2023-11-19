@@ -55,17 +55,8 @@ class AuthController extends Controller
     private function redirectToDashboard()
     {
         $user = Auth::user();
-
-        if ($user->hasRole('admin')) {
-            return redirect()->route('admin.dashboard');
-        }
-
-        if ($user->hasRole('prodi')) {
-            return redirect()->route('prodi.dashboard');
-        }
-
-        if ($user->hasRole('auditor')) {
-            return redirect()->route('auditor.dashboard');
+        if ($user) {
+            return redirect()->route('dashboard');
         }
 
         abort(403, 'Unauthorized action.');
