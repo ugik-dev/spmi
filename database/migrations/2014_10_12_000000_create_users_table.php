@@ -17,8 +17,6 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('role', ['Admin', 'Prodi', 'Auditor']);
-            $table->string('prodi_kode', 50)->nullable();
             $table->string('password');
             $table->timestamps();
         });
