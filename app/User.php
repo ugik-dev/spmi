@@ -24,4 +24,9 @@ class User extends Authenticatable
     {
         return $this->roles->pluck('name')->toArray();
     }
+
+    public function studyProgram()
+    {
+        return $this->belongsTo(StudyProgram::class);
+    }
 }
