@@ -15,6 +15,11 @@ class CreateStudyProgramsTable extends Migration
     {
         Schema::create('study_programs', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('code', 50);
+            $table->json('vision')->nullable();
+            $table->text('mission')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

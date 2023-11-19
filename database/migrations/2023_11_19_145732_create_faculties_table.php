@@ -15,6 +15,11 @@ class CreateFacultiesTable extends Migration
     {
         Schema::create('faculties', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('abbr', 50)->nullable();
+            $table->json('vision')->nullable();
+            $table->text('mission')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
