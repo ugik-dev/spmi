@@ -1,14 +1,7 @@
-@php
-    $role = auth()
-        ->user()
-        ->getRoleNames()
-        ->first();
-
-@endphp
 <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route($role . '.dashboard') }}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
         <div class="sidebar-brand-logo">
             <img class="img-logo" src="/home/img/logo-sidebar-2.png">
         </div>
@@ -19,7 +12,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route($role . '.dashboard') }}">
+        <a class="nav-link" href="{{ route('dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dasbor</span></a>
 
@@ -29,7 +22,7 @@
     <hr class="sidebar-divider">
 
     <!-- Heading -->
-    <div class="sidebar-heading">
+    <div class="sidebar-heading mb-2">
         Menu Utama
     </div>
     <!-- Divider -->
