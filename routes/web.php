@@ -11,14 +11,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 // Authenticated User With Checking Roles Middleware
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'cekRole:admin,auditor,prodi'])->group(function () {
 
     // DASHBOARD
-    $roles = ['admin', 'prodi', 'auditor'];
-
-    foreach ($roles as $role) {
-        Route::middleware(['cekRole:' . $role])->prefix($role)->name($role . '.')->group(function () {
-            Route::get('/dashboard', 'Auth\DashboardController@index')->name('dashboard');
-        });
-    }
+    Route::get('/dasbor', 'Auth\DashboardController@index')->name('dashboard');
 });
