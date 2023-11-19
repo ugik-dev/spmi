@@ -11,27 +11,27 @@ class Element extends Model
 
     public function l1()
     {
-        return $this->belongsTo(L1::class);
+        return $this->belongsTo(Kriteria::class);
     }
 
     public function l2()
     {
-        return $this->belongsTo(L2::class);
+        return $this->belongsTo(Kriteria::class);
     }
 
     public function l3()
     {
-        return $this->belongsTo(L3::class);
+        return $this->belongsTo(Kriteria::class);
     }
 
     public function l4()
     {
-        return $this->belongsTo(L4::class);
+        return $this->belongsTo(Kriteria::class);
     }
 
     public function indikator()
     {
-        return $this->belongsTo(Indikator::class);
+        return $this->belongsTo(IndikatorLam::class);
     }
 
     public function berkas()

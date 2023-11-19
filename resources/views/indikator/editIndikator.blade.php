@@ -15,7 +15,6 @@
                         <div class="form-group">
                             <label>Level 1</label>
                             <select class="form-control" name="l1_id" id="l1" required>
-
                             </select>
                         </div>
                         <div class="form-group">
@@ -44,7 +43,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <a href="{{ route('indikator-jenjang', $j->kode) }}" class="btn btn-secondary">
+                        <a href="{{ URL::previous() }}" class="btn btn-secondary">
                             Kembali
                         </a>
                         <button type="submit" class="btn btn-primary">Save</button>
@@ -78,9 +77,12 @@
 
         function start_search() {
             $.ajax({
-                type: 'POST',
-                url: '<?= route('l1') ?>',
-                data: 'jenjang_id=<?= $j->id ?>',
+                type: 'Get',
+                url: '<?= url('search-select-lam') ?>',
+                data: {
+                    'jenjang': <?= $i['jenjang_id'] ?>,
+                    'lembaga': <?= $i['lembaga_id'] ?>,
+                },
                 cache: false,
                 success: function(msg) {
                     $("#l1").html(msg);
@@ -97,9 +99,9 @@
         indikator.l1.change(function() {
             var l1_id = $("#l1").val();
             $.ajax({
-                type: 'POST',
-                url: '<?= route('l2') ?>',
-                data: 'l1_id=' + l1_id,
+                type: 'GET',
+                url: '<?= url('search-select-lam') ?>',
+                data: 'parent=' + l1_id,
                 cache: false,
                 success: function(msg) {
                     $("#l2").html(msg);
@@ -113,9 +115,9 @@
         $("#l2").change(function() {
             var l2_id = $("#l2").val();
             $.ajax({
-                type: 'POST',
-                url: '<?= route('l3') ?>',
-                data: 'l2_id=' + l2_id,
+                type: 'GET',
+                url: '<?= url('search-select-lam') ?>',
+                data: 'parent=' + l2_id,
                 cache: false,
                 success: function(msg) {
                     $("#l3").html(msg);
@@ -130,9 +132,9 @@
         $("#l3").change(function() {
             var l3_id = $("#l3").val();
             $.ajax({
-                type: 'POST',
-                url: '<?= route('l4') ?>',
-                data: 'l3_id=' + l3_id,
+                type: 'GET',
+                url: '<?= url('search-select-lam') ?>',
+                data: 'parent=' + l3_id,
                 cache: false,
                 success: function(msg) {
                     $("#l4").html(msg);

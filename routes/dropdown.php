@@ -9,6 +9,10 @@ Route::post('dropdownlist/getl1', 'dropdownController@getL1')->name('l1');
 Route::post('dropdownlist/getl2', 'dropdownController@getL2')->name('l2');
 Route::post('dropdownlist/getl3', 'dropdownController@getL3')->name('l3');
 Route::post('dropdownlist/getl4', 'dropdownController@getL4')->name('l4');
+Route::post('dropdownlist/getl4', 'dropdownController@getL4')->name('l4');
+
+Route::get('search-select-lam', 'dropdownController@getKriteriaLam');
+
 
 //NO MULTIPLE SAAT EDIT BERKAS
 Route::post('dropdownlist/getl1ne', 'dropdownController@getL1ne')->name('l1ne');

@@ -11,6 +11,7 @@ use App\L3;
 use App\L4;
 use App\Prodi;
 use App\Score;
+use App\Kriteria;
 use Illuminate\Http\Request;
 
 class dropdownController extends Controller
@@ -69,6 +70,25 @@ class dropdownController extends Controller
         }
     }
 
+
+    public function getKriteriaLam(Request $request)
+    {
+
+        // $jenjang_id = $request->jenjang_id;
+        // dd($request->parent);
+        if (empty($request->parent))
+            $data = Kriteria::where('jenjang_id', $request->jenjang)->where('lembaga_id', $request->lembaga)->where('level', 1)->get();
+        else {
+            // echo 's';
+            $data = Kriteria::where('parent_id', $request->parent)->get();
+        }
+
+        if (!empty($data))
+            echo "<option value=''> -- Pilih Kriteria --</option>";
+        foreach ($data as $i) {
+            echo "<option value='" . $i->id . "'>" . $i->kode . '. ' . $i->name . "</option>";
+        }
+    }
     public function getL1(Request $request)
     {
         $jenjang_id = $request->jenjang_id;

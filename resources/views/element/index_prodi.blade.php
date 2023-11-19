@@ -27,10 +27,10 @@
                                 @foreach ($element as $indi)
                                     <tr>
                                         <td>
-                                            <?= !empty($indi->l1->name) ? $indi->l1->name : '' ?>
-                                            <?= !empty($indi->l2->name) ? '<br>' . $indi->l2->name : '' ?>
-                                            <?= !empty($indi->l3->name) ? '<br>' . $indi->l3->name : '' ?>
-                                            <?= !empty($indi->l4->name) ? '<br>' . $indi->l4->name : '' ?>
+                                            <?= !empty($indi->l1->name) ? $indi->l1->kode . '. ' . $indi->l1->name : '' ?>
+                                            <?= !empty($indi->l2->name) ? '<br>' . $indi->l2->kode . '. ' . $indi->l2->name : '' ?>
+                                            <?= !empty($indi->l3->name) ? '<br>' . $indi->l3->kode . '. ' . $indi->l3->name : '' ?>
+                                            <?= !empty($indi->l4->name) ? '<br>' . $indi->l4->kode . '. ' . $indi->l4->name : '' ?>
                                         </td>
                                         <td> {{ $indi->indikator->dec }}</td>
                                         <td> {{ $indi->bobot }}</td>

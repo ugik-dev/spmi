@@ -93,6 +93,28 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('kriterialam') }}">
+            <i class="fa-solid fa-clock"></i>
+            <span>Kriteria LAM</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('indikator-lam') }}">
+            <i class="fa-solid fa-clock"></i>
+            <span>Indikator LAM</span>
+        </a>
+    </li>
+
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('periode') }}">
+            <i class="fa-solid fa-clock"></i>
+            <span>Periode</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('berkas') }}">
             <i class="fa-solid fa-magnifying-glass"></i>
             <span>Multi Search</span>
@@ -102,9 +124,9 @@
 
     {{-- <li class="nav-item">
         <a class="nav-link" href="{{ route('halaman.index') }}">
-            <i class="fa-solid fa-file"></i>
-            <span>Halaman</span>
-        </a>
+    <i class="fa-solid fa-file"></i>
+    <span>Halaman</span>
+    </a>
     </li> --}}
     <li class="nav-item">
         <a class="nav-link" href="{{ route('users') }}">

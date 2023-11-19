@@ -30,4 +30,12 @@
 docker run --name my-phpmyadmin -d --network spmi_app-network -e PMA_HOST=laravel-db -e PMA_USER=spmi -e PMA_PASSWORD=spmi -p 8080:80 phpmyadmin
 
 ### Troubleshoot
-- Untuk permasalahan seperti class yang tidak ditemukan (not found), bisa running **composer dump-autoload** dan/atau **php artisan cache:clear**
+
+-   Untuk permasalahan seperti class yang tidak ditemukan (not found), bisa running **composer dump-autoload** dan/atau **php artisan cache:clear**
+
+### Menghilangkan spasi ganda
+
+UPDATE l4_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
+UPDATE l3_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
+UPDATE l2_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
+UPDATE l1_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';

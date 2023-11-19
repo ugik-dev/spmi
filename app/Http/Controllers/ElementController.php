@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Berkas;
 use App\Element;
 use App\ElementParent;
-use App\ElementItem;
+use App\IndikatorLam;
 use App\Indikator;
 use App\Jenjang;
 use App\Prodi;
@@ -130,10 +130,18 @@ class ElementController extends Controller
 
     public function sync(Request $request)
     {
-        $prodi = Prodi::where('jenjang_id', $request->jenjang)->get();
-        $indikator = Indikator::where('jenjang_id', $request->jenjang)->get();
+        // dd($request->input());
+        $prodi = Prodi::where('jenjang_id', $request->jenjang_id)
+            ->where('lembaga_id', $request->lembaga_id)
+            ->get();
+        $indikator = IndikatorLam::selectRaw('indikators_lam.*')
+            ->join('kriteria', 'kriteria.id', '=', 'indikators_lam.l1_id')
+            ->where('kriteria.jenjang_id', $request->jenjang_id)
+            ->where('kriteria.lembaga_id', $request->lembaga_id)
+            ->orderBy('id', 'ASC')->get();
         $jenjang = Jenjang::where('id', $request->jenjang)->get()->first();
-
+        // dd($indikator);
+        // dd($prodi);
         $row = [];
         foreach ($indikator as $i) {
             foreach ($prodi as $p) {
@@ -146,6 +154,7 @@ class ElementController extends Controller
                         'l3_id' => $i->l3_id,
                         'l4_id' => $i->l4_id,
                         'indikator_id' => $i->id,
+                        'periode_id' => $request->periode_id,
                     ],
                     [
                         'bobot' => $i->bobot,
@@ -164,7 +173,9 @@ class ElementController extends Controller
                     </button>
                     <strong>Element Berhasil Sinkron</strong>
                 </div>');
-        return redirect()->route('indikator-jenjang', $jenjang->kode);
+        return redirect()->to('indikator-lam?lembaga=' . $request->lembaga_id . '&jenjang=' . $request->jenjang_id);
+
+        // return redirect()->route('indikator-jenjang', $jenjang->kode);
     }
 
     public function store(Request $request)

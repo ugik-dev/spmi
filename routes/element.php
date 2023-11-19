@@ -1,6 +1,6 @@
 <?php
 
-Route::get('element-sync', 'ElementController@sync')->name('element-sync');
+Route::post('element-sync', 'ElementController@sync')->name('element-sync');
 Route::get('element/{prodi}', 'ElementController@prodi')->name('element-prodi');
 Route::get('tambah-element', 'ElementController@tambahElement')->name('tambah-element');
 Route::get('tambah-element-parent', 'ElementController@tambahElementParent')->name('tambah-element-parent');
