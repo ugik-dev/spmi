@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\User;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -11,18 +14,17 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        // Define the path to your SQL file
-        $sqlFilePath = database_path('seeds/users-data.sql');
+        // Create a role of admin if it doesn't exist
+        $role = Role::firstOrCreate(['name' => 'admin']);
 
-        // Check if the file exists
-        if (file_exists($sqlFilePath)) {
-            // Read the SQL file content
-            $sqlContent = file_get_contents($sqlFilePath);
+        // Create an admin user
+        $admin = User::create([
+            'name' => 'AMI',
+            'email' => 'admin@mail.com',
+            'password' => Hash::make('secret'),
+        ]);
 
-            // Execute the SQL statements
-            DB::unprepared($sqlContent);
-        } else {
-            echo "SQL file not found at $sqlFilePath\n";
-        }
+        // Assign admin role to the user
+        $admin->assignRole($role);
     }
 }
