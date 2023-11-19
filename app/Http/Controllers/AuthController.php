@@ -56,15 +56,18 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        switch ($user->getRoleNames()->first()) {
-            case 'admin':
-                return redirect()->route('admin.dashboard');
-            case 'prodi':
-                return redirect()->route('prodi.dashboard');
-            case 'auditor':
-                return redirect()->route('auditor.dashboard');
-            default:
-                abort(403, 'Unauthorized action.');
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
         }
+
+        if ($user->hasRole('prodi')) {
+            return redirect()->route('prodi.dashboard');
+        }
+
+        if ($user->hasRole('auditor')) {
+            return redirect()->route('auditor.dashboard');
+        }
+
+        abort(403, 'Unauthorized action.');
     }
 }
