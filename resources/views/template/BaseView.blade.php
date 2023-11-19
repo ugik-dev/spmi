@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="SungailiatDev | Bangka Belitung">
 
-    <title>LPM Smart System - {{ $title ?? 'Dashboard' }}</title>
+    <title>{{ isset($title) ? $title . ' | ' : '' }} SPMI Smart System </title>
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('favicon/apple-icon-57x57.png') }}">
@@ -43,7 +43,7 @@
     <script src="{{ asset('portal/vendor/jquery/jquery.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @yield('styles')
+    @stack('styles')
 
 </head>
 
@@ -186,11 +186,10 @@
     <!-- Page level custom scripts -->
     <script src="{{ asset('portal/js/demo/datatables-demo.js') }}"></script>
 
-
     <!-- Swal -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    @yield('script')
+    @stack('script')
     <script>
         // $(document).ready(function() {
 
