@@ -103,3 +103,6 @@ psysh_history
 public/images/
 yarn-error.log
 ids.json
+public/css/vendor.css
+public/fontawesome
+public/js/vendor.js
