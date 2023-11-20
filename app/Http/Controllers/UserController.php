@@ -8,13 +8,8 @@ use App\Fakultas;
 
 class UserController extends Controller
 {
-    public function edit(Request $request)
+    public function index()
     {
-        $fakultas = Fakultas::with('prodi')->orderBy('urutan')->get();
-        return view('users.form', [
-            'edit' => true,
-            'f' => $fakultas,
-            'i' => auth()->user(),
-        ]);
+        return view('users.index');
     }
 }
