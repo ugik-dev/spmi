@@ -2,196 +2,84 @@
 <html lang="en">
 
 <head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="SungailiatDev | Bangka Belitung">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{{ isset($title) ? $title . ' | ' : '' }} SPMI Smart System </title>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="SungailiatDev | Bangka Belitung">
+  <!-- Favicons -->
+  @include('partials.favicons')
+  <!-- Partial for favicon links -->
 
-    <title>{{ isset($title) ? $title . ' | ' : '' }} SPMI Smart System </title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900&display=swap" rel="stylesheet">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('favicon/apple-icon-57x57.png') }}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('favicon/apple-icon-60x60.png') }}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('favicon/apple-icon-72x72.png') }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('favicon/apple-icon-76x76.png') }}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('favicon/apple-icon-114x114.png') }}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('favicon/apple-icon-120x120.png') }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('favicon/apple-icon-144x144.png') }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('favicon/apple-icon-152x152.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-icon-180x180.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicon/android-icon-192x192.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon/favicon-96x96.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ asset('favicon/manifest.json') }}">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
-    <meta name="theme-color" content="#ffffff">
+  <!-- Vendor CSS (Bootstrap, DataTables, etc.) -->
+  <link href="{{ mix('css/vendor.css') }}" rel="stylesheet">
 
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('portal/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+  <!-- App CSS -->
+  <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="{{ asset('portal/css/sb-admin-2.css') }}" rel="stylesheet">
-    <!-- Custom styles for this page -->
-    <link href="{{ asset('portal/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="{{ asset('portal/vendor/jquery/jquery.min.js') }}"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <!-- FontAwesome -->
+  <link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet" type="text/css">
 
-    @stack('styles')
+  <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet"
+    type="text/css" />
 
+  @stack('styles')
 </head>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    @include('template.sidebar.auth')
+    <!-- Sidebar -->
 
-        <!-- Sidebar -->
-        @include('template.sidebar.auth')
-        <!-- End of Sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+      <!-- Main Content -->
+      <div id="content">
+        @include('template.navbar')
+        <!-- Topbar -->
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}
-                                    {{ Auth::user()->role == 'Prodi' ? ' - ' . Auth::user()->prodi_kode : '' }}</span>
-                                <img class="img-profile rounded-circle"
-                                    src="{{ asset('portal/img/undraw_profile.svg') }}">
-                            </a>
-                            <!-- Dropdown - User Information -->
-
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </nav>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                    @yield('content')
-
-                </div>
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>&copy; Copyright <strong><span>LPM SMART SYSTEM</span></strong>. All Rights
-                            Reserved</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
-
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          @yield('content')
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- /.container-fluid -->
+      </div>
+      <!-- End of Main Content -->
 
+      @include('template.footer')
+      <!-- Footer -->
     </div>
-    <!-- End of Page Wrapper -->
+    <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+  @include('template.scroll-to-top')
+  <!-- Scroll to Top Button-->
+  @include('template.logout-modal')
+  <!-- Logout Modal-->
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Sipa untuk logout?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Jika anda yakin ingin keluar silahkan klik logout</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <button class="btn btn-primary" type="submit">Logout</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
+  <!-- Vendor JS (jQuery, Bootstrap, etc.) -->
+  <script src="{{ mix('js/vendor.js') }}"></script>
 
+  <!-- ex -->
+  <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{ asset('portal/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('portal/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <!-- App JS -->
+  <script src="{{ mix('js/app.js') }}"></script>
 
-    <script src="js/custom.js"></script>
+  @stack('scripts')
 
-    <!-- Core plugin JavaScript-->
-    <script src="{{ asset('portal/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{{ asset('portal/js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins -->
-    <script src="{{ asset('portal/vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('portal/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
-    <!-- ex -->
-    <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-    <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="{{ asset('dist/ckeditor/ckeditor.js') }}"></script>
-
-    <!-- Load file library Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('portal/js/demo/datatables-demo.js') }}"></script>
-
-    <!-- Swal -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    @stack('script')
-    <script>
-        // $(document).ready(function() {
+  <!-- Custom JS Scripts -->
+  <script>
+    // $(document).ready(function() {
 
         function swalLoading() {
             Swal.fire({
@@ -254,7 +142,7 @@
             };
         }
         // });
-    </script>
+  </script>
 </body>
 
 </html>
