@@ -12,18 +12,18 @@
 
 1. php artisan migrate atau php artisan migrate:fresh (untuk migrasi awal;buat struktur database)
 2. php artisan db:seed (untuk melakukan inisiasi data;import database letakkan file SQL inisiasi data ke dalam folder seeds)
+3. npm install
+4. npm run dev <!-- run dev (development) atau run production (production/online/hosting) -->
 
 ## Command Tambahan untuk development (bukan dihosting)
 
-> browser-sync start --config bs-config.js (untuk running sinkron ke browser syarat aplikasi yang dalam docker/php artisan serve harus sudah running terlebih dahulu)
+1. browser-sync start --config bs-config.js (untuk running sinkron ke browser syarat aplikasi yang dalam docker/php artisan serve harus sudah running terlebih dahulu)
+2. npm run [dev atau watch] (untuk mengkompilasi file asset dalam resources. js,css,images) <!-- command npm run dev untuk sekali kompilasi sedangkan untuk npm run watch untuk memantau apabila ada perubahan file js atau scss maka otomatis akan melakukan re-compile (detail files yang dipantau bisa cek di webpack.config.js) -->
 
 ## Cara penggunaan factory untuk dummy data (data testing) (running command menggunakan php artisan tinker):
 
 1. Masuk ke terminal dan running php artisan tinker, untuk masuk ke command console artisan tinker
-2. Urutan generate factory saat ini adalah sebagai berikut:
-   i. factory(App\Element::class,100)->create()
-   ii. factory(App\Target::class,100)->create()
-   iii. factory(App\Berkas::class,100)->create()
+2. syntax factory contoh: factory(App\User::class,100)->create()
 
 ## PhpMyadmin
 
@@ -31,11 +31,4 @@ docker run --name my-phpmyadmin -d --network spmi_app-network -e PMA_HOST=larave
 
 ### Troubleshoot
 
--   Untuk permasalahan seperti class yang tidak ditemukan (not found), bisa running **composer dump-autoload** dan/atau **php artisan cache:clear**
-
-### Menghilangkan spasi ganda
-
-UPDATE l4_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
-UPDATE l3_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
-UPDATE l2_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
-UPDATE l1_s SET name = REPLACE(name, ' ', ' ') WHERE name LIKE '% %';
+- Untuk permasalahan seperti class yang tidak ditemukan (not found), bisa running **composer dump-autoload** dan/atau **php artisan cache:clear**
