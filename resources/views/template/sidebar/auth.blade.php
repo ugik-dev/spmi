@@ -3,7 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
         <div class="sidebar-brand-logo">
-            <img class="img-logo" src="/home/img/logo-sidebar-2.png">
+            <img class="img-logo" src="{{ mix('images/logo-sidebar.png') }}">
         </div>
     </a>
 
@@ -28,8 +28,15 @@
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('users.index') }}">
+            <i class="fa-solid fa-clock"></i>
+            <span>Pengguna</span>
+        </a>
+    </li>
+
     <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
+    <div class="text-center d-none d-md-inline mt-4">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 
