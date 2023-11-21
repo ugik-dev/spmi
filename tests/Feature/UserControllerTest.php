@@ -67,6 +67,30 @@ class UserControllerTest extends TestCase
     $response->assertStatus(404);
   }
 
+  public function testAdminCannotUpdateUserWithEmailAlreadyTaken()
+  {
+    // Create two users
+    $user1 = $this->createUser();
+    $user2 = $this->createUser();
+
+    // Acting as the first user, try to update email to the second user's email
+    $response = $this->actingAs($this->adminUser)->patch(route('users.edit', $user1->id), [
+      'name' => $user1->name,
+      'email' => $user2->email, // Use the email of user2 here
+      'role' => 'admin',
+      // other necessary fields...
+    ]);
+
+    // Assert that there are session errors for email field
+    $response->assertSessionHasErrors(['email']);
+
+    // Optional: Assert the user's email didn't change in the database
+    $this->assertDatabaseHas('users', [
+      'id' => $user1->id,
+      'email' => $user1->email, // original email of user1
+    ]);
+  }
+
   public function testAdminCanDeleteUser()
   {
     $userToDelete = $this->createUser();
