@@ -108,3 +108,5 @@ public/fontawesome
 public/js/vendor.js
 public/js/app.js
 /public/mix-manifest.json
+/public/js/*
+/public/css/*
