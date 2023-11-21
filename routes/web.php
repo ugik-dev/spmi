@@ -23,4 +23,5 @@ Route::middleware(['auth'])->group(function () {
   Route::patch('/edit-pengguna/{user}', 'UserController@edit')->middleware('can:edit user')->name('users.edit');
   Route::delete('/hapus-pengguna/{user}', 'UserController@delete')->middleware('can:delete user')->name('users.delete');
   Route::get('detail-pengguna/{user}', 'UserController@detail')->middleware('can:see user')->name('users.detail');
+  Route::post('/tambah-pengguna', 'UserController@create')->middleware('can:create user')->name('users.create');
 });
