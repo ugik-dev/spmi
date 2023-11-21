@@ -87,6 +87,7 @@
           <div class="form-group">
             <label for="">Role</label>
             <select class="form-control" id="user-role" name="role">
+              <option value="">Pilih Role</option>
               @foreach ($roles as $role)
               <option value="{{ $role }}">{{ ucfirst($role) }}</option>
               @endforeach
@@ -141,7 +142,7 @@
     formEdit.attr("action", actionUrl);
     $("#user-name").val(userData.name)
     $("#user-email").val(userData.email)
-    $("#user-role").val(userData.roles[0].name)
+    $("#user-role").val(userData.roles?.[0]?.name || '');
 });
 
   $('#editModal').on('hidden.bs.modal', function (event) {
