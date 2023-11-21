@@ -3,5 +3,10 @@
 li.active {
     color: lightblue;
     text-decoration: underline;
-
+}
+.field-icon {
+  cursor: pointer;
+  position: absolute;
+  right: 2rem;
+  z-index: 10;
 }
