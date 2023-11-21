@@ -11,11 +11,10 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
+    <li class="nav-item {{ Route::is('dashboard') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dasbor</span></a>
-
     </li>
 
     <!-- Divider -->
@@ -28,12 +27,15 @@
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
-    <li class="nav-item">
+    @can('see users')
+    <li class="nav-item {{ Route::is('users.index') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('users.index') }}">
             <i class="fa-solid fa-clock"></i>
             <span>Pengguna</span>
         </a>
     </li>
+    @endcan
+
 
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline mt-4">
