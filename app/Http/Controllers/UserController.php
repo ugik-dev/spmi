@@ -16,6 +16,30 @@ class UserController extends Controller
     return view('users.index', compact('users', 'roles'));
   }
 
+  public function create(Request $request)
+  {
+    $validatedData = $request->validate([
+      'name' => 'required|max:255',
+      'email' => 'required|email|max:255|unique:users',
+      'role' => 'nullable|in:admin,auditor,prodi',
+      'password' => 'required|min:6',
+    ]);
+
+    $user = new User;
+    $user->name = $validatedData['name'];
+    $user->email = $validatedData['email'];
+    $user->password = bcrypt($validatedData['password']);
+
+    $user->save();
+
+    if (!empty($validatedData['role'])) {
+      $user->assignRole($validatedData['role']);
+    }
+
+    return redirect()->route('users.index')->with('success', 'Pengguna berhasil dibuat!');
+  }
+
+
   public function edit(Request $request, User $user)
   {
     if (!$user) {
@@ -45,7 +69,7 @@ class UserController extends Controller
   {
     $user->delete();
 
-    return back()->with('success', 'Berhasil hapus pengguna!');
+    return response()->json($user);
   }
   public function detail(User $user)
   {
