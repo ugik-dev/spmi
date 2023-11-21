@@ -51,7 +51,7 @@
                 <td width="150px" class="d-flex justify-content-center">
                   <button type="button" class="btn btn-warning btn-edit mr-1 mb-1 mb-md-0" data-user="{{ $user }}"
                     data-toggle="modal" data-target="#editModal">Edit</button>
-                  <form action="users/hapus/{{ $user->id }}" method="POST">
+                  <form action="{{ route('users.delete',$user->id) }}" method="POST">
                     @csrf
                     @method('delete')
                     <button type="submit" class="btn btn-danger btn">Hapus</button>
