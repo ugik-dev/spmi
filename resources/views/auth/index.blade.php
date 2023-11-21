@@ -1,24 +1,5 @@
 @extends('template.AuthBase')
-@push('styles')
-    <style>
-        .form-group {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
 
-        .field-icon {
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            /* Adjust the right position as needed */
-            top: 50%;
-            transform: translateY(-50%);
-            /* Centers the icon vertically */
-            z-index: 10;
-        }
-    </style>
-@endpush
 @section('auth')
     <!-- Outer Row -->
     <div class="row justify-content-center">
@@ -42,7 +23,7 @@
                                             aria-describedby="emailHelp" placeholder="Enter Email Address..." name="email"
                                             required>
                                     </div>
-                                    <div class="form-group d-flex align-items-center">
+                                    <div class="form-group d-flex align-items-center position-relative">
                                         <input type="password" class="form-control form-control-user"
                                             id="exampleInputPassword" placeholder="Password" name="password" required>
                                         <span toggle="#exampleInputPassword"
@@ -62,16 +43,3 @@
 
     </div>
 @endsection
-@push('scripts')
-    <script>
-        $(".toggle-password").click(function() {
-            $(this).toggleClass("fa-eye fa-eye-slash");
-            var input = $($(this).attr("toggle"));
-            if (input.attr("type") == "password") {
-                input.attr("type", "text");
-            } else {
-                input.attr("type", "password");
-            }
-        });
-    </script>
-@endpush
