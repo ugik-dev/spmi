@@ -23,7 +23,7 @@
 ## Cara penggunaan factory untuk dummy data (data testing) (running command menggunakan php artisan tinker):
 
 1. Masuk ke terminal dan running php artisan tinker, untuk masuk ke command console artisan tinker
-2. syntax factory contoh: factory(App\User::class,100)->create()
+2. syntax factory contoh: App\User::factory(100)->create()
 
 ## PhpMyadmin
 
