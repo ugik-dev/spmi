@@ -1,8 +1,8 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Degree; // Ensure this is the correct namespace for your Degree model
+use App\Degree;
 use Faker\Generator as Faker;
 
 $factory->define(Degree::class, function (Faker $faker) {
