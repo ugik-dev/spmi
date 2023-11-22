@@ -71,8 +71,4 @@ class UserController extends Controller
 
     return response()->json($user);
   }
-  public function detail(User $user)
-  {
-    return response()->json($user);
-  }
 }
