@@ -7,79 +7,48 @@ use Illuminate\Http\Request;
 
 class DegreeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+  public function index()
+  {
+    $degrees = Degree::all(); // Assuming no roles are associated with degrees
+    return view('degrees.index', compact('degrees'));
+  }
+
+  public function create(Request $request)
+  {
+    $validatedData = $request->validate([
+      'name' => 'required|max:255',
+      'code' => 'required|max:50|unique:degrees', // Assuming 'code' is a required field
+    ]);
+
+    $degree = new Degree;
+    $degree->name = $validatedData['name'];
+    $degree->code = $validatedData['code'];
+    $degree->save();
+
+    return redirect()->route('degrees.index')->with('success', 'Degree berhasil dibuat!');
+  }
+
+  public function edit(Request $request, Degree $degree)
+  {
+    if (!$degree) {
+      return back()->with('error', 'Degree tidak ditemukan!');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    $validatedData = $request->validate([
+      'name' => 'required|max:255',
+      'code' => 'required|max:50|unique:degrees,code,' . $degree->id,
+    ]);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    $degree->name = $validatedData['name'];
+    $degree->code = $validatedData['code'];
+    $degree->save();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Degree  $degree
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Degree $degree)
-    {
-        //
-    }
+    return back()->with('success', 'Degree berhasil diperbarui!');
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Degree  $degree
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Degree $degree)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Degree  $degree
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Degree $degree)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Degree  $degree
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Degree $degree)
-    {
-        //
-    }
+  public function delete(Degree $degree)
+  {
+    $degree->delete();
+    return response()->json($degree);
+  }
 }
