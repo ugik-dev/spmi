@@ -28,13 +28,29 @@
     <hr class="sidebar-divider d-none d-md-block">
 
     @can('see users')
-    <li class="nav-item {{ Route::is('users.index') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('users.index') }}">
-            <i class="fa-solid fa-clock"></i>
-            <span>Pengguna</span>
-        </a>
-    </li>
+        <li class="nav-item {{ Route::is('users.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('users.index') }}">
+                <i class="fa-solid fa-clock"></i>
+                <span>Pengguna</span>
+            </a>
+        </li>
     @endcan
+
+    <li class="nav-item {{ Route::is('degrees.index') || Route::is('faculties.index') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pengaturan"
+            aria-expanded="true" aria-controls="pengaturan">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Pengaturan</span>
+        </a>
+        <div id="pengaturan" class="collapse" aria-labelledby="heading2" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ Route::is('degrees.index') ? 'active' : '' }}"
+                    href="{{ route('degrees.index') }}">Jenjang Pendidikan</a>
+                <a class="collapse-item {{ Route::is('faculties.index') ? 'active' : '' }}"
+                    href="{{ route('faculties.index') }}">Fakultas</a>
+            </div>
+        </div>
+    </li>
 
 
     <!-- Sidebar Toggler (Sidebar) -->
