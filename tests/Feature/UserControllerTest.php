@@ -18,12 +18,12 @@ class UserControllerTest extends TestCase
   {
     parent::setUp();
     $this->role = Role::firstOrCreate(['name' => 'admin']);
-    $this->adminUser = factory(User::class)->create()->assignRole($this->role);
+    $this->adminUser = User::factory()->create()->assignRole($this->role);
   }
 
   private function createUser($isAdmin = false)
   {
-    $user = factory(User::class)->create();
+    $user = User::factory()->create();
     if ($isAdmin) {
       $user->assignRole($this->role);
     }
