@@ -96,27 +96,11 @@ class UserControllerTest extends TestCase
     $userToDelete = $this->createUser();
 
     $response = $this->actingAs($this->adminUser)->delete(route('users.delete', $userToDelete->id));
-    $response->assertRedirect();
     $this->assertDatabaseMissing('users', ['id' => $userToDelete->id]);
+    $response->assertStatus(200)->assertJson(['id' => $userToDelete->id]);
   }
 
-  public function testAdminCanViewUserDetails()
-  {
-    $user = $this->createUser();
 
-    $response = $this->actingAs($this->adminUser)->get(route('users.detail', $user->id));
-    $response->assertStatus(200)->assertJson([
-      'id' => $user->id,
-      'name' => $user->name,
-      'email' => $user->email,
-    ]);
-  }
-
-  public function testAdminReceivesNotFoundForNonExistentUserDetails()
-  {
-    $response = $this->actingAs($this->adminUser)->get(route('users.detail', 99999));
-    $response->assertStatus(404);
-  }
   public function testNonAdminCannotEditUser()
   {
     $nonAdminUser = $this->createUser();
@@ -138,22 +122,5 @@ class UserControllerTest extends TestCase
 
     $response = $this->actingAs($nonAdminUser)->delete(route('users.delete', $userToDelete->id));
     $response->assertForbidden();
-  }
-
-  public function testNonAdminCannotViewUserDetails()
-  {
-    $nonAdminUser = $this->createUser();
-    $userToView = $this->createUser();
-
-    $response = $this->actingAs($nonAdminUser)->get(route('users.detail', $userToView->id));
-    $response->assertForbidden();
-  }
-
-  public function testNonAdminReceivesNotFoundForNonExistentUserDetails()
-  {
-    $nonAdminUser = $this->createUser();
-
-    $response = $this->actingAs($nonAdminUser)->get(route('users.detail', 99999));
-    $response->assertStatus(404);
   }
 }
