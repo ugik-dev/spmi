@@ -7,11 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\FacultyController;
 
-// Auth Routes
-// Route::get('login', [AuthController::class, 'index'])->name('login');
-// Route::post('proses', [AuthController::class, 'proses']);
-// Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
 Route::redirect('/', '/login');
 
 // Authenticated User Routes
