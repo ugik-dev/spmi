@@ -18,9 +18,6 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900&display=swap"
         rel="stylesheet">
 
-    <!-- Vendor CSS (Bootstrap, DataTables, etc.) -->
-    <link href="{{ mix('css/vendor.css') }}" rel="stylesheet">
-
     <!-- App CSS -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
@@ -71,10 +68,11 @@
     <script src="{{ mix('js/vendor.js') }}"></script>
 
     <!-- ex -->
-    <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
+    {{-- <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script> --}}
 
     <!-- App JS -->
     <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
 
     @stack('scripts')
 

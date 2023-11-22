@@ -1,12 +1,25 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900&display=swap');
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.css";
+@import "~datatables.net-buttons-bs4/css/buttons.bootstrap4.css";
+@import '~datatables.net-select-bs4/css/select.bootstrap4.css';
+@import '~datatables.net-searchpanes-bs4/css/searchPanes.bootstrap4.css';
+@import '../css/sb-admin-2.css';
+
 
 li.active {
-    color: lightblue;
-    text-decoration: underline;
+  color: lightblue;
+  text-decoration: underline;
 }
 .field-icon {
-  cursor: pointer;
-  position: absolute;
-  right: 2rem;
-  z-index: 10;
+cursor: pointer;
+position: absolute;
+right: 2rem;
+z-index: 10;
 }

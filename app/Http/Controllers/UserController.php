@@ -6,14 +6,16 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Fakultas;
 use Spatie\Permission\Models\Role;
+use App\DataTables\UsersDataTable;
 
 class UserController extends Controller
 {
-  public function index()
+  public function index(UsersDataTable $dataTable)
   {
     $users = User::with('roles')->get();
     $roles = Role::all()->pluck('name');
-    return view('users.index', compact('users', 'roles'));
+    return $dataTable->render('users.index');
+    // return view('users.index', compact('users', 'roles'));
   }
 
   public function create(Request $request)
@@ -70,5 +72,9 @@ class UserController extends Controller
     $user->delete();
 
     return response()->json($user);
+  }
+  public function datatables()
+  {
+    return DataTables::of(User::query())->make(true);
   }
 }
