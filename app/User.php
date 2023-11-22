@@ -3,12 +3,13 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-  use Notifiable, HasRoles;
+  use Notifiable, HasFactory, HasRoles;
 
   protected $fillable = ['name', 'email'];
   protected $hidden = [
