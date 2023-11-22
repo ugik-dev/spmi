@@ -1,12 +1,13 @@
 ## Untuk Running Docker
 
-1. docker-compose build <!-- Untuk build image (cukup running 1x jika image sudah dibuild) -->
-2. docker-compose up <!-- Untuk running container -->
+1. sail build <!-- Untuk build image (cukup running 1x jika image sudah dibuild) -->
+2. sail up <!-- Untuk running container -->
 
 ## Command running ke container docker
 
-1. docker-compose exec -u www-data app <!-- Untuk running command/terminal ke container aplikasi -->
-2. docker-compose exec -u www-data db <!-- Untuk running command/terminal ke container db (mysql) -->
+1. sail artisan
+2. sail composer
+3. sail npm
 
 ## Command Inisiasi:
 
@@ -27,7 +28,7 @@
 
 ## PhpMyadmin
 
-docker run --name my-phpmyadmin -d --network spmi_app-network -e PMA_HOST=laravel-db -e PMA_USER=spmi -e PMA_PASSWORD=spmi -p 8080:80 phpmyadmin
+docker run --name spmiv2-phpmyadmin -d --network spmi_app-network -e PMA_HOST=laravel-db -e PMA_USER=spmi -e PMA_PASSWORD=spmi -p 8080:80 phpmyadmin
 
 ### Troubleshoot
 
