@@ -21,7 +21,18 @@ class UsersDataTable extends DataTable
   {
     return datatables()
       ->eloquent($query)
-      ->addColumn('action', 'users.action');
+      ->addIndexColumn()
+      ->filterColumn('role', function ($query, $keyword) {
+        $query->whereHas('roles', function ($subQuery) use ($keyword) {
+          $subQuery->where('name', 'like', "%{$keyword}%");
+        });
+      })
+      ->addColumn('role_names', function (User $user) {
+        return $user->role_names; // Add role_names column
+      })
+      ->addColumn('action', function (User $user) {
+        return view('partials.action-buttons', ['model' => $user])->render();
+      });
   }
 
   /**
@@ -32,8 +43,9 @@ class UsersDataTable extends DataTable
    */
   public function query(User $model)
   {
-    return $model->newQuery();
+    return $model->newQuery()->with('roles');
   }
+
 
   /**
    * Optional method if you want to use html builder.
@@ -47,7 +59,7 @@ class UsersDataTable extends DataTable
       ->columns($this->getColumns())
       ->minifiedAjax()
       ->dom('Bfrtip')
-      ->orderBy(1)
+      ->orderBy(1, 'asc')
       ->buttons(
         Button::make('create'),
         Button::make('export'),
@@ -65,15 +77,26 @@ class UsersDataTable extends DataTable
   protected function getColumns()
   {
     return [
+      Column::computed('DT_RowIndex')
+        ->title('#')
+        ->orderable(false)
+        ->searchable(false)
+        ->exportable(false)
+        ->printable(true)
+        ->width(30)
+        ->addClass('text-center'),
+      Column::make('name'),
+      Column::make('role')
+        ->title('Role')
+        ->data('role_names') // Use the accessor
+        ->searchable(true)
+        ->orderable(true),
       Column::computed('action')
+        ->title('Aksi')
         ->exportable(false)
         ->printable(false)
-        ->width(60)
+        ->width(150)
         ->addClass('text-center'),
-      Column::make('id'),
-      Column::make('name'),
-      Column::make('created_at'),
-      Column::make('updated_at'),
     ];
   }
 

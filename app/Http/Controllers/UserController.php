@@ -12,10 +12,8 @@ class UserController extends Controller
 {
   public function index(UsersDataTable $dataTable)
   {
-    $users = User::with('roles')->get();
     $roles = Role::all()->pluck('name');
-    return $dataTable->render('users.index');
-    // return view('users.index', compact('users', 'roles'));
+    return $dataTable->render('users.index', compact('roles'));
   }
 
   public function create(Request $request)
@@ -71,7 +69,8 @@ class UserController extends Controller
   {
     $user->delete();
 
-    return response()->json($user);
+    // Return response
+    return response()->json($user, 200);
   }
   public function datatables()
   {

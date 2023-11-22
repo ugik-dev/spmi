@@ -12,7 +12,9 @@
                         Tambah Pengguna</a>
 
                     @include('partials.session')
-                    {{ $dataTable->table() }}
+                    <div class="table-responsive">
+                        {{ $dataTable->table() }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,9 +44,9 @@
                                 <label for="">Role</label>
                                 <select class="form-control" id="user-role" name="role">
                                     <option value="">Pilih Role</option>
-                                    {{-- @foreach ($roles as $role)
+                                    @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
-                                    @endforeach --}}
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -121,5 +123,6 @@
 
 @push('scripts')
     {{ $dataTable->scripts() }}
-    {{-- <script src="{{ mix('js/users-index.js') }}"></script> --}}
+
+    <script src="{{ mix('js/users-index.js') }}"></script>
 @endpush

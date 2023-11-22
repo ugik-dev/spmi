@@ -1,7 +1,5 @@
 $(function () {
-  const $usersTable = $("#users-datatable").DataTable({
-    order: [0, "asc"],
-  });
+  const $usersTable = $("#users-table").DataTable();
 
   const $editModal = $("#editModal");
   const $formEdit = $("#edit-form");
@@ -11,7 +9,7 @@ $(function () {
 
   $editModal.on("show.bs.modal", (event) => {
     const $buttonEdit = $(event.relatedTarget);
-    const userData = $buttonEdit.data("user");
+    const userData = $buttonEdit.data("model");
     const actionUrl = `/pengguna/edit/${userData.id}`;
 
     $formEdit.attr("action", actionUrl);
@@ -20,10 +18,10 @@ $(function () {
     $userRoleSelect.val(userData.roles?.[0]?.name || "");
   });
 
-  $usersTable.on("click", ".delete-button", (event) => {
-    const $buttonDelete = $(event.currentTarget);
+  $usersTable.on("click", ".delete-button", function () {
+    const $buttonDelete = $(this);
     const userId = $buttonDelete.data("id");
-    const userName = $buttonDelete.data("username");
+    const userName = $buttonDelete.data("model-name");
 
     Swal.fire({
       title: "Apakah anda yakin?",
@@ -35,8 +33,6 @@ $(function () {
       showLoaderOnConfirm: true,
       preConfirm: () => deleteUserData(userId),
       allowOutsideClick: () => !Swal.isLoading(),
-    }).then((result) => {
-      setTimeout(() => window.location.reload(), 550);
     });
   });
 
@@ -46,6 +42,7 @@ $(function () {
       .then((response) => {
         if (response.status === 200 || response.status === 204) {
           Swal.fire("Dihapus!", "Pengguna telah dihapus.", "success");
+          reloadTable();
         } else {
           Swal.fire(
             "Gagal!",
@@ -57,5 +54,8 @@ $(function () {
       .catch((error) => {
         Swal.showValidationMessage(`Request failed: ${error}`);
       });
+  }
+  function reloadTable() {
+    $usersTable.ajax.reload(null, false); // Reload the DataTable without resetting the paging
   }
 });
