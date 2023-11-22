@@ -12,47 +12,7 @@
                         Tambah Pengguna</a>
 
                     @include('partials.session')
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="users-datatable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Prodi</th>
-                                    <th width="150px">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Prodi</th>
-                                    <th width="150px">Aksi</th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
-                                @foreach ($users as $user)
-                                    <tr>
-                                        <td>{{ $user->name }}</td>
-                                        <td style="width: 200px">
-                                            @foreach ($user->roles as $role)
-                                                <span class="badge badge-info text-wrap p-2 m-1">{{ $role->name }}</span>
-                                            @endforeach
-                                        </td>
-                                        <td>{{ $user->prodi?->name }}</td>
-                                        <td width="150px" class="d-flex justify-content-center">
-                                            <button type="button" class="btn btn-warning btn-edit mr-1 mb-1 mb-md-0"
-                                                data-user="{{ $user }}" data-toggle="modal"
-                                                data-target="#editModal">Edit</button>
-                                            <button type="button" class="btn btn-danger btn delete-button"
-                                                data-username="{{ $user->name }}"
-                                                data-id="{{ $user->id }}">Hapus</button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                    {{ $dataTable->table() }}
                 </div>
             </div>
         </div>
@@ -82,9 +42,9 @@
                                 <label for="">Role</label>
                                 <select class="form-control" id="user-role" name="role">
                                     <option value="">Pilih Role</option>
-                                    @foreach ($roles as $role)
+                                    {{-- @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
 
@@ -132,9 +92,9 @@
                                 <label for="new-user-role">Role</label>
                                 <select class="form-control" id="new-user-role" name="role">
                                     <option value="">Pilih Role</option>
-                                    @foreach ($roles as $role)
+                                    {{-- @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
 
@@ -160,5 +120,6 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ mix('js/users-index.js') }}"></script>
+    {{ $dataTable->scripts() }}
+    {{-- <script src="{{ mix('js/users-index.js') }}"></script> --}}
 @endpush
