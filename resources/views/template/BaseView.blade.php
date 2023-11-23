@@ -59,21 +59,17 @@
     </div>
     <!-- End of Page Wrapper -->
 
-    @include('template.scroll-to-top')
     <!-- Scroll to Top Button-->
-    @include('template.logout-modal')
+    @include('template.scroll-to-top')
+
     <!-- Logout Modal-->
+    @include('template.logout-modal')
 
-    <!-- Vendor JS (jQuery, Bootstrap, etc.) -->
-    <script src="{{ mix('js/vendor.js') }}"></script>
-
-    <!-- ex -->
     {{-- <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script> --}}
 
     <!-- App JS -->
     <script src="{{ mix('js/app.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
-
+    {{-- <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script> --}}
     @stack('scripts')
 
     <!-- Custom JS Scripts -->
