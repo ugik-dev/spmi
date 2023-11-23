@@ -7,10 +7,6 @@
                     <h6 class="m-0 font-weight-bold text-primary">Data Pengguna</h6>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-primary mb-3" data-toggle="modal" data-target="#createUserModal"><i
-                            class="fa fa-plus"></i>
-                        Tambah Pengguna</a>
-
                     @include('partials.session')
                     <div class="table-responsive py-4">
                         {{ $dataTable->table() }}
@@ -92,11 +88,11 @@
 
                             <div class="form-group">
                                 <label for="new-user-role">Role</label>
-                                <select class="form-control" id="new-user-role" name="role">
+                                <select id="new-user-role" name="role">
                                     <option value="">Pilih Role</option>
-                                    {{-- @foreach ($roles as $role)
+                                    @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
-                                    @endforeach --}}
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -128,6 +124,16 @@
     <script>
         $(function() {
             const $usersTable = $("#users-table").DataTable();
+            // DataTables init event
+            $usersTable.on('init.dt', function() {
+                // Modify button after table initialization
+                $usersTable.buttons('.button-add').nodes().each(function() {
+                    $(this).attr('data-toggle', 'modal');
+                    $(this).attr('data-target', '#createUserModal');
+                    $(this).find('.button-add-icon-placeholder').html('<i class="fa fa-plus"></i>');
+                    $(this).removeClass('btn-secondary').addClass('btn-primary');
+                });
+            });
 
             const $editModal = $("#editModal");
             const $formEdit = $("#edit-form");
