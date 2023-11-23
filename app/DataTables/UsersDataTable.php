@@ -62,11 +62,24 @@ class UsersDataTable extends DataTable
       ->orderBy(1, 'asc')
       ->buttons(
         Button::make('create'),
-        Button::make('export'),
+        Button::make('export')
+          ->buttons([
+            Button::make('excel'),
+            Button::make('csv'),
+            Button::make('pdf')
+          ]),
         Button::make('print'),
         Button::make('reset'),
-        Button::make('reload')
-      );
+        Button::make('reload'),
+        Button::make('colvis')
+      )->parameters([
+        'autoFill' => true,
+        'colReorder' => true,
+        'responsive' => true,
+        'searchPanes' => true,
+        'select' => true,
+        'datetime' => true,
+      ]);
   }
 
   /**
@@ -85,7 +98,8 @@ class UsersDataTable extends DataTable
         ->printable(true)
         ->width(30)
         ->addClass('text-center'),
-      Column::make('name'),
+      Column::make('name')
+        ->title('Nama'),
       Column::make('role')
         ->title('Role')
         ->data('role_names') // Use the accessor
