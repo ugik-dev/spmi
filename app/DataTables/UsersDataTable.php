@@ -56,30 +56,37 @@ class UsersDataTable extends DataTable
   {
     return $this->builder()
       ->setTableId('users-table')
-      ->columns($this->getColumns())
-      ->minifiedAjax()
-      ->dom('Bfrtip')
-      ->orderBy(1, 'asc')
-      ->buttons(
-        Button::make('create'),
-        Button::make('export')
-          ->buttons([
-            Button::make('excel'),
-            Button::make('csv'),
-            Button::make('pdf')
-          ]),
-        Button::make('print'),
-        Button::make('reset'),
-        Button::make('reload'),
-        Button::make('colvis')
-      )->parameters([
+      ->parameters([
         'autoFill' => true,
         'colReorder' => true,
         'responsive' => true,
         'searchPanes' => true,
         'select' => true,
         'datetime' => true,
-      ]);
+        'language' => [
+          'url' => '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
+        ],
+      ])
+      ->columns($this->getColumns())
+      ->minifiedAjax()
+      ->dom('Bfrtip')
+      ->orderBy(1, 'asc')
+      ->buttons(
+        Button::raw('add')
+          ->text('<span class="button-add-icon-placeholder"></span> Tambah Pengguna')
+          ->addClass('button-add'),
+        Button::make('export')
+          ->buttons([
+            Button::make('excel'),
+            Button::make('csv'),
+            // Button::make('pdf')
+          ]),
+        Button::make('print'),
+        Button::make('reset'),
+        Button::make('reload'),
+        Button::make('colvis')
+          ->text('Visibilitas Kolom')
+      );
   }
 
   /**
@@ -121,6 +128,6 @@ class UsersDataTable extends DataTable
    */
   protected function filename()
   {
-    return 'Users_' . date('YmdHis');
+    return 'Users_' . date('dmYHis');
   }
 }
