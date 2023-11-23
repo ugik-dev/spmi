@@ -15,43 +15,8 @@
                     @endcan
 
                     @include('partials.session')
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="degrees-datatable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Code</th>
-                                    <th width="150px">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Code</th>
-                                    <th width="150px">Aksi</th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
-                                @foreach ($degrees as $degree)
-                                    <tr>
-                                        <td>{{ $degree->name }}</td>
-                                        <td>{{ $degree->code }}</td>
-                                        <td width="150px" class="d-flex justify-content-center">
-                                            @can('edit degree')
-                                                <button type="button" class="btn btn-warning btn-edit mr-1 mb-1 mb-md-0"
-                                                    data-degree="{{ $degree }}" data-toggle="modal"
-                                                    data-target="#editDegreeModal">Edit</button>
-                                            @endcan
-                                            @can('delete degree')
-                                                <button type="button" class="btn btn-danger btn delete-button"
-                                                    data-degree-name="{{ $degree->name }}"
-                                                    data-id="{{ $degree->id }}">Hapus</button>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="table-responsive py-4">
+                        {{ $dataTable->table() }}
                     </div>
                 </div>
             </div>
@@ -125,5 +90,6 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ mix('js/degrees-index.js') }}"></script>
+    {{ $dataTable->scripts() }}
+    {{-- <script src="{{ mix('js/degrees-index.js') }}"></script> --}}
 @endpush
