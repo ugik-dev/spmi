@@ -102,7 +102,7 @@
 
             $(document).ready(function() {
                 setupEditModal('#editModal', '#edit-degree-form', '/jenjang/edit/:id', 'model');
-                setupDeleteFunctionality('#degrees-table', '/jenjang/hapus/:id', 'model-name');
+
                 setupDeleteFunctionality(
                     '#degrees-table',
                     '/jenjang/hapus/:id',
