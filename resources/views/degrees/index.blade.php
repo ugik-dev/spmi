@@ -8,12 +8,6 @@
                     <h6 class="m-0 font-weight-bold text-primary">Data Jenjang</h6>
                 </div>
                 <div class="card-body">
-                    @can('create degree')
-                        <a class="btn btn-primary mb-3" data-toggle="modal" data-target="#createDegreeModal">
-                            <i class="fa fa-plus"></i> Tambah Jenjang
-                        </a>
-                    @endcan
-
                     @include('partials.session')
                     <div class="table-responsive py-4">
                         {{ $dataTable->table() }}
@@ -24,11 +18,11 @@
     </div>
 
     @can('edit degree')
-        <div class="modal fade" id="editDegreeModal" tabindex="-1" aria-labelledby="editDegreeModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editDegreeModalLabel">Edit Degree</h5>
+                        <h5 class="modal-title" id="editModalLabel">Edit Degree</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -62,7 +56,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createDegreeModalLabel">Create Degree</h5>
+                        <h5 class="modal-title" id="createDegreeModalLabel">Tambah Jenjang</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -79,7 +73,7 @@
                                 <input type="text" id="new-degree-code" name="code" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-primary" type="submit">Create</button>
+                                <button class="btn btn-primary" type="submit">Simpan</button>
                             </div>
                         </form>
                     </div>
@@ -91,5 +85,31 @@
 
 @push('scripts')
     {{ $dataTable->scripts() }}
+    <script>
+        $(function() {
+            const $degreesTable = $("#degrees-table").DataTable();
+
+            // DataTables init event
+            $degreesTable.on('init.dt', function() {
+                // Modify button after table initialization
+                $degreesTable.buttons('.button-add').nodes().each(function() {
+                    $(this).attr('data-toggle', 'modal');
+                    $(this).attr('data-target', '#createDegreeModal');
+                    $(this).find('.button-add-icon-placeholder').html('<i class="fa fa-plus"></i>');
+                    $(this).removeClass('btn-secondary').addClass('btn-primary');
+                });
+            });
+
+            $(document).ready(function() {
+                setupEditModal('#editModal', '#edit-degree-form', '/jenjang/edit/:id', 'model');
+                setupDeleteFunctionality('#degrees-table', '/jenjang/hapus/:id', 'model-name');
+                setupDeleteFunctionality(
+                    '#degrees-table',
+                    '/jenjang/hapus/:id',
+                    'model-name'
+                );
+            });
+        });
+    </script>
     {{-- <script src="{{ mix('js/degrees-index.js') }}"></script> --}}
 @endpush

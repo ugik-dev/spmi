@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Degree;
 use Illuminate\Http\Request;
+use App\DataTables\DegreesDataTable;
 
 class DegreeController extends Controller
 {
-  public function index()
+  public function index(DegreesDataTable $dataTable)
   {
-    $degrees = Degree::all(); // Assuming no roles are associated with degrees
-    return view('degrees.index', compact('degrees'));
+    return $dataTable->render('degrees.index');
   }
 
   public function create(Request $request)
