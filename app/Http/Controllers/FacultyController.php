@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Faculty; // Ensure this uses the correct namespace for your Faculty model
 use Illuminate\Http\Request;
+use App\DataTables\FacultiesDataTable;
 
 class FacultyController extends Controller
 {
-  public function index()
+  public function index(FacultiesDataTable $dataTable)
   {
-    $faculties = Faculty::all();
-    return view('faculties.index', compact('faculties'));
+    return $dataTable->render('faculties.index');
   }
 
   public function create(Request $request)
