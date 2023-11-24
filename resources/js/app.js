@@ -1,5 +1,5 @@
 import "./bootstrap";
-
+import { setupEditModal, setupDeleteFunctionality } from "./ud-operations";
 $(function () {
   $(document).ready(function () {
     $("select").select2({
@@ -7,3 +7,7 @@ $(function () {
     });
   });
 });
+
+// Expose the functions globally if they are not already
+window.setupEditModal = setupEditModal;
+window.setupDeleteFunctionality = setupDeleteFunctionality;
