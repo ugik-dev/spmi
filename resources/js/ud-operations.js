@@ -15,7 +15,31 @@ export function setupEditModal(
     $form.attr("action", actionUrl);
 
     Object.keys(modelData).forEach((key) => {
-      $form.find(`[name="${key}"]`).val(modelData[key]);
+      let value;
+
+      if (
+        key === "roles" &&
+        Array.isArray(modelData[key]) &&
+        modelData[key].length > 0
+      ) {
+        // Special handling for 'roles'
+        value = modelData[key][0].name; // Use the name of the first role
+      } else if (modelData[key] && typeof modelData[key] === "object") {
+        // For other objects, use .id
+        value = modelData[key].id || modelData[key];
+      } else {
+        // Use the value directly for non-object types
+        value = modelData[key];
+      }
+
+      const $formElement = $form.find(`[name="${key}"]`);
+      // Set the value for the form element
+      $formElement.val(value);
+
+      // Trigger change if it's a select element (for Select2)
+      if ($formElement.is("select")) {
+        $formElement.trigger("change");
+      }
     });
   });
 }
