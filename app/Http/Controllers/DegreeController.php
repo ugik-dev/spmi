@@ -25,13 +25,13 @@ class DegreeController extends Controller
     $degree->code = $validatedData['code'];
     $degree->save();
 
-    return redirect()->route('degrees.index')->with('success', 'Degree berhasil dibuat!');
+    return redirect()->route('degrees.index')->with('success', 'Jenjang berhasil dibuat!');
   }
 
   public function edit(Request $request, Degree $degree)
   {
     if (!$degree) {
-      return back()->with('error', 'Degree tidak ditemukan!');
+      return back()->with('error', 'Jenjang tidak ditemukan!');
     }
 
     $validatedData = $request->validate([
@@ -43,7 +43,7 @@ class DegreeController extends Controller
     $degree->code = $validatedData['code'];
     $degree->save();
 
-    return back()->with('success', 'Degree berhasil diperbarui!');
+    return back()->with('success', 'Jenjang berhasil diperbarui!');
   }
 
   public function delete(Degree $degree)
