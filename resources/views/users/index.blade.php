@@ -45,6 +45,16 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="">Prodi</label>
+                                <select class="form-control" id="user-study-programs" name="study_program">
+                                    <option value="">Pilih Prodi</option>
+                                    @foreach ($studyPrograms as $studyProgram)
+                                        <option value="{{ $studyProgram->id }}">{{ ucfirst($studyProgram->code) }} -
+                                            {{ $studyProgram->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             <div class="form-group">
                                 <label for="user-email">Email</label>
@@ -92,6 +102,16 @@
                                     <option value="">Pilih Role</option>
                                     @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Prodi</label>
+                                <select class="form-control" id="user-study-programs" name="study_program">
+                                    <option value="">Pilih Prodi</option>
+                                    @foreach ($studyPrograms as $studyProgram)
+                                        <option value="{{ $studyProgram->id }}">{{ ucfirst($studyProgram->code) }} -
+                                            {{ $studyProgram->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
