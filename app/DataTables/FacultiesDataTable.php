@@ -47,6 +47,7 @@ class FacultiesDataTable extends DataTable
   {
     return $this->builder()
       ->setTableId('faculties-table')
+      ->setTableAttribute('class', 'table table-bordered table-striped table-hover table-sm text-nowrap')
       ->parameters([
         'autoFill' => true,
         'colReorder' => true,
@@ -57,6 +58,10 @@ class FacultiesDataTable extends DataTable
         'language' => [
           'url' => '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
         ],
+        'initComplete' => "function () {
+          $('div.dataTables_length select').addClass('form-control');
+          $('div.dataTables_filter input').addClass('form-control');
+      }"
       ])
       ->columns($this->getColumns())
       ->minifiedAjax()

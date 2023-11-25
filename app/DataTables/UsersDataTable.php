@@ -30,6 +30,9 @@ class UsersDataTable extends DataTable
       ->addColumn('role_names', function (User $user) {
         return $user->role_names; // Add role_names column
       })
+      ->addColumn('study_program_name', function (User $user) {
+        return $user->study_program_name;
+      })
       ->addColumn('action', function (User $user) {
         return view('partials.action-buttons', ['model' => $user])->render();
       });
@@ -43,8 +46,9 @@ class UsersDataTable extends DataTable
    */
   public function query(User $model)
   {
-    return $model->newQuery()->with('roles');
+    return $model->newQuery()->with(['roles', 'studyProgram']);
   }
+
 
 
   /**
@@ -56,6 +60,7 @@ class UsersDataTable extends DataTable
   {
     return $this->builder()
       ->setTableId('users-table')
+      ->setTableAttribute('class', 'table table-bordered table-striped table-hover table-sm text-nowrap')
       ->parameters([
         'autoFill' => true,
         'colReorder' => true,
@@ -66,6 +71,10 @@ class UsersDataTable extends DataTable
         'language' => [
           'url' => '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
         ],
+        'initComplete' => "function () {
+          $('div.dataTables_length select').addClass('form-control');
+          $('div.dataTables_filter input').addClass('form-control');
+      }",
       ])
       ->columns($this->getColumns())
       ->minifiedAjax()
@@ -110,6 +119,10 @@ class UsersDataTable extends DataTable
       Column::make('role')
         ->title('Role')
         ->data('role_names') // Use the accessor
+        ->searchable(true)
+        ->orderable(true),
+      Column::make('study_program_name')
+        ->title('Program Studi')
         ->searchable(true)
         ->orderable(true),
       Column::computed('action')
