@@ -1,4 +1,4 @@
-<ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-info sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
@@ -22,21 +22,41 @@
 
     <!-- Heading -->
     <div class="sidebar-heading mb-2">
-        Menu Utama
+        Menu Manajemen
     </div>
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
+
+    @can('see prodis')
+        <li class="nav-item {{ Route::is('programs.index') ? 'active' : '' }}">
+            <a class="nav-link {{ Route::is('programs.index') ? 'active' : '' }}" href="{{ route('programs.index') }}"><i
+                    class="mr-2 fa-solid fa-book"></i>Program Studi</a>
+        </li>
+    @endcan
+    @can('see degrees')
+        <li class="nav-item {{ Route::is('degrees.index') ? 'active' : '' }}">
+            <a class="nav-link {{ Route::is('degrees.index') ? 'active' : '' }}" href="{{ route('degrees.index') }}">
+                <i class="mr-2 fa-solid fa-graduation-cap"></i>Jenjang
+                Pendidikan</a>
+        </li>
+    @endcan
+    @can('see faculties')
+        <li class="nav-item {{ Route::is('faculties.index') ? 'active' : '' }}">
+            <a class="nav-link {{ Route::is('faculties.index') ? 'active' : '' }}"
+                href="{{ route('faculties.index') }}"><i class="mr-2 fa-solid fa-building"></i>Fakultas</a>
+        </li>
+    @endcan
     @can('see users')
         <li class="nav-item {{ Route::is('users.index') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('users.index') }}">
-                <i class="fa-solid fa-clock"></i>
+                <i class="fa-solid fa-user"></i>
                 <span>Pengguna</span>
             </a>
         </li>
     @endcan
 
-    <li class="nav-item {{ Route::is('degrees.index') || Route::is('faculties.index') ? 'active' : '' }}">
+    {{-- <li class="nav-item {{ Route::is('degrees.index') || Route::is('faculties.index') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pengaturan"
             aria-expanded="true" aria-controls="pengaturan">
             <i class="fas fa-fw fa-cog"></i>
@@ -50,7 +70,7 @@
                     href="{{ route('faculties.index') }}">Fakultas</a>
             </div>
         </div>
-    </li>
+    </li> --}}
 
 
     <!-- Sidebar Toggler (Sidebar) -->
