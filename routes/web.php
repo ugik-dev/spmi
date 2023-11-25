@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\StudyProgramController;
 
 Route::redirect('/', '/login');
 
@@ -38,6 +39,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/tambah', [FacultyController::class, 'create'])->middleware('can:create faculty')->name('create');
     Route::patch('/edit/{faculty}', [FacultyController::class, 'edit'])->middleware('can:edit faculty')->name('edit');
     Route::delete('/hapus/{faculty}', [FacultyController::class, 'delete'])->middleware('can:delete faculty')->name('delete');
+  });
+
+  // StudyProgram Routes
+  Route::prefix('prodi')->name('programs.')->group(function () {
+    Route::get('/', [StudyProgramController::class, 'index'])->middleware('can:see prodis')->name('index');
+    Route::post('/tambah', [StudyProgramController::class, 'create'])->middleware('can:create prodi')->name('create');
+    Route::patch('/edit/{study_program}', [StudyProgramController::class, 'edit'])->middleware('can:edit prodi')->name('edit');
+    Route::delete('/hapus/{study_program}', [StudyProgramController::class, 'delete'])->middleware('can:delete prodi')->name('delete');
   });
 });
 
