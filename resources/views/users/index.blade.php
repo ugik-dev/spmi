@@ -38,7 +38,7 @@
 
                             <div class="form-group">
                                 <label for="">Role</label>
-                                <select class="form-control" id="user-role" name="role">
+                                <select class="form-control" id="user-role" name="roles">
                                     <option value="">Pilih Role</option>
                                     @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
@@ -88,7 +88,7 @@
 
                             <div class="form-group">
                                 <label for="new-user-role">Role</label>
-                                <select id="new-user-role" name="role">
+                                <select id="new-user-role" name="roles">
                                     <option value="">Pilih Role</option>
                                     @foreach ($roles as $role)
                                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
