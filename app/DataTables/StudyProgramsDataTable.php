@@ -82,7 +82,7 @@ class StudyProgramsDataTable extends DataTable
       ])
       ->columns($this->getColumns())
       ->minifiedAjax()
-      ->dom('Bfrtip')
+      ->dom('lBfrtip')
       ->orderBy(1, 'asc')
       ->buttons(
         Button::raw('add')
