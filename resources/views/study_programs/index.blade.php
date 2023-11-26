@@ -15,7 +15,7 @@
         <div class="col">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Data Fakultas</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Data Prodi</h6>
                 </div>
                 <div class="card-body">
                     @include('partials.session')
@@ -42,12 +42,12 @@
     {{ $dataTable->scripts() }}
     <script>
         $(function() {
-            const $programs = $("#study_programs-table").DataTable();
+            const $programsTable = $("#study_programs-table").DataTable();
 
             // DataTables init event
-            $programs.on('init.dt', function() {
+            $programsTable.on('init.dt', function() {
                 // Modify button after table initialization
-                $programs.buttons('.button-add').nodes().each(function() {
+                $programsTable.buttons('.button-add').nodes().each(function() {
                     $(this).attr('data-toggle', 'modal');
                     $(this).attr('data-target', '#createStudyProgramModal');
                     $(this).find('.button-add-icon-placeholder').html('<i class="fa fa-plus"></i>');
