@@ -28,6 +28,14 @@
     </div>
 
     <!-- Nav Items -->
+    @can('see criteria')
+        <li class="nav-item {{ Route::is('criteria.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('criteria.index') }}">
+                <i class="fas fa-book mr-2"></i>Kriteria
+            </a>
+        </li>
+    @endcan
+
     @can('see prodis')
         <li class="nav-item {{ Route::is('programs.index') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('programs.index') }}">
