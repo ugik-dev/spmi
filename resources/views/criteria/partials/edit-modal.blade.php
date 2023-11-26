@@ -1,0 +1,66 @@
+<!-- Edit Study Program Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Program Studi (Prodi)</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-prodi-form" action="" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <input type="hidden" id="edit-prodi-id" name="id">
+                    <div class="form-group">
+                        <label for="edit-prodi-name">Nama Prodi</label>
+                        <input type="text" id="edit-prodi-name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-prodi-code">Kode</label>
+                        <input type="text" id="edit-prodi-code" name="code" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Jenjang</label>
+                        <select class="form-control" id="studyProgram-degree" name="degree">
+                            <option value="">Pilih Jenjang</option>
+                            @foreach ($degrees as $degree)
+                                <option value="{{ $degree->id }}">{{ ucfirst($degree->name) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Fakultas</label>
+                        <select class="form-control" id="studyProgram-faculty" name="faculty">
+                            <option value="">Pilih Fakultas</option>
+                            @foreach ($faculties as $faculty)
+                                <option value="{{ $faculty->id }}">{{ ucfirst($faculty->name) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-prodi-vision">Visi</label>
+                        <div id="edit-vision-container">
+                            <!-- Vision inputs will be populated here -->
+                        </div>
+                        <button type="button" class="btn btn-outline-primary" id="add-edit-vision">Tambahkan
+                            Visi</button>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-prodi-mission">Misi</label>
+                        <textarea id="edit-prodi-mission" name="mission" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-prodi-description">Deskripsi</label>
+                        <textarea id="edit-prodi-description" name="description" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-warning" type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

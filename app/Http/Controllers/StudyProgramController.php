@@ -24,67 +24,22 @@ class StudyProgramController extends Controller
 
   public function create(Request $request)
   {
-    $validatedData = $request->validate([
-      'name' => 'required|max:255',
-      'code' => 'nullable|max:50',
-      'degree' => 'nullable|exists:degrees,id',
-      'faculty' => 'nullable|exists:faculties,id',
-      'vision' => 'nullable|array',
-      'vision.*' => 'nullable|string|max:255',
-      'mission' => 'nullable|string',
-      'description' => 'nullable|string',
-    ]);
+    $validatedData = $this->validateStudyProgram($request);
 
-    $studyProgram = new StudyProgram();
-    $studyProgram->fill($validatedData);
+    $studyProgram = new StudyProgram($validatedData);
+    $this->associateEntities($studyProgram, $validatedData);
     $studyProgram->save();
-
-    if (!empty($validatedData['faculty'])) {
-      $studyProgram->faculty()->associate(Faculty::find($validatedData['faculty']));
-      $studyProgram->save();
-    }
-
-    if (!empty($validatedData['degree'])) {
-      $studyProgram->degree()->associate(Degree::find($validatedData['degree']));
-      $studyProgram->save();
-    }
-
 
     return redirect()->route('programs.index')->with('success', 'Program studi berhasil dibuat!');
   }
 
   public function edit(Request $request, StudyProgram $studyProgram)
   {
-    if (!$studyProgram) {
-      return back()->with('error', 'Program studi tidak ditemukan!');
-    }
-
-    // Validation similar to the create method
-    $validatedData = $request->validate([
-      'name' => 'required|max:255',
-      'code' => 'nullable|max:50',
-      'degree' => 'nullable|exists:degrees,id',
-      'faculty' => 'nullable|exists:faculties,id',
-      'vision' => 'nullable|array',
-      'vision.*' => 'nullable|string|max:255',
-      'mission' => 'nullable|string',
-      'description' => 'nullable|string',
-    ]);
+    $validatedData = $this->validateStudyProgram($request);
 
     $studyProgram->fill($validatedData);
-    if (!empty($validatedData['degree'])) {
-      $studyProgram->degree()->associate(Degree::find($validatedData['degree']));
-    } else {
-      $studyProgram->degree()->dissociate();
-    }
-    if (!empty($validatedData['faculty'])) {
-      $studyProgram->faculty()->associate(Faculty::find($validatedData['faculty']));
-    } else {
-      $studyProgram->faculty()->dissociate();
-    }
-
+    $this->associateEntities($studyProgram, $validatedData);
     $studyProgram->save();
-
 
     return back()->with('success', 'Program studi berhasil diperbarui!');
   }
@@ -93,5 +48,34 @@ class StudyProgramController extends Controller
   {
     $studyProgram->delete();
     return response()->json($studyProgram);
+  }
+
+  private function validateStudyProgram(Request $request)
+  {
+    return $request->validate([
+      'name' => 'required|max:255',
+      'code' => 'nullable|max:50',
+      'degree' => 'nullable|exists:degrees,id',
+      'faculty' => 'nullable|exists:faculties,id',
+      'vision' => 'nullable|array',
+      'vision.*' => 'nullable|string|max:255',
+      'mission' => 'nullable|string',
+      'description' => 'nullable|string',
+    ]);
+  }
+
+  private function associateEntities(StudyProgram $studyProgram, array $data)
+  {
+    if (!empty($data['faculty'])) {
+      $studyProgram->faculty()->associate(Faculty::find($data['faculty']));
+    } else {
+      $studyProgram->faculty()->dissociate();
+    }
+
+    if (!empty($data['degree'])) {
+      $studyProgram->degree()->associate(Degree::find($data['degree']));
+    } else {
+      $studyProgram->degree()->dissociate();
+    }
   }
 }

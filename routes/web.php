@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\CriterionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\FacultyController;
@@ -22,7 +23,6 @@ Route::middleware('auth')->group(function () {
   // User Routes
   Route::prefix('pengguna')->name('users.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->middleware('can:see users')->name('index');
-    Route::get('/datatables', [UserController::class, 'datatables'])->middleware('can:see users')->name('datatables');
     Route::patch('/edit/{user}', [UserController::class, 'edit'])->middleware('can:edit user')->name('edit');
     Route::delete('/hapus/{user}', [UserController::class, 'delete'])->middleware('can:delete user')->name('delete');
     Route::post('/tambah', [UserController::class, 'create'])->middleware('can:create user')->name('create');
@@ -51,6 +51,17 @@ Route::middleware('auth')->group(function () {
     Route::patch('/edit/{study_program}', [StudyProgramController::class, 'edit'])->middleware('can:edit prodi')->name('edit');
     Route::delete('/hapus/{study_program}', [StudyProgramController::class, 'delete'])->middleware('can:delete prodi')->name('delete');
   });
+
+  // Criterion Routes
+  Route::prefix('kriteria')->name('criteria.')->group(function () {
+    Route::get('/', [CriterionController::class, 'index'])->middleware('can:see criteria')->name('index');
+    Route::post('/tambah', [CriterionController::class, 'create'])->middleware('can:create criterion')->name('create');
+
+    // Route::patch('/edit/{study_program}', [StudyProgramController::class, 'edit'])->middleware('can:edit prodi')->name('edit');
+    // Route::delete('/hapus/{study_program}', [StudyProgramController::class, 'delete'])->middleware('can:delete prodi')->name('delete');
+  });
+
+  Route::get('/get-parent-criteria', [CriterionController::class, 'getParentCriteria'])->name('get-parent-criteria');
 
   Route::prefix('kriteria')->name('kriteria.')->group(function () {
     Route::get('/', [KriteriaController::class, 'index'])->middleware('can:see kriteria')->name('index');

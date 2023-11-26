@@ -47,6 +47,7 @@ class DegreesDataTable extends DataTable
   {
     return $this->builder()
       ->setTableId('degrees-table')
+      ->setTableAttribute('class', 'table table-bordered table-striped table-hover table-sm text-nowrap')
       ->parameters([
         'autoFill' => true,
         'colReorder' => true,
@@ -57,10 +58,14 @@ class DegreesDataTable extends DataTable
         'language' => [
           'url' => '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
         ],
+        'initComplete' => "function () {
+          $('div.dataTables_length select').addClass('form-control');
+          $('div.dataTables_filter input').addClass('form-control');
+      }"
       ])
       ->columns($this->getColumns())
       ->minifiedAjax()
-      ->dom('Bfrtip')
+      ->dom('lBfrtip')
       ->orderBy(1, 'asc')
       ->buttons(
         Button::raw('add')

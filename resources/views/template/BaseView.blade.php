@@ -16,6 +16,8 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+
 
     <!-- App CSS -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">

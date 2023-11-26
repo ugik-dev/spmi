@@ -45,6 +45,16 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="">Prodi</label>
+                                <select class="form-control" id="user-study-programs" name="study_program">
+                                    <option value="">Pilih Prodi</option>
+                                    @foreach ($studyPrograms as $studyProgram)
+                                        <option value="{{ $studyProgram->id }}">{{ ucfirst($studyProgram->code) }} -
+                                            {{ $studyProgram->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             <div class="form-group">
                                 <label for="user-email">Email</label>
@@ -53,7 +63,8 @@
 
                             <div class="form-group d-flex align-items-center">
                                 <input type="password" class="form-control form-control-user" id="user-password"
-                                    placeholder="Password" name="password">
+                                    placeholder="Password (kosongkan jika tidak ingin ubah password)" name="password"
+                                    autocomplete="new-password">
                                 <span toggle="#user-password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                             </div>
                             <div class="form-group">
@@ -95,6 +106,16 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="">Prodi</label>
+                                <select class="form-control" id="user-study-programs" name="study_program">
+                                    <option value="">Pilih Prodi</option>
+                                    @foreach ($studyPrograms as $studyProgram)
+                                        <option value="{{ $studyProgram->id }}">{{ ucfirst($studyProgram->code) }} -
+                                            {{ $studyProgram->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             <div class="form-group">
                                 <label for="new-user-email">Email</label>
@@ -103,7 +124,7 @@
 
                             <div class="form-group d-flex align-items-center">
                                 <input type="password" class="form-control form-control-user" id="new-user-password"
-                                    placeholder="Password" name="password" required>
+                                    placeholder="Password" name="password" required autocomplete="new-password">
                                 <span toggle="#new-user-password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                             </div>
                             <div class="form-group">
@@ -131,8 +152,11 @@
                     $(this).attr('data-toggle', 'modal');
                     $(this).attr('data-target', '#createUserModal');
                     $(this).find('.button-add-icon-placeholder').html('<i class="fa fa-plus"></i>');
-                    $(this).removeClass('btn-secondary').addClass('btn-primary');
+                    $(this).removeClass('dt-button btn-secondary').addClass('btn-primary');
                 });
+                // Add Bootstrap classes to DataTable elements for styling
+                $('.dataTables_length select').addClass('form-control-sm');
+                $('.dataTables_filter input').addClass('form-control-sm');
             });
 
             $(document).ready(function() {

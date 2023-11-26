@@ -28,4 +28,8 @@ class User extends Authenticatable
   {
     return $this->belongsTo(StudyProgram::class);
   }
+  public function getStudyProgramNameAttribute()
+  {
+    return $this->studyProgram ? $this->studyProgram->name : null;
+  }
 }

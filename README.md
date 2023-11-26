@@ -33,3 +33,7 @@ docker run --name spmiv2-phpmyadmin -d --network spmi_app-network -e PMA_HOST=la
 ### Troubleshoot
 
 - Untuk permasalahan seperti class yang tidak ditemukan (not found), bisa running **composer dump-autoload** dan/atau **php artisan cache:clear**
+
+## Referensi
+
+1. [fungsi ambil instance datatable](https://github.com/yajra/laravel-datatables-html/blob/4.0/src/resources/views/script.blade.php)

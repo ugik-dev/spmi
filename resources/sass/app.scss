@@ -1,5 +1,24 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
+// Import Montserrat from Google Fonts
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
+
+// Set Montserrat as the default font
+body, h1, h2, h3, h4, h5, h6, .navbar, .sidebar, button, input, select, textarea {
+  font-family: 'Montserrat', sans-serif;
+}
+
+// Set Montserrat with specific weights
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400; // Regular
+}
+
+strong, .font-bold {
+  font-weight: 700; // Bold
+}
+
+
 
 // Variables
 @import 'variables';

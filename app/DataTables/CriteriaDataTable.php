@@ -2,14 +2,14 @@
 
 namespace App\DataTables;
 
-use App\Faculty;
+use App\Criterion;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class FacultiesDataTable extends DataTable
+class CriteriaDataTable extends DataTable
 {
   /**
    * Build DataTable class.
@@ -19,24 +19,29 @@ class FacultiesDataTable extends DataTable
    */
   public function dataTable($query)
   {
+    $query = Criterion::with('parent')->select('criteria.*');
+
     return datatables()
       ->eloquent($query)
       ->addIndexColumn()
-      ->addColumn('action', function (Faculty $faculty) {
-        return view('partials.action-buttons', ['model' => $faculty])->render();
+      ->addColumn('action', function (Criterion $criterion) {
+        return view('partials.action-buttons', ['model' => $criterion])->render();
       });
   }
+
 
   /**
    * Get query source of dataTable.
    *
-   * @param \App\App\Degree $model
+   * @param \App\Criterion $model
    * @return \Illuminate\Database\Eloquent\Builder
    */
-  public function query(Faculty $model)
+  public function query(Criterion $model)
   {
-    return $model->newQuery();
+    // Load the parent relationship for hierarchical data
+    return $model->newQuery()->with('parent');
   }
+
 
   /**
    * Optional method if you want to use html builder.
@@ -46,22 +51,19 @@ class FacultiesDataTable extends DataTable
   public function html()
   {
     return $this->builder()
-      ->setTableId('faculties-table')
+      ->setTableId('criteria-table')
       ->setTableAttribute('class', 'table table-bordered table-striped table-hover table-sm text-nowrap')
       ->parameters([
         'autoFill' => true,
         'colReorder' => true,
         'responsive' => true,
         'searchPanes' => true,
+        'lengthChange' => true,
         'select' => true,
         'datetime' => true,
         'language' => [
           'url' => '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
         ],
-        'initComplete' => "function () {
-          $('div.dataTables_length select').addClass('form-control');
-          $('div.dataTables_filter input').addClass('form-control');
-      }"
       ])
       ->columns($this->getColumns())
       ->minifiedAjax()
@@ -69,7 +71,7 @@ class FacultiesDataTable extends DataTable
       ->orderBy(1, 'asc')
       ->buttons(
         Button::raw('add')
-          ->text('<span class="button-add-icon-placeholder"></span> Tambah Fakultas')
+          ->text('<span class="button-add-icon-placeholder"></span> Tambah Kriteria')
           ->addClass('button-add'),
         Button::make('export')
           ->buttons([
@@ -101,10 +103,14 @@ class FacultiesDataTable extends DataTable
         ->printable(true)
         ->width(30)
         ->addClass('text-center'),
+      Column::make('code')
+        ->title('Kode'),
       Column::make('name')
         ->title('Nama'),
-      Column::make('abbr')
-        ->title('Singkatan'),
+      Column::make('level')
+        ->title('Level')
+        ->orderable(true)
+        ->searchable(true),
       Column::computed('action')
         ->title('Aksi')
         ->exportable(false)
@@ -121,6 +127,6 @@ class FacultiesDataTable extends DataTable
    */
   protected function filename()
   {
-    return 'Faculties_' . date('YmdHis');
+    return 'Criteria_' . date('YmdHis');
   }
 }
