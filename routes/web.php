@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\StudyProgramController;
+use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\IndikatorController;
+use App\Http\Controllers\ElementController;
 
 Route::redirect('/', '/login');
 
@@ -48,6 +51,30 @@ Route::middleware('auth')->group(function () {
     Route::patch('/edit/{study_program}', [StudyProgramController::class, 'edit'])->middleware('can:edit prodi')->name('edit');
     Route::delete('/hapus/{study_program}', [StudyProgramController::class, 'delete'])->middleware('can:delete prodi')->name('delete');
   });
+
+  Route::prefix('kriteria')->name('kriteria.')->group(function () {
+    Route::get('/', [KriteriaController::class, 'index'])->middleware('can:see kriteria')->name('index');
+    Route::post('/create', [KriteriaController::class, 'create'])->middleware('can:create kriteria')->name('create');
+    Route::patch('/edit', [KriteriaController::class, 'edit'])->middleware('can:edit kriteria')->name('edit');
+    Route::delete('/hapus', [KriteriaController::class, 'delete'])->middleware('can:delete kriteria')->name('delete');
+    Route::get('/search', [KriteriaController::class, 'search'])->middleware('can:see search kriteria')->name('search');
+  });
+
+  Route::prefix('indikator')->name('indikator.')->group(function () {
+    Route::get('/', [IndikatorController::class, 'index'])->middleware('can:see indikator')->name('index');
+    Route::post('/create', [IndikatorController::class, 'create'])->middleware('can:create indikator')->name('create');
+    Route::get('/edit/{indikator}', [IndikatorController::class, 'form_edit'])->middleware('can:edit indikator')->name('edit');
+    Route::put('/put/{indikator}', [IndikatorController::class, 'edit'])->middleware('can:edit indikator')->name('put');
+    Route::delete('/hapus', [IndikatorController::class, 'delete'])->middleware('can:delete indikator')->name('delete');
+    Route::get('/search', [IndikatorController::class, 'search'])->middleware('can:see search indikator')->name('search');
+  });
+
+  Route::prefix('element')->name('element.')->group(function () {
+    Route::get('/', [ElementController::class, 'index'])->middleware('can:see element')->name('index');
+    Route::post('/sync', [ElementController::class, 'sync'])->middleware('can:see sync element')->name('sync');
+  });
+
+  Route::get('search-select-lam', [KriteriaController::class, 'search_select']);
 });
 
 Auth::routes();
