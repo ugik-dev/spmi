@@ -56,7 +56,6 @@ class CriteriaDataTable extends DataTable
       ->parameters([
         'autoFill' => true,
         'colReorder' => true,
-        'responsive' => true,
         'searchPanes' => true,
         'lengthChange' => true,
         'select' => true,
@@ -67,7 +66,7 @@ class CriteriaDataTable extends DataTable
       ])
       ->columns($this->getColumns())
       ->minifiedAjax()
-      ->dom('lBfrtip')
+      ->dom("<'row'<'col-sm-12 col-md-2'l><'col-sm-12 col-md-8'B><'col-sm-12 col-md-2'f>>rtip")
       ->orderBy(1, 'asc')
       ->buttons(
         Button::raw('add')
@@ -104,11 +103,13 @@ class CriteriaDataTable extends DataTable
         ->width(30)
         ->addClass('text-center'),
       Column::make('code')
-        ->title('Kode'),
+        ->title('Kode')
+        ->width(180),
       Column::make('name')
         ->title('Nama'),
       Column::make('level')
         ->title('Level')
+        ->width(80)
         ->orderable(true)
         ->searchable(true),
       Column::computed('action')
