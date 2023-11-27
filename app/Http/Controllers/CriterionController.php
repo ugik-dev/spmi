@@ -15,52 +15,70 @@ class CriterionController extends Controller
    */
   public function index(CriteriaDataTable $dataTable)
   {
-    return $dataTable->render('criteria.index');
+    $levels = Criterion::getMinMaxLevels();
+    return $dataTable->render('criteria.index', compact('levels'));
   }
 
   public function create(Request $request)
   {
-    $validatedData = $this->validateStudyProgram($request);
+    $validatedData = $request->validate([
+      'name' => 'required|max:255',
+      'code' => 'required|max:150',
+      'parent' => 'nullable|exists:criteria,id',
+    ]);
 
-    $studyProgram = new StudyProgram($validatedData);
-    $this->associateEntities($studyProgram, $validatedData);
-    $studyProgram->save();
+    // Create a new Criterion instance
+    $criterion = new Criterion([
+      'name' => $validatedData['name'],
+      'parent_id' => $validatedData['parent'] ?? null,
+    ]);
 
-    return redirect()->route('programs.index')->with('success', 'Program studi berhasil dibuat!');
+    // Check if parent_id is set and valid
+    if (!empty($validatedData['parent'])) {
+      $parent = Criterion::find($validatedData['parent']);
+      if ($parent) {
+        // Concatenate parent code with the new code
+        $criterion->code = $parent->code . '.' . $validatedData['code'];
+      }
+    } else {
+      // If no parent, use the provided code and set level to 1
+      $criterion->code = $validatedData['code'];
+    }
+
+    $criterion->save();
+
+    return redirect()->route('criteria.index')->with('success', 'Kriteria baru berhasil dibuat!');
   }
 
-  public function edit(Request $request, StudyProgram $studyProgram)
+  public function edit(Request $request, Criterion $criterion)
   {
-    $validatedData = $this->validateStudyProgram($request);
+    $validatedData = $request->validate([
+      // Validation rules for editing a criterion
+    ]);
 
-    $studyProgram->fill($validatedData);
-    $this->associateEntities($studyProgram, $validatedData);
-    $studyProgram->save();
+    $criterion->update($validatedData);
 
-    return back()->with('success', 'Program studi berhasil diperbarui!');
+    return back()->with('success', 'Kriteria berhasil diperbarui!');
   }
 
-  public function delete(StudyProgram $studyProgram)
+  public function delete(Criterion $criterion)
   {
-    $studyProgram->delete();
-    return response()->json($studyProgram);
+    $criterion->delete();
+    return response()->json($criterion);
   }
   public function getParentCriteria(Request $request)
   {
-    $level = $request->input('level');
+    $maxLevel = Criterion::getMinMaxLevels()['max_level'] ?? 1;
+
+    $validatedData = $request->validate([
+      'level' => 'required|integer|min:1|max:' . $maxLevel
+    ]);
+
+    $level = $validatedData['level'];
 
     // Fetch parent criteria based on level
     $parentCriteria = Criterion::where('level', $level)->get();
 
-    // Format the data as needed
-    $formattedCriteria = $parentCriteria->map(function ($criterion) {
-      return [
-        'id' => $criterion->id,
-        'code' => $criterion->full_code,
-        'name' => $criterion->name
-      ];
-    });
-
-    return response()->json($formattedCriteria);
+    return response()->json($parentCriteria);
   }
 }
