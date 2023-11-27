@@ -68,8 +68,6 @@ class StudyProgramsDataTable extends DataTable
       ->parameters([
         'autoFill' => true,
         'colReorder' => true,
-        'responsive' => true,
-        'searchPanes' => true,
         'select' => true,
         'datetime' => true,
         'language' => [
