@@ -10,6 +10,7 @@ export function setupEditModal(
   $editModal.on("show.bs.modal", (event) => {
     const $button = $(event.relatedTarget);
     const modelData = $button.data(modelDataAttribute);
+    console.log(modelData);
     const actionUrl = actionUrlPattern.replace(":id", modelData.id);
 
     $form.attr("action", actionUrl);
@@ -65,7 +66,20 @@ export function setupDeleteFunctionality(
       confirmButtonText: "Ya, hapus!",
       cancelButtonText: "Tidak, batalkan!",
       showLoaderOnConfirm: true,
-      preConfirm: () => deleteData(deleteUrl),
+      preConfirm: () => {
+        return deleteData(deleteUrl).catch((error) => {
+          // Handle specific HTTP status codes or default error message
+          let errorMessage = "Terjadi kesalahan saat penghapusan.";
+          if (error.response) {
+            if (error.response.status === 404) {
+              errorMessage = "URL tidak ditemukan.";
+            } else if (error.response.status === 500) {
+              errorMessage = "Kesalahan server internal.";
+            }
+          }
+          Swal.showValidationMessage(errorMessage);
+        });
+      },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       if (result.isConfirmed) {
@@ -76,8 +90,50 @@ export function setupDeleteFunctionality(
   });
 
   function deleteData(url) {
-    return axios.delete(url).catch((error) => {
-      Swal.fire("Kesalahan!", "Terjadi kesalahan saat penghapusan.", "error");
-    });
+    return axios
+      .delete(url)
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        throw error;
+      });
   }
+}
+
+export function setupCriterionEditModal(
+  editModalSelector,
+  formSelector,
+  actionUrlPattern,
+  modelDataAttribute
+) {
+  const $editModal = $(editModalSelector);
+  const $form = $(formSelector);
+
+  $editModal.on("shown.bs.modal", (event) => {
+    const $button = $(event.relatedTarget);
+    const modelData = $button.data(modelDataAttribute);
+    const actionUrl = actionUrlPattern.replace(":id", modelData.id);
+
+    $form.attr("action", actionUrl);
+
+    // Populate form fields
+    $form.find('[name="name"]').val(modelData.name);
+    $form.find('[name="code"]').val(modelData.code);
+    $form.find('[name="level"]').val(modelData.level);
+
+    // For parent_id, you need to handle it separately
+    if (modelData.parent_id) {
+      $(".parent-criterion-group").removeClass("d-none");
+      // Set value and trigger change for Select2
+
+      $form.find('[name="parent"]').val(modelData.parent_id).trigger("change");
+    } else {
+      $(".parent-criterion-group").addClass("d-none");
+      $form.find('[name="parent"]').val("").trigger("change");
+    }
+
+    // Trigger change events for select elements (useful if using Select2)
+    $form.find("select").trigger("change");
+  });
 }
