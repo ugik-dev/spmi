@@ -15,8 +15,7 @@
     <!-- Partial for favicon links -->
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
 
 
@@ -26,9 +25,8 @@
     <!-- FontAwesome -->
     <link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet" type="text/css">
 
-    <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet"
-        type="text/css" />
-
+    <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     @stack('styles')
 </head>
 
