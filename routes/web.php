@@ -53,9 +53,8 @@ Route::middleware('auth')->group(function () {
   Route::prefix('kriteria')->name('criteria.')->group(function () {
     Route::get('/', [CriterionController::class, 'index'])->middleware('can:see criteria')->name('index');
     Route::post('/tambah', [CriterionController::class, 'create'])->middleware('can:create criterion')->name('create');
-
     // Route::patch('/edit/{study_program}', [StudyProgramController::class, 'edit'])->middleware('can:edit prodi')->name('edit');
-    // Route::delete('/hapus/{study_program}', [StudyProgramController::class, 'delete'])->middleware('can:delete prodi')->name('delete');
+    Route::delete('/hapus/{criterion}', [CriterionController::class, 'delete'])->middleware('can:delete criterion')->name('delete');
   });
   Route::get('/get-parent-criteria', [CriterionController::class, 'getParentCriteria'])->name('get-parent-criteria');
 });
