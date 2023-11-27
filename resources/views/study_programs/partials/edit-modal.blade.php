@@ -12,7 +12,6 @@
                 <form id="edit-prodi-form" action="" method="POST">
                     @csrf
                     @method('PATCH')
-                    <input type="hidden" id="edit-prodi-id" name="id">
                     <div class="form-group">
                         <label for="edit-prodi-name">Nama Prodi</label>
                         <input type="text" id="edit-prodi-name" name="name" class="form-control" required>
