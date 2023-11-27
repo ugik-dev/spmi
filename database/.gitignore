@@ -1,3 +1,9 @@
 *.sqlite
 *.sqlite-journal
 *.sql
+!elements.sql
+!faculties.sql
+!indikators.sql
+!institutions_degrees.sql
+!kriteria.sql
+!study_programs.sql
