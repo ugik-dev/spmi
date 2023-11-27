@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
 
   Route::get('/get-parent-criteria', [CriterionController::class, 'getParentCriteria'])->name('get-parent-criteria');
 
-  Route::prefix('kriteria')->name('kriteria.')->group(function () {
+  Route::prefix('kriterias')->name('kriteria.')->group(function () {
     Route::get('/', [KriteriaController::class, 'index'])->middleware('can:see kriteria')->name('index');
     Route::post('/create', [KriteriaController::class, 'create'])->middleware('can:create kriteria')->name('create');
     Route::patch('/edit', [KriteriaController::class, 'edit'])->middleware('can:edit kriteria')->name('edit');
