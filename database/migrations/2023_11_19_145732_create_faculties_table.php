@@ -20,7 +20,6 @@ class CreateFacultiesTable extends Migration
             $table->json('vision')->nullable();
             $table->text('mission')->nullable();
             $table->text('description')->nullable();
-            $table->text('image')->nullable();
             $table->timestamps();
         });
     }

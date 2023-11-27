@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use StepOneSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,9 +16,7 @@ class DatabaseSeeder extends Seeder
     $this->call([
       RoleSeeder::class,
       UserSeeder::class,
-      PermissionSeeder::class,
-      PeriodeSeeders::class,
-      LoadSqlFileSeeder::class
+      PermissionSeeder::class
     ]);
   }
 }
