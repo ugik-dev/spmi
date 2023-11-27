@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
 
 class Criterion extends Model
 {
@@ -29,6 +31,23 @@ class Criterion extends Model
         $criterion->level = 1;
       }
     });
+  }
+
+  /**
+   * Get the minimum and maximum levels of all criteria.
+   *
+   * @return array
+   */
+  public static function getMinMaxLevels()
+  {
+    $result = DB::table('criteria')
+      ->selectRaw('MIN(level) as min_level, MAX(level) as max_level')
+      ->first();
+
+    return [
+      'min_level' => $result->min_level,
+      'max_level' => $result->max_level,
+    ];
   }
 
   /**
