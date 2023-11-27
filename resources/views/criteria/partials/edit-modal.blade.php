@@ -1,63 +1,61 @@
-<!-- Edit Study Program Modal -->
+<!-- Create Criterion Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Program Studi (Prodi)</h5>
+                <h5 class="modal-title" id="editModalLabel">Tambah Kriteria Baru</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="edit-prodi-form" action="" method="POST">
-                    @csrf
+                <form id="edit-criterion-form" action="{{ route('criteria.create') }}" method="POST">
                     @method('PATCH')
-                    <input type="hidden" id="edit-prodi-id" name="id">
+                    @csrf
                     <div class="form-group">
-                        <label for="edit-prodi-name">Nama Prodi</label>
-                        <input type="text" id="edit-prodi-name" name="name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-prodi-code">Kode</label>
-                        <input type="text" id="edit-prodi-code" name="code" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="">Jenjang</label>
-                        <select class="form-control" id="studyProgram-degree" name="degree">
-                            <option value="">Pilih Jenjang</option>
-                            @foreach ($degrees as $degree)
-                                <option value="{{ $degree->id }}">{{ ucfirst($degree->name) }}</option>
-                            @endforeach
+                        <label for="criterion-level">Level Kriteria</label>
+                        <select class="form-control" id="criterion-level" name="level">
+                            <option value="">Pilih Level</option>
+                            @if ($levels['min_level'] == null && $levels['max_level'] == null)
+                                <!-- No data in criteria table, show only Level 1 -->
+                                <option value="1">Level 1</option>
+                            @else
+                                <!-- Generate options based on min and max levels -->
+                                @for ($i = $levels['min_level']; $i <= $levels['max_level']; $i++)
+                                    <option value="{{ $i }}">Level {{ $i }}</option>
+                                @endfor
+                            @endif
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="">Fakultas</label>
-                        <select class="form-control" id="studyProgram-faculty" name="faculty">
-                            <option value="">Pilih Fakultas</option>
-                            @foreach ($faculties as $faculty)
-                                <option value="{{ $faculty->id }}">{{ ucfirst($faculty->name) }}</option>
-                            @endforeach
+                    <div class="form-group d-none parent-criterion-group">
+                        <label for="criterion-parent">Kriteria Induk</label>
+                        <select id="edit-criterion-parent" class="form-control edit-criterion-parent" name="parent">
+                            <option value="">Pilih Kriteria Induk</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-prodi-vision">Visi</label>
-                        <div id="edit-vision-container">
-                            <!-- Vision inputs will be populated here -->
+                    <!-- Row for inline fields -->
+                    <div class="form-row">
+                        <!-- Kode Kriteria Induk -->
+                        <div class="form-group col-md-2 d-none">
+                            <label for="parent-criterion-code">Kode Kriteria Induk</label>
+                            <input type="text" id="parent-criterion-code" name="parent_code" class="form-control"
+                                disabled readonly>
                         </div>
-                        <button type="button" class="btn btn-outline-primary" id="add-edit-vision">Tambahkan
-                            Visi</button>
+                        <!-- Kode Kriteria -->
+                        <div class="form-group col-md-2">
+                            <label for="criterion-code">Kode Kriteria</label>
+                            <input type="text" id="criterion-code" name="code" class="form-control">
+                        </div>
 
+                        <!-- Nama Kriteria -->
+                        <div class="form-group col-md-8">
+                            <label for="criterion-name">Nama Kriteria</label>
+                            <input type="text" id="criterion-name" name="name" class="form-control" required>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="edit-prodi-mission">Misi</label>
-                        <textarea id="edit-prodi-mission" name="mission" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-prodi-description">Deskripsi</label>
-                        <textarea id="edit-prodi-description" name="description" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-warning" type="submit">Update</button>
+                        <button class="btn btn-primary" type="submit">Simpan</button>
                     </div>
                 </form>
             </div>
