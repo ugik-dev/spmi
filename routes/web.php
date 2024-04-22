@@ -135,6 +135,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('rekap-kegiatan-dan-upload-data-dukung/update-status', [ActivityRecapController::class, 'updateStatus'])->name('activity_recap.update_status');
         Route::get('rencana-penarikan-dana', [WithdrawalPlanController::class, 'index'])->name('withdrawal_plan.index');
         Route::post('rencana-penarikan-dana', [WithdrawalPlanController::class, 'store'])->name('withdrawal_plan.store');
+        Route::post('rencana-penarikan-dana-update', [WithdrawalPlanController::class, 'update'])->name('withdrawal_plan.update');
     });
     Route::prefix('pembayaran')->group(function () {
         Route::get('ruh-pembayaran', [RuhPaymentController::class, 'index'])->name('ruh_payment.index');

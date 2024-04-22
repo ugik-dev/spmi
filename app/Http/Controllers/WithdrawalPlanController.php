@@ -88,7 +88,30 @@ class WithdrawalPlanController extends Controller
      */
     public function update(Request $request, WithdrawalPlan $withdrawalPlan)
     {
-        //
+        $validatedData = $request->validate([
+            'activityId' => 'required|integer|exists:activities,id',
+            'withdrawalPlans' => 'required|array',
+            'withdrawalPlans.*.month' => 'required|integer|min:1|max:12',
+            'withdrawalPlans.*.amount_withdrawn' => 'required|numeric|min:0',
+            'year' => 'required|integer|digits:4',
+        ]);
+
+        foreach ($validatedData['withdrawalPlans'] as $planData) {
+            $monthEnum = Month::from($planData['month']);
+
+            WithdrawalPlan::updateOrCreate(
+                [
+                    'activity_id' => $validatedData['activityId'],
+                    'month' => $monthEnum,
+                    'year' => $validatedData['year'] ?? date('Y'),
+                ],
+                [
+                    'amount_withdrawn' => $planData['amount_withdrawn'],
+                ]
+            );
+        }
+
+        return response()->json(['message' => 'Data penarikan dana berhasil disimpan']);
     }
 
     /**

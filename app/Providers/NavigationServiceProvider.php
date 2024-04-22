@@ -43,7 +43,7 @@ class NavigationServiceProvider extends ServiceProvider
                             url('#'),
                             fn (Section $section) => $section
                                 ->add('Sasaran Program', route('program_target.index'))
-                                ->add('Misi', route('performance_indicator.index'))
+                                ->add('Indikator Kinerja', route('performance_indicator.index'))
                                 ->attributes(['permission' => 'view perencanaan'])
                         )
                         ->attributes(['permission' => 'view perencanaan'])

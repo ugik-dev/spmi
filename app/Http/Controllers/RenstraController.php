@@ -67,7 +67,7 @@ class RenstraController extends Controller
     public function storeIku(Request $request)
     {
         $validatedData = $request->validate([
-            'iku.*' => 'required|string|max:255', // Validate each iku input
+            'iku.*' => 'required|string', // Validate each iku input
             'misi' => 'required|integer', // Validate each iku input
         ]);
         foreach ($validatedData['iku'] as $data)

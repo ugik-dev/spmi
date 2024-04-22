@@ -93,7 +93,7 @@
                                         <td>{{ $iku->mission->description }}</td>
                                         <td class="text-center">
                                             <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete({{ $iku->id }});">
+                                                onclick="confirmDelete2({{ $iku->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
                                             </a>
                                         </td>
@@ -187,7 +187,7 @@
                 feather.replace();
             })
 
-            function confirmDelete(index) {
+            function confirmDelete2(index) {
                 Swal.fire({
                     title: 'Anda yakin ingin hapus?',
                     text: "Data tidak dapat dikembalikan!",

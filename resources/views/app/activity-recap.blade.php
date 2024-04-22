@@ -180,17 +180,19 @@
                                     <td>
                                         @if ($activity->activityRecap && $activity->activityRecap?->attachment_path)
                                             @php
-                                                $filePath = Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->path($activity->activityRecap?->attachment_path);
-                                                $fileMimeType = mime_content_type($filePath);
+                                                // $filePath = Storage::disk(
+                                                //     App\Supports\Disk::ActivityRecapAttachment,
+                                                // )->path($activity->activityRecap?->attachment_path);
+                                                // $fileMimeType = mime_content_type($filePath);
                                             @endphp
                                             <div
                                                 class="d-flex flex-column flex-sm-row align-items-center justify-content-center">
                                                 {{-- "View File" Link/Button --}}
-                                                <button type="button"
+                                                {{-- <button type="button"
                                                     class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
                                                     onclick="handleViewFile('{{ route('activity-recap.show-file', $activity->activityRecap) }}', '{{ $fileMimeType }}');">
                                                     <i class="feather icon-eye"></i> Lihat File
-                                                </button>
+                                                </button> --}}
 
                                                 {{-- "Change File" Button --}}
                                                 <button type="button" class="btn btn-secondary btn-sm ms-2"

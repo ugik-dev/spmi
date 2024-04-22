@@ -124,7 +124,7 @@
 
 
                     <!-- Month Filter Section -->
-                    <div class="month-filter-wrapper mb-3">
+                    <div class="month-filter-wrapper mb-3" hidden>
                         <label class="form-label">Pilih Bulan di Tampilkan:</label>
                         <div class="row month-checkboxes">
                             @foreach ($months as $index => $month)
@@ -231,7 +231,8 @@
                 try {
                     let activityId = document.getElementById('currentActivityId').value;
                     let year = document.querySelector('select[name="select_year"]').value;
-                    const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana', {
+                    const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana-update', {
+                        // const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana', {
                         "activityId": activityId,
                         "withdrawalPlans": withdrawalPlans,
                         "year": year
