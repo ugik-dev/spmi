@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\BudgetImplementation;
 use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
+use App\Models\DipaLog;
 use App\Models\ExpenditureUnit;
 use App\Models\PerformanceIndicator;
 use App\Models\UnitBudget;
@@ -51,8 +52,10 @@ class BudgetImplementationController extends Controller
 
     public function ajukan(Dipa $dipa)
     {
-        $dipa->status = 'on-verification';
+        $dipa->status = 'wait-kp';
         $dipa->save();
+
+        DipaLog::create(['dipa_id' => $dipa->id, 'user_id' => Auth::user()->id, 'description' => "Mengajukan permohonan approval"]);
         return response()->json(['message' => 'Success']);
     }
     public function dipa(Dipa $dipa)
@@ -60,7 +63,8 @@ class BudgetImplementationController extends Controller
         $dipa->bi;
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         $title = 'Daftar DIPA';
-        $unitBudget = UnitBudget::find(Auth::user()->employee->work_unit_id ?? false);
+        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();
+        // dd($unitBudget);
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
         $accountCodes = AccountCode::all();
         $indikatorPerkin = PerformanceIndicator::all();

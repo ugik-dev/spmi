@@ -7,6 +7,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetItemController;
 use App\Http\Controllers\BudgetImplementationController;
 use App\Http\Controllers\DetailedFAReportController;
+use App\Http\Controllers\DipaController;
 use App\Http\Controllers\ExpenditureUnitController;
 use App\Http\Controllers\InstitutionalBudgetController;
 use App\Http\Controllers\MyProfileController;
@@ -124,6 +125,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('adm-penerimaan/kode-akun/{accountCodeReception}/hapus', [AccountCodeReceptionController::class, 'destroy'])->name('account_code_reception.delete');
     });
     Route::prefix('penganggaran')->group(function () {
+        Route::get('dipa/approval', [DipaController::class, 'approval'])->name('dipa.approval');
         Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
         Route::get('dipa', [BudgetImplementationController::class, 'index'])->name('budget_implementation.index');
         Route::get('dipa/{dipa}', [BudgetImplementationController::class, 'dipa'])->name('budget_implementation.dipa');
