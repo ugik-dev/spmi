@@ -15,9 +15,4 @@ class WorkUnit extends Model
     {
         return $this->hasMany(UnitBudget::class);
     }
-
-    public function unitBudgets()
-    {
-        return $this->hasMany(UnitBudget::class);
-    }
 }
