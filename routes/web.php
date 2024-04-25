@@ -126,6 +126,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/approval', [DipaController::class, 'approval'])->name('dipa.approval');
+        Route::post('dipa/approval/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
+
+
         Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
         Route::get('dipa', [BudgetImplementationController::class, 'index'])->name('budget_implementation.index');
         Route::get('dipa/{dipa}', [BudgetImplementationController::class, 'dipa'])->name('budget_implementation.dipa');

@@ -112,7 +112,7 @@ class BudgetImplementationController extends Controller
         }
 
         try {
-            $dipa_id = Dipa::create(['year' => date('Y'), 'work_unit_id' => Auth::user()->employee->work_unit_id])->id;
+            $dipa_id = Dipa::create(['year' => date('Y'), 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             $data = $validator->validated()['dipa'];
             // dd($data);
             foreach ($data as $key_ac => $activity) {

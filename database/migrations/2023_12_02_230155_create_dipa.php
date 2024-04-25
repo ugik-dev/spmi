@@ -24,6 +24,23 @@ return new class extends Migration
                 'wait-perencanaan', 'reject-perencanaan',
                 'accept', 'reject'
             ])->default('draft');
+            $table->foreignIdFor(User::class)
+                ->nullable()
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->unsignedBigInteger('spi_id')->nullable();
+            $table->foreign('spi_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->unsignedBigInteger('ppk_id')->nullable();
+            $table->foreign('ppk_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->integer('revision')->default(0);
             $table->timestamps();
         });

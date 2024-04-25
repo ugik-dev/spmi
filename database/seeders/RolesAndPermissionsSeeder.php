@@ -51,6 +51,16 @@ class RolesAndPermissionsSeeder extends Seeder
                 'input penganggaran',
                 'edit penganggaran',
             ],
+            'KEPALA UNIT KERJA' => [
+                'view sbmsbi',
+                'view pelaporan',
+                'view pembayaran',
+                'input pembayaran',
+                'edit pembayaran',
+                'view penganggaran',
+                'input penganggaran',
+                'approval penganggaran',
+            ],
             'KPA (REKTOR)' => [
                 'view pelaporan',
                 'view perencanaan',
