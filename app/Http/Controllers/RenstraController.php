@@ -82,4 +82,20 @@ class RenstraController extends Controller
         RenstraIndicator::find($request->id)->delete();
         return response()->json(['success' => 'Berhasil menghapus indikator.']);
     }
+
+    public function getRenstraIku(Request $request)
+    {
+        $search = $request->input('search', '');
+        $limit = $request->input('limit', 10); // Default to 10 if not provided
+
+        $query = RenstraIndicator::query();
+
+        if (!empty($search)) {
+            $query->where('description', 'LIKE', "%{$search}%");
+        }
+
+        $programTargets = $query->limit($limit)->get(['id', 'description']);
+
+        return response()->json($programTargets);
+    }
 }

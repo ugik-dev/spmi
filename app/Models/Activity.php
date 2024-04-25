@@ -9,7 +9,7 @@ class Activity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'name'];
+    protected $fillable = ['code', 'name', 'performance_indicator_id', 'work_unit_id', 'dipa_id'];
 
     public function budgetImplementations()
     {
@@ -42,7 +42,7 @@ class Activity extends Model
     {
         $totalSum = $this->calculateTotalSum();
 
-        return 'Rp '.number_format($totalSum, 0, ',', '.');
+        return 'Rp ' . number_format($totalSum, 0, ',', '.');
     }
 
     public function activityRecap()

@@ -34,12 +34,13 @@ class BudgetImplementationInputArrayService
         }
     }
 
+
+
     private function handleExistingBudgetImplementation($biId, $accounts)
     {
         $oldBudgetImplementation = BudgetImplementation::find($biId);
         if (!$oldBudgetImplementation) {
             Log::error("Budget implementation not found with ID: $biId");
-
             return;
         }
 
@@ -80,7 +81,7 @@ class BudgetImplementationInputArrayService
     {
         return Activity::updateOrCreate(
             ['code' => $activityData['code']],
-            ['name' => $activityData['name']]
+            ['name' => $activityData['name'], 'performance_indicator_id' => $activityData['performance_indicator_id']]
         );
     }
 

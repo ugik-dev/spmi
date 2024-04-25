@@ -12,8 +12,7 @@ class ProgramTargetController extends Controller
      */
     public function index()
     {
-        $programTargets = ProgramTarget::all();
-
+        $programTargets = ProgramTarget::with('iku')->get();
         return view('app.program-target', ['title' => 'Sasaran Program', 'programTargets' => $programTargets]);
     }
 
@@ -37,7 +36,10 @@ class ProgramTargetController extends Controller
 
         // Loop through the program targets and save each one
         foreach ($request->program_target as $target) {
-            ProgramTarget::create(['name' => $target]);
+            ProgramTarget::create([
+                'renstra_indicator_id' => $request->iku_id,
+                'name' => $target,
+            ]);
         }
 
         // Redirect to a specific route with a success message
@@ -67,7 +69,7 @@ class ProgramTargetController extends Controller
     {
         $request->validate(['name' => 'required|string|max:255']);
 
-        $programTarget->update(['name' => $request->name]);
+        $programTarget->update(['name' => $request->name, 'renstra_indicator_id' => $request->iku_id]);
 
         return redirect()->route('program_target.index')->with('success', 'Sasaran Program berhasil diupdate.');
     }
@@ -91,7 +93,7 @@ class ProgramTargetController extends Controller
 
         $query = ProgramTarget::query();
 
-        if (! empty($search)) {
+        if (!empty($search)) {
             $query->where('name', 'LIKE', "%{$search}%");
         }
 

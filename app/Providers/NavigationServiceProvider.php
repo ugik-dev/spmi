@@ -52,7 +52,7 @@ class NavigationServiceProvider extends ServiceProvider
                     'Penganggaran',
                     url('#'),
                     fn (Section $section) => $section
-                        ->add('Usulan Dipa', route('budget_implementation.index'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
+                        ->add('Buat Usulan Dipa', route('budget_implementation.index'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
                         ->add('Revisi Dipa', url('#'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
                         ->add('Rencana Penarikan Dana', route('withdrawal_plan.index'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
                         ->add('Rekap Kegiatan dan Upload Data Dukung', route('activity_recap.index'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))

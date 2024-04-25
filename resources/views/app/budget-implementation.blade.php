@@ -6,7 +6,6 @@
 
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <x-slot:headerFiles>
-        <!--  BEGIN CUSTOM STYLE FILE  -->
         <link rel="stylesheet" href="{{ asset('plugins/sweetalerts2/sweetalerts2.css') }}">
         @vite(['resources/scss/light/plugins/sweetalerts2/custom-sweetalert.scss'])
         @vite(['resources/scss/dark/plugins/sweetalerts2/custom-sweetalert.scss'])
@@ -15,6 +14,9 @@
         <link rel="stylesheet" href="{{ asset('plugins/animate/animate.css') }}">
         @vite(['resources/scss/light/assets/elements/alert.scss'])
         @vite(['resources/scss/dark/assets/elements/alert.scss'])
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
         <style>
             #add-account_code_btn,
             #add-expenditure_detail_btn {
@@ -66,7 +68,8 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table :totalSum="$totalSum" :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table :totalSum="$totalSum" :unitBudget="$unitBudget" :dipa="$dipa"
+                    :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>
@@ -81,6 +84,8 @@
                 </div>
                 <div class="modal-body">
                     <form id="form-create">
+                        <div id="create-input_sigle_container" class="">
+                        </div>
                         <div id="create-input_container" class="input-group my-2">
                         </div>
                         <button class="btn btn-primary text-center align-items-center mt-1 mt-2 py-auto" type="submit">
@@ -98,194 +103,234 @@
     <x-slot:footerFiles>
         <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
         <script src="{{ asset('plugins/sweetalerts2/sweetalerts2.min.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
             const accountCodes = @json($accountCodes);
+            const indikatorPerkin = @json($indikatorPerkin);
             const expenditureUnits = @json($expenditureUnits);
             document.addEventListener('DOMContentLoaded', function() {
                 const theadTh = document.querySelectorAll('thead tr th');
                 theadTh.forEach(th => th.classList.add('bg-primary'));
                 const tdMoney = document.querySelectorAll(
                     'tr.expenditure-row td:nth-child(5),tr.expenditure-row td:nth-child(6)')
-
                 const tableBody = document.querySelector('tbody');
-                const form = document.getElementById('form-create');
-                const table = document.getElementById('budget_implementation-table');
-                const createModalEl = document.getElementById('createModal');
-                const saveDipaBtn = document.getElementById('save-dipa');
-                const editDipaBtn = document.getElementById('edit-dipa');
-                const deleteDipaBtn = document.getElementById('delete-dipa');
-                const editModalEl = document.getElementById('editModal');
-                const editModal = bootstrap.Modal.getOrCreateInstance(editModalEl)
+                @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
+                    const form = document.getElementById('form-create');
+                    const table = document.getElementById('budget_implementation-table');
+                    const createModalEl = document.getElementById('createModal');
+                    const saveDipaBtn = document.getElementById('save-dipa');
+                    const sendDipaBtn = document.getElementById('send-dipa');
+                    const editDipaBtn = document.getElementById('edit-dipa');
+                    const deleteDipaBtn = document.getElementById('delete-dipa');
+                    const editModalEl = document.getElementById('editModal');
+                    const editModal = bootstrap.Modal.getOrCreateInstance(editModalEl)
+                    editDipaBtn.addEventListener('click', event => {
+                        const trSelected = document.querySelector('tr.selected');
 
-                editDipaBtn.addEventListener('click', event => {
-                    const trSelected = document.querySelector('tr.selected');
+                        if (!trSelected) {
+                            Swal.fire({
+                                title: 'Pilih dipa!',
+                                text: 'Silahkan pilih dipa untuk di edit terlebih dahulu.',
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            editModal.show();
+                        }
+                    });
+                    deleteDipaBtn.addEventListener('click', event => {
+                        const trSelected = document.querySelector('tr.selected');
+                        if (!trSelected) {
+                            Swal.fire({
+                                title: 'Pilih dipa!',
+                                text: 'Silahkan pilih dipa untuk di edit terlebih dahulu.',
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            if (trSelected.classList.contains('activity-row')) return confirmDeleteDipa(
+                                'activity',
+                                trSelected.dataset.bi, trSelected.children[1].textContent);
+                            if (trSelected.classList.contains('account-row')) return confirmDeleteDipa(
+                                'account',
+                                trSelected.dataset.bi, trSelected.children[1].textContent);
+                            if (trSelected.classList.contains('expenditure-row')) return confirmDeleteDipa(
+                                'detail',
+                                trSelected.dataset.expenditure, trSelected.children[2].textContent);
+                            return;
+                        }
+                    });
 
-                    if (!trSelected) {
-                        Swal.fire({
-                            title: 'Pilih dipa!',
-                            text: 'Silahkan pilih dipa untuk di edit terlebih dahulu.',
-                            icon: 'warning',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        editModal.show();
-                    }
-                });
+                    editModalEl.addEventListener('show.bs.modal', function(event) {
+                        const trSelected = document.querySelector('tr.selected');
+                        const editInputContainer = document.getElementById('edit-input_container');
+                        const editInputContainer2 = document.getElementById('edit-input_sigle_container');
 
-                deleteDipaBtn.addEventListener('click', event => {
-                    const trSelected = document.querySelector('tr.selected');
-                    if (!trSelected) {
-                        Swal.fire({
-                            title: 'Pilih dipa!',
-                            text: 'Silahkan pilih dipa untuk di edit terlebih dahulu.',
-                            icon: 'warning',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        if (trSelected.classList.contains('activity-row')) return confirmDelete('activity',
-                            trSelected.dataset.bi, trSelected.children[0].textContent);
-                        if (trSelected.classList.contains('account-row')) return confirmDelete('account',
-                            trSelected.dataset.bi, trSelected.children[0].textContent);
-                        if (trSelected.classList.contains('expenditure-row')) return confirmDelete('detail',
-                            trSelected.dataset.expenditure, trSelected.children[1].textContent);
-                        return;
-                    }
-                });
+                        if (trSelected.classList.contains('activity-row')) {
+                            editModalTitle.textContent = "Input Sub Komponen";
 
-                editModalEl.addEventListener('show.bs.modal', function(event) {
-                    const trSelected = document.querySelector('tr.selected');
-                    const editInputContainer = document.getElementById('edit-input_container');
+                            editInputContainer.innerHTML =
+                                `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="activity"><input type="text" name="code" value="${trSelected.children[1].textContent}" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" value="${trSelected.children[2].textContent}" required name="name" class="form-control" placeholder="Uraian">`
 
-                    if (trSelected.classList.contains('activity-row')) {
-                        editModalTitle.textContent = "Input Sub Komponen";
-                        editInputContainer.innerHTML =
-                            `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="activity"><input type="text" name="code" value="${trSelected.children[0].textContent}" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" value="${trSelected.children[1].textContent}" required name="name" class="form-control" placeholder="Uraian">`
-                    } else if (trSelected.classList.contains('account-row')) {
-                        editModalTitle.textContent = "Input Kode Akun";
+                            let options = indikatorPerkin.map(code =>
 
-                        let options = accountCodes.map(code =>
-                            `<option value="${code.code}" data-account-name="${code.name}">${code.code}</option>`
-                        ).join('');
+                                `<option ${trSelected.children[0].textContent == code.id ? 'selected':''} value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
+                            ).join('');
+                            editInputContainer2.innerHTML =
+                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
 
-                        editInputContainer.innerHTML =
-                            `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="account"><select name="code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="name" class="form-control" placeholder="Uraian">`;
 
-                        // Set the value of the select element
-                        const accountCodeSelect = document.getElementById('account-code-select');
-                        accountCodeSelect.value = trSelected.children[0].textContent;
+                        } else if (trSelected.classList.contains('account-row')) {
+                            editModalTitle.textContent = "Input Kode Akun";
+                            editInputContainer2.innerHTML = '';
+                            let options = accountCodes.map(code =>
+                                `<option value="${code.code}" data-account-name="${code.name}">${code.code}</option>`
+                            ).join('');
 
-                        // Add event listener for change event
-                        accountCodeSelect.addEventListener('change', function() {
-                            const selectedOption = this.options[this.selectedIndex];
-                            const accountName = selectedOption.getAttribute('data-account-name');
-                            document.getElementById('account-name-input').value = accountName || '';
-                        });
+                            editInputContainer.innerHTML =
+                                `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="account"><select name="code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="name" class="form-control" placeholder="Uraian">`;
 
-                        // Manually trigger the change event
-                        accountCodeSelect.dispatchEvent(new Event('change'));
-                    } else {
-                        editModalTitle.textContent = "Input Detail";
+                            // Set the value of the select element
+                            const accountCodeSelect = document.getElementById('account-code-select');
+                            accountCodeSelect.value = trSelected.children[1].textContent;
 
-                        let options = expenditureUnits.map(unit =>
-                            `<option value="${unit.code}">${unit.code}</option>`
-                        ).join('');
+                            // Add event listener for change event
+                            accountCodeSelect.addEventListener('change', function() {
+                                const selectedOption = this.options[this.selectedIndex];
+                                const accountName = selectedOption.getAttribute('data-account-name');
+                                document.getElementById('account-name-input').value = accountName || '';
+                            });
 
-                        editInputContainer.innerHTML =
-                            `<input type="hidden" name="id" value="${trSelected.dataset.expenditure}"><input type="hidden" name="type" value="detail"><input type="text" required name="name" value="${trSelected.children[1].textContent}" class="form-control" placeholder="Uraian Detail">
-                            <input type="text" required name="volume" value="${trSelected.children[2].textContent}" class="form-control" style="max-width: 100px !important;" placeholder="Volume">
+                            // Manually trigger the change event
+                            accountCodeSelect.dispatchEvent(new Event('change'));
+                        } else {
+                            editInputContainer2.innerHTML = '';
+
+                            editModalTitle.textContent = "Input Detail";
+
+                            let options = expenditureUnits.map(unit =>
+                                `<option value="${unit.code}">${unit.code}</option>`
+                            ).join('');
+
+                            editInputContainer.innerHTML =
+                                `<input type="hidden" name="id" value="${trSelected.dataset.expenditure}"><input type="hidden" name="type" value="detail"><input type="text" required name="name" value="${trSelected.children[2].textContent}" class="form-control" placeholder="Uraian Detail">
+                            <input type="text" required name="volume" value="${trSelected.children[3].textContent}" class="form-control" style="max-width: 100px !important;" placeholder="Volume">
                             <select name="unit" required class="form-control" style="max-width: 150px !important;">${options}</select>
-                            <input type="text" name="unit_price" value="${trSelected.children[4].textContent}" required class="form-control" placeholder="Harga Satuan">
-                            <input type="text" name="total" value="${trSelected.children[5].textContent}" required class="form-control" placeholder="Total">`;
+                            <input type="text" name="unit_price" value="${trSelected.children[5].textContent}" required class="form-control" placeholder="Harga Satuan">
+                            <input type="text" readonly name="total" value="${trSelected.children[6].textContent}" required class="form-control" placeholder="Total">`;
 
-                        // Set the correct unit in the dropdown
-                        const unitSelect = editInputContainer.querySelector('select[name="unit"]');
-                        unitSelect.value = trSelected.children[3].textContent;
+                            // Set the correct unit in the dropdown
+                            const unitSelect = editInputContainer.querySelector('select[name="unit"]');
+                            unitSelect.value = trSelected.children[4].textContent;
 
-                        // Now add the event listeners
-                        const volumeInput = editInputContainer.querySelector(
-                            'input[name="volume"]');
-                        const priceInput = editInputContainer.querySelector('input[name="unit_price"]');
-                        const totalInput = editInputContainer.querySelector('input[name="total"]');
+                            // Now add the event listeners
+                            const volumeInput = editInputContainer.querySelector(
+                                'input[name="volume"]');
+                            const priceInput = editInputContainer.querySelector('input[name="unit_price"]');
+                            const totalInput = editInputContainer.querySelector('input[name="total"]');
 
-                        volumeInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
-                            priceInput, totalInput));
-                        priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
-                            priceInput, totalInput));
-                        volumeInput.addEventListener('keypress', window.enforceNumericInput);
-                    }
-                });
+                            volumeInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
+                                priceInput, totalInput));
+                            priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
+                                priceInput, totalInput));
+                            volumeInput.addEventListener('keypress', window.enforceNumericInput);
+                        }
+                    });
 
-                createModalEl.addEventListener('show.bs.modal', event => {
-                    const btnShowModalId = event.relatedTarget.id;
-                    const createModalTitle = document.getElementById('createModalTitle');
+                    createModalEl.addEventListener('show.bs.modal', event => {
+                        const btnShowModalId = event.relatedTarget.id;
+                        const createModalTitle = document.getElementById('createModalTitle');
 
-                    const modalTitles = {
-                        'add-activity_btn': 'Input Sub Komponen',
-                        'add-account_code_btn': 'Input Kode Akun',
-                        default: 'Input Detail'
-                    };
+                        const modalTitles = {
+                            'add-activity_btn': 'Input Sub Komponen',
+                            'add-account_code_btn': 'Input Kode Akun',
+                            default: 'Input Detail'
+                        };
 
-                    createModalTitle.textContent = modalTitles[event.relatedTarget.id] || modalTitles.default;
+                        createModalTitle.textContent = modalTitles[event.relatedTarget.id] || modalTitles
+                            .default;
 
-                    const createInputContainer = document.getElementById('create-input_container');
-                    if (btnShowModalId === 'add-activity_btn') return createInputContainer.innerHTML =
-                        `<input type="text" name="activity_code" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" required name="activity_name" class="form-control" placeholder="Uraian">`;
-                    if (btnShowModalId === 'add-account_code_btn') {
-                        let options = accountCodes.map(code =>
-                            `<option value="${code.code}" data-account-name="${code.name}">${code.code}</option>`
-                        ).join('');
-                        createInputContainer.innerHTML =
-                            `<select name="account_code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="account_name" class="form-control" placeholder="Uraian">`;
+                        const createInputContainer = document.getElementById('create-input_container');
+                        const createInputContainer2 = document.getElementById('create-input_sigle_container');
 
-                        // Add event listener for change event
-                        document.getElementById('account-code-select').addEventListener('change', function() {
-                            const selectedOption = this.options[this.selectedIndex];
-                            const accountName = selectedOption.getAttribute('data-account-name');
-                            document.getElementById('account-name-input').value = accountName || '';
-                        });
-                    }
-                    if (btnShowModalId === 'add-expenditure_detail_btn') {
-                        let options = expenditureUnits.map(unit =>
-                            `<option value="${unit.code}">${unit.code}</option>`
-                        ).join('');
-                        createInputContainer.innerHTML =
-                            `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input disabled type="text" name="total" required class="form-control" placeholder="total">`;
-
-                        // Now add the event listeners
-                        const volumeInput = createInputContainer.querySelector(
-                            'input[name="expenditure_volume"]');
-                        const priceInput = createInputContainer.querySelector('input[name="unit_price"]');
-                        const totalInput = createInputContainer.querySelector('input[name="total"]');
-                        if (volumeInput && priceInput && totalInput) {
-                            volumeInput.addEventListener('input', function() {
-                                const isVolumeFilled = volumeInput.value.trim() !== '';
-                                priceInput.disabled = !isVolumeFilled;
-                                totalInput.disabled = !isVolumeFilled;
-
-                                if (!isVolumeFilled) {
-                                    // Clear values when volume is not filled
-                                    priceInput.value = '';
-                                    totalInput.value = '';
-                                }
+                        if (btnShowModalId === 'add-activity_btn') {
+                            createInputContainer.innerHTML =
+                                `<input type="text" name="activity_code" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" required name="activity_name" class="form-control" placeholder="Uraian">`;
+                            let options = indikatorPerkin.map(code =>
+                                `<option value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
+                            ).join('');
+                            createInputContainer2.innerHTML =
+                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
+                            $('#performance_indicator_id').select2({
+                                dropdownParent: $('#createModal'),
+                                placeholder: 'Pilih IKU',
+                                theme: 'bootstrap-5'
                             });
                         }
-                        volumeInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
-                            priceInput, totalInput));
-                        priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
-                            priceInput, totalInput));
-                        volumeInput.addEventListener('keypress', window.enforceNumericInput);
-                    }
+                        if (btnShowModalId === 'add-account_code_btn') {
+                            createInputContainer2.innerHTML = '';
+                            let options = accountCodes.map(code =>
+                                `<option value="${code.code}" data-account-name="${code.name}">${code.code}</option>`
+                            ).join('');
+                            createInputContainer.innerHTML =
+                                `<select name="account_code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="account_name" class="form-control" placeholder="Uraian">`;
 
-                })
+                            // Add event listener for change event
+                            document.getElementById('account-code-select').addEventListener('change',
+                                function() {
+                                    const selectedOption = this.options[this.selectedIndex];
+                                    const accountName = selectedOption.getAttribute('data-account-name');
+                                    document.getElementById('account-name-input').value = accountName || '';
+                                });
+                        }
+                        if (btnShowModalId === 'add-expenditure_detail_btn') {
+                            createInputContainer2.innerHTML = '';
 
-                tableBody.addEventListener('click', handleRowClick);
-                form.addEventListener('submit', handleFormSubmit);
-                saveDipaBtn.addEventListener('click', handleSaveDipaClick);
+                            let options = expenditureUnits.map(unit =>
+                                `<option value="${unit.code}">${unit.code}</option>`
+                            ).join('');
+                            createInputContainer.innerHTML =
+                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input disabled type="text" name="total" required class="form-control" placeholder="total">`;
+
+                            // Now add the event listeners
+                            const volumeInput = createInputContainer.querySelector(
+                                'input[name="expenditure_volume"]');
+                            const priceInput = createInputContainer.querySelector('input[name="unit_price"]');
+                            const totalInput = createInputContainer.querySelector('input[name="total"]');
+                            if (volumeInput && priceInput && totalInput) {
+                                volumeInput.addEventListener('input', function() {
+                                    const isVolumeFilled = volumeInput.value.trim() !== '';
+                                    priceInput.disabled = !isVolumeFilled;
+                                    totalInput.disabled = !isVolumeFilled;
+
+                                    if (!isVolumeFilled) {
+                                        // Clear values when volume is not filled
+                                        priceInput.value = '';
+                                        totalInput.value = '';
+                                    }
+                                });
+                            }
+                            volumeInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
+                                priceInput, totalInput));
+                            priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
+                                priceInput, totalInput));
+                            volumeInput.addEventListener('keypress', window.enforceNumericInput);
+                        }
+
+                    })
+
+                    tableBody.addEventListener('click', handleRowClick);
+                    form.addEventListener('submit', handleFormSubmit);
+                    saveDipaBtn.addEventListener('click', handleSaveDipaClick);
+                    sendDipaBtn.addEventListener('click', handleSendDipaClick);
+                @endif
+
             });
 
             function handleSaveDipaClick() {
                 const dipaData = groupRows();
-                const endpoint = window.Laravel.routes.budgetImplementationStore;
+                // const endpoint = window.Laravel.routes.budgetImplementationStore;
+                // console.log(endpoint);
 
                 // Show a loading indicator
                 Swal.fire({
@@ -297,14 +342,60 @@
                     }
                 });
 
-                axios.post(endpoint, {
+                axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
                         dipa: dipaData
                     })
                     .then(response => {
                         // Success feedback
+                        // console.log(fetchdata.data)
+                        res_id = response.data.id
+
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Data berhasil untuk disimpan.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            @if (!empty($dipa->id))
+                                window.location.reload();
+                            @else
+                                // console.log(response.data)
+                                window.location.href = '{{ url('admin/penganggaran/dipa') }}/' + res_id;
+                            @endif
+
+                        });
+                    })
+                    .catch(error => {
+                        console.log(response)
+                        console.log(error)
+
+
+                        // Error handling
+
+                        Swal.fire({
+                            title: 'Gangguan!',
+                            text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
+
+            function handleSendDipaClick() {
+                Swal.fire({
+                    title: 'Mengajukan data...',
+                    text: 'Mohon menunggu..',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                axios.post("{{ !empty($dipa->id) ? route('dipa.ajukan', $dipa->id) : '' }}", {})
+                    .then(response => {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil diajukan.',
                             icon: 'success',
                             confirmButtonText: 'OK'
                         }).then(() => {
@@ -324,7 +415,6 @@
                     });
             }
 
-
             function groupRows() {
                 let rows = document.querySelectorAll('tr');
                 let groupedRows = [];
@@ -335,8 +425,10 @@
                     if (row.classList.contains('activity-row')) {
                         let activityData = {
                             id: row.dataset.activity,
-                            code: row.children[0].textContent,
-                            name: row.children[1].textContent
+                            indicator_act: row.dataset.indicator_act,
+                            performance_indicator_id: row.children[0].textContent,
+                            code: row.children[1].textContent,
+                            name: row.children[2].textContent
                         };
                         currentActivity = {
                             bi: row.dataset.bi,
@@ -347,8 +439,8 @@
                     } else if (row.classList.contains('account-row')) {
                         let accountData = {
                             id: row.dataset.accountCode,
-                            code: row.children[0].textContent,
-                            name: row.children[1].textContent
+                            code: row.children[1].textContent,
+                            name: row.children[2].textContent
                         };
                         currentAccount = {
                             account: accountData,
@@ -358,14 +450,14 @@
                             currentActivity.accounts.push(currentAccount);
                         }
                     } else if (row.classList.contains('expenditure-row')) {
-                        let unit_price = row.children[4].textContent.replace(/Rp|\./g, '').trim();
-                        let total = row.children[5].textContent.replace(/Rp|\./g, '').trim();
+                        let unit_price = row.children[5].textContent.replace(/Rp|\./g, '').trim();
+                        let total = row.children[6].textContent.replace(/Rp|\./g, '').trim();
 
                         let expenditureData = {
                             id: row.dataset.expenditure,
-                            description: row.children[1].textContent,
-                            volume: row.children[2].textContent,
-                            unit: row.children[3].textContent,
+                            description: row.children[2].textContent,
+                            volume: row.children[3].textContent,
+                            unit: row.children[4].textContent,
                             unit_price: unit_price,
                             total: total
                         };
@@ -378,7 +470,7 @@
                 return groupedRows;
             }
 
-            function confirmDelete(rowType, id, name) {
+            function confirmDeleteDipa(rowType, id, name) {
                 let rowTypeName = rowType === 'detail' ? 'detail' : (rowType === 'activiy' ? "Kode Keg" : "Kode Akun");
                 Swal.fire({
                     title: `Anda yakin ingin hapus \n(${rowTypeName} : ${name})?`,
@@ -415,7 +507,8 @@
 
             function calculateAndUpdateTotal(volumeInput, priceInput, totalInput) {
                 const volume = parseFloat(volumeInput.value.replace(/[^0-9,.-]/g, '').replace(',', '.'));
-                let unitPrice = parseFloat(priceInput.value.replace(/Rp\s?|,00/g, '').replace(/\./g, '').replace(/[^\d]/g, ''));
+                let unitPrice = parseFloat(priceInput.value.replace(/Rp\s?|,00/g, '').replace(/\./g, '').replace(/[^\d]/g,
+                    ''));
 
                 if (!isNaN(volume) && !isNaN(unitPrice)) {
                     const total = volume * unitPrice;
@@ -506,19 +599,23 @@
             }
 
             function createAndAppendRow(data, type) {
+                console.log(data);
                 if (type === null) {
                     alert("Terdapat kesalahan pemrosesan...");
                     return;
                 }
                 const newRow = document.createElement('tr');
                 const tableBody = document.querySelector('tbody');
-                newRow.innerHTML =
-                    `<td class="text-center">${data.activity_code || data.account_code || ""}</td><td>${data.activity_name || data.account_name || data.expenditure_description || ""}</td><td>${data.expenditure_volume || ""}</td><td>${data.unit || ""}</td><td>${data.unit_price || ""}</td><td>${data.total || ""}</td>`;
-                newRow.classList.add(`${type}-row`);
 
                 if (type === 'activity') {
+                    newRow.innerHTML =
+                        `<td hidden >${data.performance_indicator_id || ""}</td><td class="text-center">${data.activity_code || ""}</td><td>${data.activity_name || data.account_name || data.expenditure_description || ""}</td><td>${data.expenditure_volume || ""}</td><td>${data.unit || ""}</td><td>${data.unit_price || ""}</td><td class="${data.unit_price ? 'count_detail': ''}">${data.total || ""}</td>`;
+                    newRow.classList.add(`${type}-row`);
                     tableBody.appendChild(newRow);
                 } else {
+                    newRow.innerHTML =
+                        `<td hidden ></td><td class="text-center">${data.activity_code || data.account_code || ""}</td><td>${data.activity_name || data.account_name || data.expenditure_description || ""}</td><td>${data.expenditure_volume || ""}</td><td>${data.unit || ""}</td><td>${data.unit_price || ""}</td><td class="${data.unit_price ? 'count_detail': ''}">${data.total || ""}</td>`;
+                    newRow.classList.add(`${type}-row`);
                     insertRowBasedOnType(newRow, type);
                 }
             }
@@ -562,6 +659,7 @@
                 }
             }
         </script>
+        {{-- @endif --}}
     </x-slot>
     <!--  END CUSTOM SCRIPTS FILE  -->
 </x-custom.app-layout>

@@ -18,6 +18,11 @@
         <link rel="stylesheet" href="{{ asset('plugins/table/datatable/datatables.css') }}">
         @vite(['resources/scss/light/plugins/table/datatable/dt-global_style.scss'])
         @vite(['resources/scss/dark/plugins/table/datatable/dt-global_style.scss'])
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+
         <style>
             .table-hover tbody tr:hover {
                 background-color: #f5f5f5;
@@ -97,11 +102,11 @@
                                 @foreach ($programTargets as $programTarget)
                                     <tr>
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
-                                        <td></td>
+                                        <td>{{ $programTarget->iku?->description }}</td>
                                         <td>{{ $programTarget->name }}</td>
                                         <td class="text-center ">
                                             <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="openEditModal({{ $programTarget->id }}, '{{ $programTarget->name }}')">
+                                                onclick="openEditModal({{ $programTarget->id }}, '{{ $programTarget->name }}','{{ $programTarget->renstra_indicator_id }}','{{ $programTarget->iku?->description }}')">
                                                 <i class="text-white" data-feather="edit-2"></i>
                                             </button>
 
@@ -149,7 +154,13 @@
                 <div class="modal-body">
                     <form action="{{ route('program_target.store') }}" method="POST">
                         @csrf
-
+                        <div class="form-group">
+                            <label for="iku_id">IKU</label>
+                            <select id="iku_id" name="iku_id" class="form-control select2">
+                                <option value="">Pilih IKU</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
                         <div class="form-group d-flex align-items-center">
                             <button type="button" id="add-program_target" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
@@ -192,6 +203,13 @@
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
+                        <div class="form-group">
+                            <label for="iku_id_edit">IKU</label>
+                            <select id="iku_id_edit" name="iku_id" class="form-control select2">
+                                <option value="">Pilih IKU</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
                         <input type="text" id="program_target_name" name="name" class="form-control" required>
                         <!-- Add other fields as needed -->
                         <button type="submit" class="btn btn-primary mt-3">Update</button>
@@ -213,12 +231,18 @@
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/pdfmake/pdfmake.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/pdfmake/vfs_fonts.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
-            function openEditModal(id, name) {
+            function openEditModal(id, name, iku, iku_desc) {
                 // Populate the form fields
                 document.getElementById('program_target_name').value = name;
-
+                $("#iku_id_edit").append("<option value='" + iku + "' selected>" + iku_desc + "</option>");
+                $('#iku_id_edit').trigger('change');
+                // $("#iku_id_edit").select2('data', {
+                //     id: iku,
+                //     text: 's'
+                // });
                 // Update the form action URL
                 document.getElementById('edit-form').action = '/admin/perkin/sasaran-program/' + id + '/update';
 
@@ -323,6 +347,83 @@
                         event.target.closest('.input-group').remove();
                         updateNumbering();
                     }
+                });
+
+                $('#exampleModalCenter').on('shown.bs.modal', function() {
+                    $('#iku_id').select2({
+                        dropdownParent: $('#exampleModalCenter'),
+                        placeholder: 'Pilih IKU',
+                        theme: 'bootstrap-5',
+                        ajax: {
+                            transport: function(params, success, failure) {
+                                // Using Axios to fetch the data
+                                axios.get(`{{ route('renstra_iku.index') }}`, {
+                                        params: {
+                                            search: params.data.term,
+                                            limit: 10
+                                        }
+                                    })
+                                    .then(function(response) {
+                                        // Call the `success` function with the formatted results
+                                        success({
+                                            results: response.data.map(function(item) {
+                                                return {
+                                                    id: item.id,
+                                                    text: item.description
+                                                };
+                                            })
+                                        });
+                                    })
+                                    .catch(function(error) {
+                                        // Call the `failure` function in case of an error
+                                        failure(error);
+                                    });
+                            },
+                            delay: 250,
+                            cache: true
+                        }
+                    });
+
+                }).on('hidden.bs.modal', function() {
+                    $('#iku_id').select2('destroy');
+                });
+                $('#editModal').on('shown.bs.modal', function() {
+                    $('#iku_id_edit').select2({
+                        dropdownParent: $('#editModal'),
+                        placeholder: 'Pilih Iku',
+                        theme: 'bootstrap-5',
+                        ajax: {
+                            transport: function(params, success, failure) {
+                                // Using Axios to fetch the data
+                                axios.get(`{{ route('renstra_iku.index') }}`, {
+                                        params: {
+                                            search: params.data.term,
+                                            limit: 10
+                                        }
+                                    })
+                                    .then(function(response) {
+                                        // Call the `success` function with the formatted results
+                                        success({
+                                            results: response.data.map(function(item) {
+                                                return {
+                                                    id: item.id,
+                                                    text: item.description
+                                                };
+                                            })
+                                        });
+                                    })
+                                    .catch(function(error) {
+                                        // Call the `failure` function in case of an error
+                                        failure(error);
+                                    });
+                            },
+                            delay: 250,
+                            cache: true
+                        }
+                    });
+
+                }).on('hidden.bs.modal', function() {
+                    $('#iku_id_edit').select2('destroy');
                 });
             });
         </script>

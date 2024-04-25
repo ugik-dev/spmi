@@ -10,6 +10,8 @@
                 <form id="form-edit" action="{{ route('budget_implementation.update') }}" method="POST">
                     @csrf
                     @method('PATCH')
+                    <div id="edit-input_sigle_container" class="">
+                    </div>
                     <div id="edit-input_container" class="input-group my-2">
                     </div>
                     <button class="btn btn-primary text-center align-items-center mt-1 mt-2 py-auto" type="submit">

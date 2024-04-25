@@ -9,10 +9,15 @@ class ProgramTarget extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'renstra_indicator_id'];
 
     public function performanceIndicators()
     {
         return $this->hasMany(PerformanceIndicator::class);
+    }
+
+    public function iku()
+    {
+        return $this->belongsTo(RenstraIndicator::class, 'renstra_indicator_id');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\RenstraIndicator;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('program_targets', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(RenstraIndicator::class)->onDelete('cascade');
             $table->string('name');
             $table->timestamps();
         });

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetImplementation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['activity_id', 'account_code_id'];
+    protected $fillable = ['activity_id', 'account_code_id', 'dipa_id'];
 
     public function activity()
     {
@@ -62,9 +63,9 @@ class BudgetImplementation extends Model
     /**
      * Static function to get grouped data with total sums.
      */
-    public static function getGroupedDataWithTotals()
+    public static function getGroupedDataWithTotals($dipa_id)
     {
-        $budgetImplementations = self::with(['activity', 'accountCode', 'details'])
+        $budgetImplementations = self::with(['activity', 'accountCode', 'details'])->where('dipa_id', $dipa_id)
             ->get();
 
         return $budgetImplementations

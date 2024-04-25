@@ -20,4 +20,11 @@ class BudgetImplementationDetail extends Model
     {
         return $this->belongsTo(BudgetImplementation::class);
     }
+
+    public function scopeCountTotal($query, $dipa)
+    {
+        return  $query
+            ->join('budget_implementations as bi', 'bi.id', '=', 'budget_implementation_details.budget_implementation_id')
+            ->where('bi.dipa_id', $dipa)->sum('total');
+    }
 }

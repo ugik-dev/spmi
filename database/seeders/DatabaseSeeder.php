@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             // for testing
             // PPK::factory(123)->create();
             // Verificator::factory(456)->create();
-            User::factory(250)->create();
+            User::factory(10)->create();
             $fakultas1User = User::factory()->create([
                 'id' => 999,
                 'name' => 'fakultas 1',

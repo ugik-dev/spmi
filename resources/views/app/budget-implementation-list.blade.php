@@ -70,31 +70,38 @@
                     @endif
                     <div class="text-start">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
-                            data-bs-target="#exampleModalCenter">
-                            Input Indikator Kinerja Utama
-                        </button>
+                        <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
+                            Buat Usulan Baru
+                        </a>
                     </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
-                                    <th scope="col">Misi</th>
-                                    <th scope="col">IKU</th>
+                                    <th scope="col">Tanggal</th>
+                                    <th scope="col">Tahun</th>
+                                    <th scope="col">Revisi ke</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($ikus as $iku)
+                                @foreach ($dipas as $dipa)
                                     <tr>
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
-                                        <td>{{ $iku->mission->description }}</td>
-                                        <td>{{ $iku->description }}</td>
+                                        <td>{{ $dipa->created_at }}</td>
+                                        <td>{{ $dipa->year }}</td>
+                                        <td>{{ $dipa->revision }}</td>
+                                        <td>{{ $dipa->status }}</td>
                                         <td class="text-center">
                                             <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete2({{ $iku->id }});">
+                                                onclick="confirmDelete2({{ $dipa->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
+                                            </a>
+                                            <a href="{{ route('dipa.update', $dipa->id) }}"
+                                                class="btn btn-primary btn-sm" role="button">
+                                                <i class="text-white" data-feather="eye"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -135,12 +142,6 @@
                                 <select class="form-select @error('misi') is-invalid @enderror" id="selectTypeRole"
                                     name="misi" required>
                                     <option selected disabled value="">Pilih Misi...</option>
-                                    @foreach ($missions as $mission)
-                                        <option value="{{ $mission->id }}"
-                                            {{ old('misi') == $mission->id ? 'selected' : '' }}>
-                                            {{ $mission->description }}
-                                        </option>
-                                    @endforeach
                                 </select>
                                 @error('misi')
                                     <div class="invalid-feedback">{{ $message }}</div>

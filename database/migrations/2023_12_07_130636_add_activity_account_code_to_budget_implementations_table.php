@@ -2,6 +2,8 @@
 
 use App\Models\AccountCode;
 use App\Models\Activity;
+use App\Models\Dipa;
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,9 +26,13 @@ return new class extends Migration
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
+            $table->foreignIdFor(Dipa::class)
+                ->nullable()
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             // Add a unique constraint on activity, account_code
-            $table->unique(['activity_id', 'account_code_id'], 'unique_activity_account_code');
+            $table->unique(['activity_id', 'account_code_id', 'dipa_id', 'revision'], 'unique_activity_account_code');
         });
     }
 
