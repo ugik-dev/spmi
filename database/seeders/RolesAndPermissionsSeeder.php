@@ -30,7 +30,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view penganggaran',
                 'view perencanaan',
                 'approval pembayaran',
-                'approval and comment penganggaran',
+                'approval penganggaran',
                 'approval and comment perencanaan'
             ],
             'STAF PPK' => [

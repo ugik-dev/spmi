@@ -26,12 +26,31 @@
                 <button id="delete-dipa" class="btn btn-outline-danger shadow-sm bs-tooltip">Hapus</button>
             @elseif($dipa->status == 'draft')
             @endif
-            {{ $dipa->unit_work_id }}
-            @if (in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
-                    $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                    Auth::user()->hasRole(['KEPALA UNIT KERJA']))
+            @if ($dipa)
+                @if (in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
+                        $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        Auth::user()->hasRole(['KEPALA UNIT KERJA']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.kepala-modal :dipa="$dipa" />
+                    </div>
+                @endif
+                @if (in_array($dipa->status, ['wait-ppk', 'reject-ppk']) &&
+                        // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        Auth::user()->hasRole(['PPK']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.ppk-modal :dipa="$dipa" />
+                    </div>
+                @endif
+                @if (in_array($dipa->status, ['wait-spi', 'reject-spi']) &&
+                        // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        Auth::user()->hasRole(['SPI']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.spi-modal :dipa="$dipa" />
+                    </div>
+                @endif
+
                 <div class="float-end p-2">
-                    <x-custom.dipa.kepala-modal :dipa="$dipa" />
+                    <x-custom.dipa.log-modal :dipa="$dipa" />
                 </div>
             @endif
         </div>

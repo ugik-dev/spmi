@@ -82,6 +82,7 @@
                                     <th scope="col">Tanggal</th>
                                     <th scope="col">Tahun</th>
                                     <th scope="col">Revisi ke</th>
+                                    <th scope="col">Total</th>
                                     <th scope="col">Status</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
@@ -93,6 +94,7 @@
                                         <td>{{ $dipa->created_at }}</td>
                                         <td>{{ $dipa->year }}</td>
                                         <td>{{ $dipa->revision }}</td>
+                                        <td>{{ number_format($dipa->total) }}</td>
                                         <td>{{ $dipa->status }}</td>
                                         <td class="text-center">
                                             @if ($dipa->user_id == Auth::user()->id)

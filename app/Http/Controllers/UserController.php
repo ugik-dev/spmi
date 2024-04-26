@@ -17,7 +17,9 @@ class UserController extends Controller
     public function index()
     {
         $title = 'Kelola User';
-        $users = User::with('employee')->notAdmin()->get();
+        $users = User::with('employee')->get();
+        // dd($users);
+        // $users = User::with('employee')->notAdmin()->get();
         $roles = Role::all();
         $work_units = WorkUnit::all();
         $identity_types = ['nik', 'nip', 'nidn'];
@@ -37,7 +39,7 @@ class UserController extends Controller
             'position' => 'string|required_if:identity_number,true',
             'work_unit' => 'integer|required_if:identity_number,true',
             'head_id' => 'sometimes|integer|required_if:identity_number,true|exists:employees,id',
-            'letter_reference' => 'string',
+            'letter_reference' => 'sometimes|string',
         ]);
         try {
             $randomPassword = Str::random(10);
@@ -45,7 +47,7 @@ class UserController extends Controller
             $user = User::create([
                 'name' => $validatedData['user_name'],
                 'email' => $validatedData['email'],
-                'password' => Hash::make($randomPassword),
+                'password' => Hash::make('password'),
             ]);
             if (!empty($validatedData['identity_number']) && !empty($validatedData['position'] && !empty($validatedData['work_unit']))) {
                 $employee = new Employee([
@@ -53,7 +55,7 @@ class UserController extends Controller
                     'position' => $validatedData['position'],
                     'identity_type' => $validatedData['identity_type'],
                     'work_unit_id' => $validatedData['work_unit'],
-                    'letter_reference' => $validatedData['letter_reference'],
+                    'letter_reference' => $validatedData['letter_reference'] ?? null,
                 ]);
                 if ($validatedData['user_role'] == 'PPK') {
                     $employee->head_id = $validatedData['head_id'];

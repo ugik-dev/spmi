@@ -32,7 +32,7 @@ class BudgetImplementationController extends Controller
     public function index()
     {
         $title = 'Daftar DIPA';
-        $unitBudget = UnitBudget::find(Auth::user()->employee->work_unit_id ?? false);
+        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
         return view('app.budget-implementation-list', compact('title', 'dipas', 'unitBudget',));
@@ -40,7 +40,7 @@ class BudgetImplementationController extends Controller
     public function create()
     {
         $title = 'Buat DIPA';
-        $unitBudget = UnitBudget::find(Auth::user()->employee->work_unit_id ?? false);
+        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
         $groupedBI = [];
         $dipa = null;
@@ -52,6 +52,8 @@ class BudgetImplementationController extends Controller
 
     public function ajukan(Dipa $dipa)
     {
+        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        $dipa->total = $totalSum;
         $dipa->status = 'wait-kp';
         $dipa->save();
 
@@ -75,7 +77,7 @@ class BudgetImplementationController extends Controller
     public function form()
     {
         $title = 'DIPAs';
-        $unitBudget = UnitBudget::find(Auth::user()->employee->work_unit_id ?? false);
+        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false);
         $totalSum = 0;
         $groupedBI = [];
         $accountCodes = AccountCode::all();
@@ -112,9 +114,10 @@ class BudgetImplementationController extends Controller
         }
 
         try {
-            $dipa_id = Dipa::create(['year' => date('Y'), 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+            $dipa_id = Dipa::create(['year' => date('Y'), 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             $data = $validator->validated()['dipa'];
             // dd($data);
+            $total = 0;
             foreach ($data as $key_ac => $activity) {
                 $activity_id = Activity::create([
                     'dipa_id' => $dipa_id,
@@ -144,10 +147,13 @@ class BudgetImplementationController extends Controller
                             'price' => $detail['unit_price'],
                             'total' => $detail['total'],
                         ]);
+                        $total = $total + $detail['total'];
                     }
                     // dd($budgetImplementation);
                 }
             }
+            Dipa::where('id', $dipa_id)->update(['total' => $total]);
+
             // dd($data[0]['activity']);
             // return response()->json($this->budgetService->process($validator->validated()['dipa']));
         } catch (\Exception $e) {
@@ -192,6 +198,7 @@ class BudgetImplementationController extends Controller
         try {
             $dipa_id = $dipa->id;
             $data = $validator->validated()['dipa'];
+            $total = 0;
             foreach ($data as $key_ac => $activity) {
                 if (!empty($activity['bi'])) {
                     Activity::where('id', $activity['activity']['id'])->update([
@@ -242,6 +249,8 @@ class BudgetImplementationController extends Controller
                             'price' => $detail['unit_price'],
                             'total' => $detail['total'],
                         ];
+                        $total = $total + $detail['total'];
+
                         if (!isset($detail['id']) && empty($detail['id'])) {
                             BudgetImplementationDetail::create($budget_detail_att);
                         } else {
@@ -251,6 +260,7 @@ class BudgetImplementationController extends Controller
                     // dd($budgetImplementation);
                 }
             }
+            Dipa::where('id', $dipa_id)->update(['total' => $total]);
             // dd($data[0]['activity']);
             // dd();
             // return response()->json($this->budgetService->process($validator->validated()['dipa']));
@@ -327,14 +337,16 @@ class BudgetImplementationController extends Controller
                     $validatedData['unit_price'] = $this->convertToDecimal($validatedData['unit_price']);
                     $validatedData['total'] = $this->convertToDecimal($validatedData['total']);
                     $expenditureUnit = ExpenditureUnit::firstWhere('code', $validatedData['unit']);
-                    $budgetImplementationDetail = BudgetImplementationDetail::findOrFail($validatedData['id']);
+                    $budgetImplementationDetail = BudgetImplementationDetail::with('budgetImplementation')->findOrFail($validatedData['id']);
                     $budgetImplementationDetail->name = $validatedData['name'];
                     $budgetImplementationDetail->volume = $validatedData['volume'];
                     $budgetImplementationDetail->price = $validatedData['unit_price'];
                     $budgetImplementationDetail->total = $validatedData['total'];
                     $budgetImplementationDetail->expenditureUnit()->associate($expenditureUnit);
                     $budgetImplementationDetail->save();
-
+                    $totalSum = BudgetImplementationDetail::CountTotal($budgetImplementationDetail->budgetImplementation->dipa_id);
+                    Dipa::where('id', $budgetImplementationDetail->budgetImplementation->dipa_id)->update(['total' => $totalSum]);
+                    // $dipa->total = $totalSum;
                     return back()->with(['success' => 'Berhasil memperbarui data detail']);
                     break;
 

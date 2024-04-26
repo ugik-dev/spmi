@@ -125,8 +125,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('adm-penerimaan/kode-akun/{accountCodeReception}/hapus', [AccountCodeReceptionController::class, 'destroy'])->name('account_code_reception.delete');
     });
     Route::prefix('penganggaran')->group(function () {
+        Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
         Route::get('dipa/approval', [DipaController::class, 'approval'])->name('dipa.approval');
-        Route::post('dipa/approval/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
+        Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
+        Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
+        Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
+        Route::post('dipa/approval/perencanaan/{dipa}', [DipaController::class, 'approval_perencanaan'])->name('dipa-action.perencanaan');
 
 
         Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');

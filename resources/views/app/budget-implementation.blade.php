@@ -366,12 +366,7 @@
                         });
                     })
                     .catch(error => {
-                        console.log(response)
-                        console.log(error)
-
-
                         // Error handling
-
                         Swal.fire({
                             title: 'Gangguan!',
                             text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
