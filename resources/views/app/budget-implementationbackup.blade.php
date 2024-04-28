@@ -115,8 +115,7 @@
                     'tr.expenditure-row td:nth-child(5),tr.expenditure-row td:nth-child(6)')
                 const tableBody = document.querySelector('tbody');
                 @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
-                    const formCreate = document.getElementById('form-create');
-                    const formEdit = document.getElementById('form-edit');
+                    const form = document.getElementById('form-create');
                     const table = document.getElementById('budget_implementation-table');
                     const createModalEl = document.getElementById('createModal');
                     const saveDipaBtn = document.getElementById('save-dipa');
@@ -173,6 +172,7 @@
 
                         if (trSelected.classList.contains('activity-row')) {
                             editModalTitle.textContent = "Input Sub Komponen";
+
                             editInputContainer.innerHTML =
                                 `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="activity"><input type="text" name="code" value="${trSelected.children[1].textContent}" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" value="${trSelected.children[2].textContent}" required name="name" class="form-control" placeholder="Uraian">`
 
@@ -192,10 +192,7 @@
                             ).join('');
 
                             editInputContainer.innerHTML =
-                                `
-                                <input type="hidden" name="id" value="${trSelected.dataset.bi}">
-                                <input type="hidden" name="type" value="account">
-                                <select name="code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="name" class="form-control" placeholder="Uraian">`;
+                                `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="account"><select name="code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="name" class="form-control" placeholder="Uraian">`;
 
                             // Set the value of the select element
                             const accountCodeSelect = document.getElementById('account-code-select');
@@ -327,8 +324,7 @@
                     })
 
                     tableBody.addEventListener('click', handleRowClick);
-                    formCreate.addEventListener('submit', handleFormSubmit);
-                    formEdit.addEventListener('submit', handleFormEditSubmit);
+                    form.addEventListener('submit', handleFormSubmit);
                     saveDipaBtn.addEventListener('click', handleSaveDipaClick);
                     sendDipaBtn.addEventListener('click', handleSendDipaClick);
                 @endif
@@ -351,10 +347,7 @@
                 });
 
                 axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
-                        dipa: dipaData,
-                        @if (!empty($copy_of))
-                            copy_of: '{{ $copy_of }}'
-                        @endif
+                        dipa: dipaData
                     })
                     .then(response => {
                         // Success feedback
@@ -478,8 +471,7 @@
 
             function confirmDeleteDipa(rowType, id, name, crow) {
                 console.log('row', rowType, 'id', id, 'name', name, 'crow', crow)
-
-
+                return;
                 let rowTypeName = rowType === 'detail' ? 'detail' : (rowType === 'activiy' ? "Kode Keg" : "Kode Akun");
                 Swal.fire({
                     title: `Anda yakin ingin hapus \n(${rowTypeName} : ${name})?`,
@@ -490,16 +482,6 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
-                    if (id == undefined) {
-                        console.log('langsung delete')
-                        const selectedElements = document.querySelectorAll('.crow-' + crow);
-                        // Menghapus setiap elemen yang memiliki kelas "selected"
-                        selectedElements.forEach(element => {
-                            element.remove();
-                        });
-                        return;
-                    }
-
                     if (result.isConfirmed) {
                         axios.delete(`/admin/penganggaran/hapus-dipa/${rowType}/${id}`)
                             .then(res => {
@@ -508,11 +490,7 @@
                                     text: 'Data berhasil dihapus.',
                                     icon: 'success'
                                 }).then(() => {
-                                    const selectedElements = document.querySelectorAll('.crow-' + crow);
-                                    // Menghapus setiap elemen yang memiliki kelas "selected"
-                                    selectedElements.forEach(element => {
-                                        element.remove();
-                                    });
+                                    // window.location.reload();
                                 });
                             })
                             .catch(error => {
@@ -598,60 +576,6 @@
 
                 return null; // or some default type if necessary
             }
-
-
-
-            function handleFormEditSubmit(event) {
-                event.preventDefault();
-                const formElements = Array.from(event.target.elements).filter(element => element.name);
-
-                // Convert form elements to an object
-                const formData = formElements.reduce((obj, element) => {
-                    obj[element.name] = element.value;
-                    return obj;
-                }, {});
-
-                // Check the type of form data
-                const isActivity = formData.activity_code || formData.activity_name;
-                const isAccount = formData.account_code || formData.account_name;
-                const isExpenditure = formData.unit || formData.unit_price;
-                const trType = formData.type;
-
-                console.log();
-                console.log('f', formData, 'id', formData.id, 'type', trType);
-
-                const trSelectedEdit = document.querySelector('tr.selected');
-                if (formData.type == "detail") {
-                    trSelectedEdit.children[2].textContent = formData.name
-                    trSelectedEdit.children[3].textContent = formData.volume
-                    trSelectedEdit.children[4].textContent = formData.unit
-                    trSelectedEdit.children[5].textContent = formData.unit_price
-                    trSelectedEdit.children[6].textContent = formData.total
-                } else if (formData.type == "account") {
-                    var result = accountCodes.filter(obj => {
-                        return obj.code === formData.code
-                    })
-                    console.log(result[0]);
-                    trSelectedEdit.children[1].textContent = formData.code
-                    trSelectedEdit.children[2].textContent = result[0].name
-                } else if (formData.type == "activity") {
-                    trSelectedEdit.children[0].textContent = formData.performance_indicator_id
-                    trSelectedEdit.children[1].textContent = formData.code
-                    trSelectedEdit.children[2].textContent = formData.name
-                } else {
-                    return;
-                }
-                if (formData.id === 'undefined') {
-                    //
-                } else {
-                    console.log('ada id')
-                }
-                // createAndAppendRowEdit(formData, formData.type);
-                event.target.reset();
-                // Hide the modal after form submission
-                $('#editModal').modal('hide');
-            }
-
 
             function handleFormSubmit(event) {
                 event.preventDefault();

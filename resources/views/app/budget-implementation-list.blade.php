@@ -105,6 +105,10 @@
                                                 class="btn btn-primary btn-sm" role="button">
                                                 <i class="text-white" data-feather="eye"></i>
                                             </a>
+                                            <a href="{{ route('dipa.create-revisi', $dipa->id) }}"
+                                                class="btn btn-primary btn-sm" role="button">
+                                                Buat Revisi
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

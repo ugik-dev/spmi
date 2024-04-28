@@ -75,20 +75,17 @@
             </tr>
         </thead>
         <tbody>
-            @php
-                $cr1 = 1;
-            @endphp
             @foreach ($groupedBI as $activityCode => $accountGroups)
                 @php
                     $isActivityDisplayed = false;
-                    // $cr1 = 1;
+                    $cr1 = 1;
                 @endphp
                 @foreach ($accountGroups as $accountCode => $budgetImplementations)
                     <!-- Activity Row -->
                     @if (!$isActivityDisplayed)
-                        <tr data-crow="{{ $cr1 }}"
-                            @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
-                            data-bi="{{ $budgetImplementations->first()->id }}" @endif
+                        <tr data-crow="{{ $cr1 }}" {{-- @if ($dipa)  --}}
+                            data-activity="{{ $budgetImplementations->first()->activity->id }}"
+                            data-bi="{{ $budgetImplementations->first()->id }}" {{-- @endif --}}
                             class="activity-row crow-{{ $cr1 }}">
                             <td hidden>{{ $budgetImplementations->first()->activity->performance_indicator_id }}</td>
                             <td>{{ $budgetImplementations->first()->activity->code }}</td>
@@ -109,9 +106,9 @@
                     @foreach ($budgetImplementations as $budgetImplementation)
                         @if ($budgetImplementation->accountCode)
                             <!-- Account Code Row -->
-                            <tr data-crow="{{ $cr1 . '-' . $cr2 }}"
-                                @if ($dipa) data-bi="{{ $budgetImplementations->first()->id }}"
-                                data-account-code="{{ $budgetImplementation->accountCode->id }}" @endif
+                            <tr data-crow="{{ $cr1 . '-' . $cr2 }}" {{-- @if ($dipa) --}}
+                                data-bi="{{ $budgetImplementations->first()->id }}"
+                                data-account-code="{{ $budgetImplementation->accountCode->id }}" {{-- @endif --}}
                                 class="account-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }}">
                                 <td hidden></td>
                                 <td>{{ $budgetImplementation->accountCode->code }}</td>
@@ -128,8 +125,8 @@
                         @foreach ($budgetImplementation->details as $detail)
                             @if ($detail)
                                 <!-- Expenditure Detail Row -->
-                                <tr data-crow="{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}"
-                                    @if ($dipa) data-expenditure="{{ $detail->id }}" @endif
+                                <tr data-crow="{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}" {{-- @if ($dipa)  --}}
+                                    data-expenditure="{{ $detail->id }}" {{-- @endif --}}
                                     class="expenditure-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }} crow-{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}">
                                     <td hidden></td> <!-- Empty cells for activity and account columns -->
                                     <td></td> <!-- Empty cells for activity and account columns -->
@@ -144,8 +141,8 @@
                         @endforeach
                         @php $cr2++; @endphp
                     @endforeach
+                    @php $cr1++; @endphp
                 @endforeach
-                @php $cr1++; @endphp
             @endforeach
         </tbody>
     </table>

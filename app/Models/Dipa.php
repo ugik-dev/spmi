@@ -14,7 +14,8 @@ class Dipa extends Model
         'status',
         'revision',
         'total',
-        'work_unit_id'
+        'work_unit_id',
+        'head_id'
     ];
 
     public function bi()

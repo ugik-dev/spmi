@@ -134,10 +134,11 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
 
         Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
+        Route::get('dipa/buat-revisi/{dipa}', [BudgetImplementationController::class, 'create_copy'])->name('dipa.create-revisi');
         Route::get('dipa', [BudgetImplementationController::class, 'index'])->name('budget_implementation.index');
         Route::get('dipa/{dipa}', [BudgetImplementationController::class, 'dipa'])->name('budget_implementation.dipa');
         Route::post('dipa', [BudgetImplementationController::class, 'store'])->name('budget_implementation.store');
-        Route::patch('edit-dipa', [BudgetImplementationController::class, 'update'])->name('budget_implementation.update');
+        Route::post('edit-dipa', [BudgetImplementationController::class, 'update'])->name('budget_implementation.update');
         Route::post('dipa/{dipa}', [BudgetImplementationController::class, 'update_dipa'])->name('dipa.update');
         Route::post('dipa/ajukan/{dipa}', [BudgetImplementationController::class, 'ajukan'])->name('dipa.ajukan');
         Route::delete('hapus-dipa/{type}/{id}', [BudgetImplementationController::class, 'destroy'])->name('budget_implementation.delete');
