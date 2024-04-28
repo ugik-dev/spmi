@@ -50,7 +50,7 @@ class UserFactory extends Factory
             $employee = Employee::factory()->create([
                 'user_id' => $user->id,
                 'position' => 'Some Position',
-                'work_unit_id' => WorkUnit::factory()->create()->id,
+                'work_unit_id' => 1,
                 // Add other necessary fields for Employee model
             ]);
 

@@ -50,6 +50,80 @@
     </x-slot>
 
     <div class="row layout-top-spacing">
+        <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+
+            <div class="card style-4">
+                <div class="card-body pt-1 mb-0 pb-0">
+
+                    <div class="m-o-dropdown-list">
+                        <div class="media mt-0 mb-3">
+                            <div class="badge--group me-3">
+                                <div class="badge badge-success badge-dot"></div>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading mb-0">
+                                    <span class="media-title">Dipa Info</span>
+                                    <div class="dropdown-list dropdown" role="group">
+                                        <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-more-horizontal">
+                                                <circle cx="12" cy="12" r="1"></circle>
+                                                <circle cx="19" cy="12" r="1"></circle>
+                                                <circle cx="5" cy="12" r="1"></circle>
+                                            </svg>
+                                        </a>
+                                        {{-- <div class="dropdown-menu left">
+
+                                            <a class="dropdown-item"
+                                                href="{{ route('budget_implementation.dipa', $dipa) }}"><span>Lihat
+                                                    Dipa</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-edit">
+                                                    <path
+                                                        d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                    </path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                                                    </path>
+                                                </svg></a>
+                                            <a class="dropdown-item" href="javascript:void(0);"><span>Statistics</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-bar-chart-2">
+                                                    <line x1="18" y1="20" x2="18" y2="10">
+                                                    </line>
+                                                    <line x1="12" y1="20" x2="12" y2="4">
+                                                    </line>
+                                                    <line x1="6" y1="20" x2="6" y2="14">
+                                                    </line>
+                                                </svg></a>
+                                        </div> --}}
+                                    </div>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="card-text mb-0">Unit Kerja : {{ $dipa->unit->name }}
+                        <br>Total Usulan : Rp
+                        {{ number_format($dipa->total) }}
+                    </p>
+                    {{-- <p class="card-text mt-4 mb-0">{{ $dipa->total }}</p> --}}
+                </div>
+                <div class="card-footer pt-0 border-0">
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />

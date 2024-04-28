@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
+        $this->call([RolesAndPermissionsSeeder::class]);
+        $this->call([DumyUserSeeder::class]);
         if (config('app.env') == 'local') {
             // Path to your SQL file
             $sqlFilePath = database_path('seeders/eplanning.sql');
@@ -52,8 +53,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->call([RolesAndPermissionsSeeder::class]);
-        $this->call([DumyUserSeeder::class]);
+
 
         if (env('APP_ENV') === 'local') {
             // for testing

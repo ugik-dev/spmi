@@ -113,7 +113,7 @@
                 theadTh.forEach(th => th.classList.add('bg-primary'));
                 const tdMoney = document.querySelectorAll(
                     'tr.expenditure-row td:nth-child(5),tr.expenditure-row td:nth-child(6)')
-                const tableBody = document.querySelector('tbody');
+                const tableBody = document.querySelector('tbody.dipa-table');
                 @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
                     const formCreate = document.getElementById('form-create');
                     const formEdit = document.getElementById('form-edit');
@@ -446,7 +446,8 @@
                         let accountData = {
                             id: row.dataset.accountCode,
                             code: row.children[1].textContent,
-                            name: row.children[2].textContent
+                            name: row.children[2].textContent,
+                            bi: row.dataset.bi,
                         };
                         currentAccount = {
                             account: accountData,
@@ -682,7 +683,7 @@
                     return;
                 }
                 const newRow = document.createElement('tr');
-                const tableBody = document.querySelector('tbody');
+                const tableBody = document.querySelector('tbody.dipa-table');
 
                 if (type === 'activity') {
                     newRow.innerHTML =
@@ -698,7 +699,7 @@
             }
 
             function insertRowBasedOnType(newRow, type) {
-                const tableBody = document.querySelector('tbody');
+                const tableBody = document.querySelector('tbody.dipa-table');
                 const selectedRow = document.querySelector('tr.selected');
                 if (!selectedRow) {
                     return;

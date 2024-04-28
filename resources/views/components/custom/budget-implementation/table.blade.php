@@ -74,7 +74,7 @@
                 <th scope="col">Jumlah Biaya</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="dipa-table">
             @php
                 $cr1 = 1;
             @endphp

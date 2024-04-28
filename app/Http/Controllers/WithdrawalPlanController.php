@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Month;
 use App\Models\Activity;
+use App\Models\Dipa;
 use App\Models\WithdrawalPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,8 +19,9 @@ class WithdrawalPlanController extends Controller
         $title = 'Rencana Penarikan Dana';
         $activities = Activity::with('withdrawalPlans')->sortedByCode()->get();
         $months = Month::cases(); // Assuming you have a Month Enum with cases for each month
-
-        return view('app.withdrawal-plan', compact('title', 'activities', 'months'));
+        $dipa = Dipa::active();
+        // dd($dipa);
+        return view('app.withdrawal-plan', compact('title', 'activities', 'months', 'dipa'));
     }
 
     /**

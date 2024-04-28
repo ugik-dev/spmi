@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 
 class Dipa extends Model
 {
@@ -21,6 +22,15 @@ class Dipa extends Model
     public function bi()
     {
         return $this->hasMany(BudgetImplementation::class, 'dipa_id')->with(['activity', 'accountCode', 'details']);
+    }
+    public function unit()
+    {
+        return $this->belongsTo(WorkUnit::class, 'work_unit_id', 'id')->with('unitBudgets');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->with('unit')->where('work_unit_id', Auth::user()->employee->work_unit_id)->latest('revision')->first();
     }
 
     public function scopeAccessibility($query, $approval = false, $findId = false, $throw = false)

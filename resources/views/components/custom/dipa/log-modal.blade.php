@@ -23,9 +23,9 @@
                                 <td class="text-center"><b></b></td>
                             </tr>
                         </thead>
-                        <tbody2 id="tableLog">
+                        <tbody id="tableLog">
 
-                        </tbody2>
+                        </tbody>
                     </table>
                 </div>
             </div>
