@@ -75,7 +75,7 @@
                                                 <circle cx="5" cy="12" r="1"></circle>
                                             </svg>
                                         </a>
-                                        {{-- <div class="dropdown-menu left">
+                                        <div class="dropdown-menu left">
 
                                             <a class="dropdown-item"
                                                 href="{{ route('budget_implementation.dipa', $dipa) }}"><span>Lihat
@@ -90,7 +90,7 @@
                                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
                                                     </path>
                                                 </svg></a>
-                                            <a class="dropdown-item" href="javascript:void(0);"><span>Statistics</span>
+                                            {{-- <a class="dropdown-item" href="javascript:void(0);"><span>Statistics</span>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -101,8 +101,8 @@
                                                     </line>
                                                     <line x1="6" y1="20" x2="6" y2="14">
                                                     </line>
-                                                </svg></a>
-                                        </div> --}}
+                                                </svg></a> --}}
+                                        </div>
                                     </div>
                                 </h4>
                             </div>
