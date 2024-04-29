@@ -13,7 +13,7 @@ class LoginResponse implements LoginResponseContract
         return $request->wantsJson()
             ? response()->json(['two_factor' => false])
             : redirect()->intended(
-                auth()->user()->hasRole('SUPER ADMIN PERENCANAAN') ? route('user.index') : route('sbm_sbi.index')
+                auth()->user()->hasRole('SUPER ADMIN PERENCANAAN') ? route('user.index') : route('admin.dashboard')
             );
     }
 }
