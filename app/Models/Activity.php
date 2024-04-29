@@ -60,4 +60,9 @@ class Activity extends Model
     {
         return $query->orderBy('code');
     }
+    public function scopeActive($query, $dipa)
+    {
+        // return $query->select('activities.*')->join('budget_implementations', 'budget_implementations.activity_id', 'activities.id')->where('budget_implementations.dipa_id', $dipa->id)
+        //     ->groupBy('activities.id');
+    }
 }

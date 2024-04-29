@@ -133,7 +133,8 @@
                             <tr class="text-center">
                                 <th class="bg-primary" scope="col">Kode</th>
                                 <th class="bg-primary" scope="col">Deskripsi</th>
-                                <th class="bg-primary" scope="col">Total</th>
+                                <th class="bg-primary" scope="col">Total Usulan</th>
+                                <th class="bg-primary" scope="col">Total RPD</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -148,6 +149,10 @@
                                     <td>{{ $activity->name }}</td>
                                     <td>
                                         {{ $activity->calculateTotalSumFormatted() }}</td>
+                                    <td>
+                                        Rp
+                                        {{ number_format($activity->withdrawalPlans->sum('amount_withdrawn'), 0, ',', '.') }}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>

@@ -33,7 +33,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
 
             // Unique index for year and month combination
-            $table->unique(['year', 'month']);
+            $table->unique(['year', 'month', 'activity_id']);
 
             $table->timestamps();
         });
