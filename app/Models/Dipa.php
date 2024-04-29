@@ -39,6 +39,20 @@ class Dipa extends Model
         $query->select('dipas.*');
 
         if (Auth::user()->hasRole('SUPER ADMIN PERENCANAAN')) {
+            if ($approval) {
+                $query =    $query->where(function ($query) {
+                    $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan'])
+                        // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
+                        ;
+                });
+            }
+            $query = $query
+            ->where(function ($query) {
+                $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept'])
+                    // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
+                    ;
+            })->orWhere('user_id', Auth::user()->id);
+
         } else
         if (Auth::user()->hasRole('KEPALA UNIT KERJA')) {
             if ($approval) {

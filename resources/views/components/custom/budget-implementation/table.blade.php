@@ -48,7 +48,13 @@
                         <x-custom.dipa.spi-modal :dipa="$dipa" />
                     </div>
                 @endif
-
+                @if (in_array($dipa->status, ['wait-perencanaan', 'reject-perencanaan']) &&
+                        // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.perencanaan-modal :dipa="$dipa" />
+                    </div>
+                @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
                 </div>
