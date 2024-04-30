@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\Dipa;
 use App\Models\WithdrawalPlan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawalPlanController extends Controller
@@ -14,17 +15,21 @@ class WithdrawalPlanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function open(Dipa $dipa)
     {
         $title = 'Rencana Penarikan Dana';
-        $dipa = Dipa::active();
         $activities = Activity::with('withdrawalPlans')->sortedByCode()->where('dipa_id', $dipa->id)->get();
-        // dd($activities);
         $months = Month::cases(); // Assuming you have a Month Enum with cases for each month
-        // dd($dipa);
         return view('app.withdrawal-plan', compact('title', 'activities', 'months', 'dipa'));
     }
-
+    public function index()
+    {
+        $title = 'Daftar DIPA';
+        $totalSum = 0;
+        $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
+        $btnRPD = true;
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'btnRPD'));
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -141,5 +146,17 @@ class WithdrawalPlanController extends Controller
             ->get();
 
         return response()->json($withdrawalPlans);
+    }
+
+    public function getWithdrawalPlansDetail($activityId, $year = null)
+    {
+        // If $year is not provided, set it to the current year
+        $year = $year ?? date('Y');
+        $activity = Activity::find($activityId);
+        $withdrawalPlans = WithdrawalPlan::where('activity_id', $activityId)
+            ->where('year', $year)
+            ->get();
+
+        return response()->json(['activity' => $activity, 'data' => $withdrawalPlans, 'totalPlan' => $withdrawalPlans->sum('amount_withdrawn'), 'totalActivity' => $activity->calculateTotalSum()]);
     }
 }

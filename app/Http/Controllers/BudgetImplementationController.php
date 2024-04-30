@@ -471,4 +471,15 @@ class BudgetImplementationController extends Controller
             return response()->json(['error' => 'true', 'message' => $th]);
         }
     }
+
+    public function delete_dipa(Request $request)
+    {
+        try {
+            Dipa::where('id', $request->id)->where('work_unit_id', Auth::user()->employee->work_unit_id)->delete();
+            return response()->json(['success' => 'true', 'message' => 'Berhasil menghapus data detail dipa.'], 200);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return response()->json(['error' => 'true', 'message' => $th]);
+        }
+    }
 }

@@ -183,13 +183,9 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Inside the modal body -->
                 <div class="modal-body">
-                    <!-- Hidden input for storing activity ID -->
                     <input type="hidden" id="currentActivityId" value="">
                     <h2 class="mb-2 text-center fw-bold text-white bg-primary p-2" id="accumulatedTotalSum"></h2>
-
-                    <!-- Year Filter Section -->
                     <div class="mb-3">
                         <label class="form-label">Pilih Tahun di Tampilkan:</label>
                         <select name="select_year" id="select_year" class="form-select w-25 d-inline-block">
@@ -200,9 +196,6 @@
                             @endfor
                         </select>
                     </div>
-
-
-                    <!-- Month Filter Section -->
                     <div class="month-filter-wrapper mb-3" hidden>
                         <label class="form-label">Pilih Bulan di Tampilkan:</label>
                         <div class="row month-checkboxes">
@@ -220,8 +213,6 @@
                         </div>
                         <button id="toggleAllMonths" class="btn btn-primary btn-sm mt-2">Pilih Semua</button>
                     </div>
-
-
                     <table class="table table-bordered">
                         <thead>
                             <tr>

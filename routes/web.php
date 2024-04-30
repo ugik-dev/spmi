@@ -126,11 +126,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
-        Route::get('dipa/approval', [DipaController::class, 'approval'])->name('dipa.approval');
+        Route::get('permohonan-approval', [DipaController::class, 'approval'])->name('dipa.approval');
+        Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
         Route::post('dipa/approval/perencanaan/{dipa}', [DipaController::class, 'approval_perencanaan'])->name('dipa-action.perencanaan');
+        Route::post('delete-dipa', [BudgetImplementationController::class, 'delete_dipa'])->name('dipa.delete');
 
 
         Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
@@ -148,6 +150,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             ->name('activity-recap.show-file');
         Route::post('rekap-kegiatan-dan-upload-data-dukung/update-status', [ActivityRecapController::class, 'updateStatus'])->name('activity_recap.update_status');
         Route::get('rencana-penarikan-dana', [WithdrawalPlanController::class, 'index'])->name('withdrawal_plan.index');
+        Route::get('rencana-penarikan-dana/{dipa}', [WithdrawalPlanController::class, 'open'])->name('withdrawal_plan.open');
         Route::post('rencana-penarikan-dana', [WithdrawalPlanController::class, 'store'])->name('withdrawal_plan.store');
         Route::post('rencana-penarikan-dana-update', [WithdrawalPlanController::class, 'update'])->name('withdrawal_plan.update');
     });
