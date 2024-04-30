@@ -118,6 +118,7 @@
                             </td>
                             <td>
                                 @php
+                                    $rekap_file = false;
                                     if (
                                         !empty(
                                             $budgetImplementations->first()->activity->activityRecap?->attachment_path
@@ -127,14 +128,21 @@
                                             $budgetImplementations->first()->activity->activityRecap?->attachment_path,
                                         );
                                         $fileMimeType = mime_content_type($filePath);
+                                        $rekap_file = true;
                                     } else {
                                         $fileMimeType = false;
                                     }
                                 @endphp
-                                <button type="button" class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
-                                    onclick="handleViewFile('{{ route('activity-recap.show-file', $budgetImplementations->first()->activity->activityRecap) }}', '{{ $fileMimeType }}');">
-                                    <i class="feather icon-eye"></i> Lihat File
-                                </button>
+                                @if ($rekap_file)
+                                    <button type="button" class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
+                                        onclick="handleViewFile('{{ route('activity-recap.show-file', $budgetImplementations->first()->activity->activityRecap) }}', '{{ $fileMimeType }}');">
+                                        <i class="feather icon-eye"></i> Lihat File
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
+                                        <i class="feather icon-eye"></i> Belum Ada
+                                    </button>
+                                @endif
                             </td>
                             <td></td>
 
