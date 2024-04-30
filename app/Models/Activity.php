@@ -21,6 +21,11 @@ class Activity extends Model
         return $this->hasMany(WithdrawalPlan::class);
     }
 
+    public function activityNote()
+    {
+        return $this->hasMany(ActivityNote::class);
+    }
+
     /**
      * Calculate the total sum of a specific field in BudgetImplementation.
      *

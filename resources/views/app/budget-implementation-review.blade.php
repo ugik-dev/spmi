@@ -97,6 +97,7 @@
     </div>
     <!-- Edit Modal -->
     <x-custom.budget-implementation.edit-modal />
+    <x-custom.budget-implementation.catatan-modal />
     <x-custom.budget-implementation.rpd-modal :months='$months' />
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
@@ -348,6 +349,81 @@
                 }
             }
 
+            function addCatatan(activity) {
+                fetchCatatan(activity)
+            }
+
+            async function fetchCatatan(activity) {
+                try {
+                    showLoading()
+                    const response = await axios.get(
+                        `/api/activity-note-check/${activity}`);
+                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
+                    // resetModalAmounts();
+                    // document.getElementById('select_year').value = year
+                    showCatatanModal(response.data, activity);
+                } catch (error) {
+                    let errorMessage = 'Terjadi kesalahan.';
+
+                    // Cek apakah error memiliki respons dari server
+                    if (error.response && error.response.data && error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+
+                    showErrorAlert('Kesalahan', errorMessage);
+                }
+            }
+
+            function showCatatanModal(response, activity) {
+                swal.close();
+                console.log(response)
+                document.getElementById('catatan_activity').value = activity;
+                document.getElementById('catatan_id').value = response.id ?? '';
+                document.getElementById('catatan_description').value = response.description ?? '';
+                $('#catatanModal').modal('show');
+            }
+            $('#form-catatan').on('submit', function(event) {
+                event.preventDefault();
+                let formData = new FormData(this);
+
+                axios.post(
+                        "{{ route('dipa-action.add_note') }}",
+                        formData
+                    )
+                    .then(response => {
+                        // Success feedback
+                        res_id = response.data.id
+
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil untuk disimpan.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+                            location.reload()
+
+                        });
+                    })
+                    .catch(error => {
+                        // Error handling
+                        let errorMessage = 'Terjadi kesalahan. Silahkan coba sesaat lagi.';
+                        if (error.response && error.response.data && error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+
+                        Swal.fire({
+                            title: 'Gangguan!',
+                            text: errorMessage,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+
+                event.target.reset();
+                $('#catatanModal').modal('hide');
+            });
+
             function resetModalAmounts() {
                 for (let i = 1; i <= 12; i++) {
                     const monthElement = document.getElementById(`amount-${i}`);
@@ -357,6 +433,25 @@
                 }
             }
 
+            function showLoading() {
+
+                Swal.fire({
+                    title: 'Loading',
+                    // text: 'Mohon menunggu data untuk disimpan terlebih dahulu.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            }
+
+            function showErrorAlert(title, message) {
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: 'error'
+                });
+            }
             document.getElementById('select_year').addEventListener('change', function(e) {
                 let activityID = document.getElementById('currentActivityId').value;
                 let year = this.value;
@@ -410,12 +505,13 @@
                     }
                 });
 
-                axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
-                        dipa: dipaData,
-                        @if (!empty($copy_of))
-                            copy_of: '{{ $copy_of }}'
-                        @endif
-                    })
+                axios.post(
+                        "{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
+                            dipa: dipaData,
+                            @if (!empty($copy_of))
+                                copy_of: '{{ $copy_of }}'
+                            @endif
+                        })
                     .then(response => {
                         // Success feedback
                         // console.log(fetchdata.data)
@@ -569,7 +665,8 @@
                                     text: 'Data berhasil dihapus.',
                                     icon: 'success'
                                 }).then(() => {
-                                    const selectedElements = document.querySelectorAll('.crow-' + crow);
+                                    const selectedElements = document.querySelectorAll('.crow-' +
+                                        crow);
                                     // Menghapus setiap elemen yang memiliki kelas "selected"
                                     selectedElements.forEach(element => {
                                         element.remove();
@@ -591,7 +688,8 @@
 
             function calculateAndUpdateTotal(volumeInput, priceInput, totalInput) {
                 const volume = parseFloat(volumeInput.value.replace(/[^0-9,.-]/g, '').replace(',', '.'));
-                let unitPrice = parseFloat(priceInput.value.replace(/Rp\s?|,00/g, '').replace(/\./g, '').replace(/[^\d]/g,
+                let unitPrice = parseFloat(priceInput.value.replace(/Rp\s?|,00/g, '').replace(/\./g, '').replace(
+                    /[^\d]/g,
                     ''));
 
                 if (!isNaN(volume) && !isNaN(unitPrice)) {

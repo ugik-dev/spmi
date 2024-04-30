@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountCodeController;
 use App\Http\Controllers\AccountCodeReceptionController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ActivityRecapController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetItemController;
@@ -131,6 +132,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
+        Route::post('dipa/approval/add-note', [ActivityController::class, 'add_note'])->name('dipa-action.add_note');
         Route::post('dipa/approval/perencanaan/{dipa}', [DipaController::class, 'approval_perencanaan'])->name('dipa-action.perencanaan');
         Route::post('delete-dipa', [BudgetImplementationController::class, 'delete_dipa'])->name('dipa.delete');
 

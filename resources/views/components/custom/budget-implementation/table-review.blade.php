@@ -90,10 +90,41 @@
             @foreach ($groupedBI as $activityCode => $accountGroups)
                 @php
                     $isActivityDisplayed = false;
-                    // $cr1 = 1;
+                    $totalRows = 0;
                 @endphp
+                <!-- Activity Row -->
+                @php
+                    foreach ($accountGroups as $accountCode => $budgetImplementations) {
+                        foreach ($budgetImplementations as $budgetImplementation) {
+                            // dd($budgetImplementation->details);
+                            if ($budgetImplementation->accountCode) {
+                                $totalRows++;
+                            }
+                            // endif
+                            // $totalRows += count($budgetImplementation->details) + 1;
+                            foreach ($budgetImplementation->details as $detail) {
+                                if ($detail) {
+                                    $totalRows++;
+                                }
+                                // x{{ $detail->name }};
+                                // endif
+                            }
+                        }
+                    }
+
+                    // $totalRows = count($accountGroups); // Jumlah baris dari $budgetImplementations
+                    // // dd($budgetImplementations);
+                    // // Hitung jumlah detail untuk setiap $budgetImplementation dan tambahkan ke total baris
+                    // // dd($budgetImplementations[1]->details);
+                    // foreach ($budgetImplementations as $budgetImplementation) {
+                    //     echo 'h' . count($budgetImplementation->details);
+                    //     $totalRows += count($budgetImplementation->details);
+                    // }
+                    // dd($totalRows);
+
+                @endphp
+
                 @foreach ($accountGroups as $accountCode => $budgetImplementations)
-                    <!-- Activity Row -->
                     @if (!$isActivityDisplayed)
                         <tr data-crow="{{ $cr1 }}"
                             @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
@@ -108,15 +139,14 @@
                             <td>Rp
                                 {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
                             </td>
-                            <td>Rp
+                            <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk lihat detail rencana penarikan dana"
+                                class="bs-tooltip"
+                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}', '2024');">
+                                Rp
                                 {{ number_format($budgetImplementations->first()->activity->withdrawalPlans->sum('amount_withdrawn')) }}
                                 <br>
-                                <button type="button" class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
-                                    onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}', '2024');">
-                                    <i class="feather icon-eye"></i> Lihat RPD
-                                </button>
                             </td>
-                            <td>
+                            <td rowspan="{{ $totalRows + 1 }}">
                                 @php
                                     $rekap_file = false;
                                     if (
@@ -144,7 +174,33 @@
                                     </button>
                                 @endif
                             </td>
-                            <td></td>
+
+
+                            <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk menambahkan atau edit catatan"
+                                class="bs-tooltip"
+                                onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')">
+                                {{-- @if ($rekap_file) --}}
+                                {{-- <button
+                                    onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')"class="btn
+                                    btn-primary btn-sm me-sm-2 mb-2 mb-sm-0" role="button">
+                                    <i class="text-white" data-feather="edit"></i>
+                                </button> --}}
+
+                                {{-- @else
+                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
+                                        <i class="feather icon-eye"></i> Belum Ada
+                                    </button>
+                                @endif --}}
+                                {{-- @dd($budgetImplementations->first()->activity->activityNote) --}}
+                                {{-- <p> --}}
+                                @php $i_note = 1 @endphp
+                                @foreach ($budgetImplementations->first()->activity->activityNote as $note)
+                                    {!! $i_note != 1 ? '<br>' : '' !!}
+                                    {{ $i_note }}. {{ $note->description }}
+                                    @php $i_note++ @endphp
+                                @endforeach
+                                {{-- </p> --}}
+                            </td>
 
                         </tr>
                         @php
@@ -152,7 +208,6 @@
                             $cr2 = 1;
                         @endphp
                     @endif
-
                     @foreach ($budgetImplementations as $budgetImplementation)
                         @if ($budgetImplementation->accountCode)
                             <tr data-crow="{{ $cr1 . '-' . $cr2 }}"
@@ -168,9 +223,9 @@
                                 <td>Rp
                                     {{ number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.') }}
                                 </td>
+                                {{-- <td></td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
+                                <td></td> --}}
                             </tr>
                         @endif
                         @php $cr3 = 1; @endphp
@@ -187,9 +242,9 @@
                                     <td>{{ $detail->expenditureUnit->code }}</td>
                                     <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
                                     <td class="count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    {{-- <td></td>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td></td> --}}
 
                                 </tr>
                             @endif

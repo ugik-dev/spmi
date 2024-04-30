@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountCodeController;
 use App\Http\Controllers\AccountCodeReceptionController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AssetItemController;
 use App\Http\Controllers\BudgetImplementationDetailController;
 use App\Http\Controllers\EmployeeController;
@@ -34,6 +35,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/asset-items/{category?}', [AssetItemController::class, 'getAssetItemBySelectedCategory'])->name('asset_items.selected_category');
     // Get Receipt Total Amount By Budget Implementation Detail ID
     Route::get('/receipt/total-amount/{detail}', [PaymentReceiptController::class, 'totalAmountByBudgetImplementationDetail'])->name('receipts.total_amount');
+    Route::get('/activity-note-check/{activity}', [ActivityController::class, 'checkNote'])->name('activity.check-note');
 
     Route::get('/search-user', [UserController::class, 'getUsers'])->name('search-user');
 });
