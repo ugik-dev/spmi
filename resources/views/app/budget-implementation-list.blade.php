@@ -70,9 +70,11 @@
                     @endif
                     <div class="text-start">
                         <!-- Button trigger modal -->
-                        <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
-                            Buat Usulan Baru
-                        </a>
+                        @if (!empty($btnRPD))
+                            <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
+                                Buat Usulan Baru
+                            </a>
+                        @endif
                     </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
@@ -99,6 +101,11 @@
                                         <td class="text-center">
                                             @if (!empty($btnRPD))
                                                 <a href="{{ route('withdrawal_plan.open', $dipa->id) }}"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    <i class="text-white" data-feather="eye"></i>
+                                                </a>
+                                            @elseif (!empty($btnRekap))
+                                                <a href="{{ route('activity_recap.open', $dipa->id) }}"
                                                     class="btn btn-primary btn-sm" role="button">
                                                     <i class="text-white" data-feather="eye"></i>
                                                 </a>

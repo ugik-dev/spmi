@@ -129,6 +129,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
         Route::get('permohonan-approval', [DipaController::class, 'approval'])->name('dipa.approval');
         Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
+        Route::get('permohonan-approval/pdf/{dipa}', [DipaController::class, 'pdf'])->name('dipa.pdf');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
@@ -147,6 +148,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('dipa/ajukan/{dipa}', [BudgetImplementationController::class, 'ajukan'])->name('dipa.ajukan');
         Route::delete('hapus-dipa/{type}/{id}', [BudgetImplementationController::class, 'destroy'])->name('budget_implementation.delete');
         Route::get('rekap-kegiatan-dan-upload-data-dukung', [ActivityRecapController::class, 'index'])->name('activity_recap.index');
+        Route::get('rekap-kegiatan-dan-upload-data-dukung/{dipa}', [ActivityRecapController::class, 'open'])->name('activity_recap.open');
         Route::post('rekap-kegiatan-dan-upload-data-dukung', [ActivityRecapController::class, 'store'])->name('activity_recap.store');
         Route::get('rekap-kegiatan/bukti-dukung/{activityRecap}', [ActivityRecapController::class, 'showFile'])
             ->name('activity-recap.show-file');

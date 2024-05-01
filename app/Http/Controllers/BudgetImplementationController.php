@@ -35,7 +35,8 @@ class BudgetImplementationController extends Controller
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
-        return view('app.budget-implementation-list', compact('title', 'dipas', 'unitBudget',));
+        $btnCreate = true;
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'btnCreate', 'unitBudget',));
     }
     public function create()
     {

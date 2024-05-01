@@ -297,7 +297,7 @@
                                 `<option value="${unit.code}">${unit.code}</option>`
                             ).join('');
                             createInputContainer.innerHTML =
-                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input disabled type="text" name="total" required class="form-control" placeholder="total">`;
+                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input readonly type="text" name="total" required class="form-control" placeholder="total" >`;
 
                             // Now add the event listeners
                             const volumeInput = createInputContainer.querySelector(
@@ -308,7 +308,7 @@
                                 volumeInput.addEventListener('input', function() {
                                     const isVolumeFilled = volumeInput.value.trim() !== '';
                                     priceInput.disabled = !isVolumeFilled;
-                                    totalInput.disabled = !isVolumeFilled;
+                                    // totalInput.disabled = !isVolumeFilled;
 
                                     if (!isVolumeFilled) {
                                         // Clear values when volume is not filled

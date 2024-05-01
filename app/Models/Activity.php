@@ -26,6 +26,11 @@ class Activity extends Model
         return $this->hasMany(ActivityNote::class);
     }
 
+    public function performanceIndicator()
+    {
+        return $this->belongsTo(PerformanceIndicator::class);
+    }
+
     /**
      * Calculate the total sum of a specific field in BudgetImplementation.
      *

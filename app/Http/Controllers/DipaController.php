@@ -12,6 +12,7 @@ use App\Models\ExpenditureUnit;
 use App\Models\PerformanceIndicator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class DipaController extends Controller
 {
@@ -47,6 +48,38 @@ class DipaController extends Controller
             // 'unitBudget',
         ));
     }
+
+    public function pdf(Dipa $dipa)
+    {
+        $dompdf = new PDF();
+        $dipa->bi;
+        $dipa->unit;
+        $dipa->user;
+        // dd($dipa);
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
+        $title = 'Daftar DIPA';
+        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        // $accountCodes = AccountCode::all();
+        // $indikatorPerkin = PerformanceIndicator::all();
+        // $expenditureUnits = ExpenditureUnit::all();
+        // $months = Month::cases();
+        // return View('app.budget-implementation-pdf', compact('dipa', 'totalSum', 'groupedBI'));
+        $pdf = PDF::loadView('app.budget-implementation-pdf', compact('dipa', 'totalSum', 'groupedBI'));
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->stream('invoice.pdf');
+        // return view('app.budget-implementation-pdf', compact(
+        //     'title',
+        //     'dipa',
+        //     'months',
+        //     'groupedBI',
+        //     'accountCodes',
+        //     'expenditureUnits',
+        //     'totalSum',
+        //     'indikatorPerkin',
+        //     // 'unitBudget',
+        // ));
+    }
+
     public function approval_kp(Request $request, Dipa $dipa)
     {
         try {
