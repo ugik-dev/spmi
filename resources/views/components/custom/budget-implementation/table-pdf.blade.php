@@ -133,13 +133,6 @@
                             <td>
                                 {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
                             </td>
-                            {{-- <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk lihat detail rencana penarikan dana"
-                                class="bs-tooltip"
-                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}', '2024');">
-                                Rp
-                                {{ number_format($budgetImplementations->first()->activity->withdrawalPlans->sum('amount_withdrawn')) }}
-                                <br>
-                            </td> --}}
                             <td rowspan="{{ $totalRows + 1 }}">
                                 @php
                                     $rekap_file = false;
@@ -158,11 +151,8 @@
                                     }
                                 @endphp
                                 @if ($rekap_file)
-                                    {{-- <p style="color: green"> --}}
                                     Ada
-                                    {{-- </p> --}}
                                 @else
-                                    {{-- <p style="color: red">Tidak Ada</p> --}}
                                 @endif
                             </td>
 

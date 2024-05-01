@@ -57,6 +57,10 @@
                 @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
+                    <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
+                        data-res="Y">
+                        <i data-feather="printer"></i> Cetak
+                    </a>
                 </div>
             @endif
         </div>

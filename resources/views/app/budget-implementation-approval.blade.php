@@ -101,6 +101,10 @@
                                                 class="btn btn-primary btn-sm" role="button">
                                                 <i class="text-white" data-feather="eye"></i>
                                             </a>
+                                            <a href="{{ route('dipa.fpdf', $dipa->id) }}"
+                                                class="btn btn-primary btn-sm" role="button">
+                                                <i class="text-white" data-feather="printer"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

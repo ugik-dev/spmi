@@ -14,6 +14,7 @@ use App\Http\Controllers\InstitutionalBudgetController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\PaymentReceiptController;
 use App\Http\Controllers\PaymentVerificationController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PerformanceIndicatorController;
 use App\Http\Controllers\PPKController;
 use App\Http\Controllers\ProgramTargetController;
@@ -130,6 +131,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('permohonan-approval', [DipaController::class, 'approval'])->name('dipa.approval');
         Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
         Route::get('permohonan-approval/pdf/{dipa}', [DipaController::class, 'pdf'])->name('dipa.pdf');
+        Route::get('permohonan-approval/fpdf/{dipa}', [PDFController::class, 'dipa'])->name('dipa.fpdf');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
