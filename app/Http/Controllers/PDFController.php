@@ -90,7 +90,6 @@ class PDFController extends Controller
                         $tmp_y[] = $res['max_h'];
                         // echo $res['max_h'];
                         // $pdf->SetY($res['max_h']);
-                        // $pdf->cell(200, $tr, 'xxxxxxxxxxxxxx', 1, 1);
                     }
 
                     foreach ($budgetImplementation->details as $detail) {
@@ -123,7 +122,7 @@ class PDFController extends Controller
 
             $ind_max2 =  $this->statusRow($pdf, [17, 25], $tr, [
                 $budgetImplementations->first()->activity->activityRecap?->attachment_path ? 'ada' : 'tidak ada',
-                $catatan . 'xxxxxxxxxxx xxxxxxxxxxxx xxxxxxxxx'
+                $catatan
             ], $y1,  240, [$res['max_h'], $ind_max1['max_h']]);
             $ind_max = max($ind_max2['max_h'], $ind_max1['max_h']);
             // $catatan
