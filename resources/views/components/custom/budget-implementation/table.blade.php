@@ -1,6 +1,6 @@
 <div class="table-responsive my-4">
     <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1">
-        @if (empty($dipa) || $dipa->status == 'draft')
+        @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
             <div class="d-flex flex-wrap gap-1 my-2">
                 <button id="add-activity_btn" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
                     data-bs-target="#createModal">Rekam SubKomp</button>
@@ -16,7 +16,7 @@
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
                 {{ number_format($unitBudget->pagu ?? '0', 0, ',', '.') }})</h4>
-            @if (empty($dipa) || $dipa->status == 'draft')
+            @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
                 @if ($dipa)
                     <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
                         class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
