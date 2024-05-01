@@ -114,7 +114,7 @@
                 const tdMoney = document.querySelectorAll(
                     'tr.expenditure-row td:nth-child(5),tr.expenditure-row td:nth-child(6)')
                 const tableBody = document.querySelector('tbody.dipa-table');
-                @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
+                @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
                     const formCreate = document.getElementById('form-create');
                     const formEdit = document.getElementById('form-edit');
                     const table = document.getElementById('budget_implementation-table');
