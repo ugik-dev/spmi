@@ -122,6 +122,10 @@
                                                     class="btn btn-primary btn-sm" role="button">
                                                     <i class="text-white" data-feather="printer"></i>
                                                 </a>
+                                                <a href="{{ route('dipa.cetak', $dipa->id) }}" target="_blank"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    <i class="text-white" data-feather="printer"></i>
+                                                </a>
                                                 @if ($dipa->status == 'accept')
                                                     <a href="{{ route('dipa.create-revisi', $dipa->id) }}"
                                                         class="btn btn-primary btn-sm" role="button">

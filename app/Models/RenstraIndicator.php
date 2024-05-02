@@ -14,4 +14,9 @@ class RenstraIndicator extends Model
     {
         return $this->belongsTo(RenstraMission::class, 'renstra_mission_id');
     }
+
+    public function sasaranDipa()
+    {
+        return $this->hasMany(ProgramTarget::class);
+    }
 }

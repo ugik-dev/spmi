@@ -154,12 +154,13 @@ class BudgetImplementationController extends Controller
             // dd($data);
             $total = 0;
             foreach ($data as $key_ac => $activity) {
-                $activity_id = Activity::create([
-                    'dipa_id' => $dipa_id,
-                    'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                    'code' => $activity['activity']['code'],
-                    'name' => $activity['activity']['name'],
-                ])->id;
+                if (!empty($activity['accounts']))
+                    $activity_id = Activity::create([
+                        'dipa_id' => $dipa_id,
+                        'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
+                        'code' => $activity['activity']['code'],
+                        'name' => $activity['activity']['name'],
+                    ])->id;
                 foreach ($activity['accounts'] as $account) {
                     $accountCodeId = null;
                     if ($account) {
@@ -246,12 +247,13 @@ class BudgetImplementationController extends Controller
                     ]);
                     $activity_id = $activity['activity']['id'];
                 } else {
-                    $activity_id = Activity::create([
-                        'dipa_id' => $dipa_id,
-                        'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                        'code' => $activity['activity']['code'],
-                        'name' => $activity['activity']['name'],
-                    ])->id;
+                    if (!empty($activity['accounts']))
+                        $activity_id = Activity::create([
+                            'dipa_id' => $dipa_id,
+                            'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
+                            'code' => $activity['activity']['code'],
+                            'name' => $activity['activity']['name'],
+                        ])->id;
                 }
                 // dd($activity['accounts'][0]);
                 foreach ($activity['accounts'] as $account) {

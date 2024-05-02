@@ -132,6 +132,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
         Route::get('permohonan-approval/pdf/{dipa}', [DipaController::class, 'pdf'])->name('dipa.pdf');
         Route::get('permohonan-approval/fpdf/{dipa}', [PDFController::class, 'dipa'])->name('dipa.fpdf');
+        Route::get('permohonan-approval/cetak/{dipa}', [PDFController::class, 'cetak'])->name('dipa.cetak');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');

@@ -1,5 +1,12 @@
 <?php
 
+
+if (!function_exists('newRowDipa')) {
+    function newRowDipa()
+    {
+        return "</tr><tr>";
+    }
+}
 if (!function_exists('layoutConfig')) {
     function layoutConfig()
     {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BudgetImplementation;
 use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
+use App\Models\RenstraMission;
 use App\Supports\Disk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -16,8 +17,39 @@ use Illuminate\Support\Facades\Storage;
 class PDFController extends Controller
 {
     //
+
+    public function cetak(Dipa $dipa)
+    {
+        $dataBI = RenstraMission::getWithDipa($dipa->id);
+        // echo json_encode($dataBI);
+        // die();
+        return view('app.budget-implementation-cetak', compact('dataBI'));
+
+        // die();
+        // dd($groupedBIs);
+    }
     public function dipa(Dipa $dipa)
     {
+        // $groupedBIs = RenstraMission::with('indicator')->get();
+
+
+        // $groupedBIs = RenstraMission::with(['indicatorDipa' => function ($query) {
+        //     $query->with(['sasaranDipa' => function ($query) {
+        //         $query->with(['performanceIndicators' => function ($query) {
+        //             $query->whereHas('dipa', function ($query) {
+        //                 $query->where('dipa_id', 2);
+        //             });
+        //         }]);
+        //     }]);
+        // }])
+        //     ->whereHas('indicatorDipa.sasaranDipa.performanceIndicators.dipa', function ($query) {
+        //         $query->where('dipa_id', 2);
+        //     })
+        //     ->get();
+
+        // echo json_encode(RenstraMission::getWithDipa());
+        // die();
+        // dd($groupedBIs);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
         $pdf = new Fpdf('L', 'mm', 'A4');
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
@@ -88,8 +120,6 @@ class PDFController extends Controller
                             number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.'),
                         ], null, 110);
                         $tmp_y[] = $res['max_h'];
-                        // echo $res['max_h'];
-                        // $pdf->SetY($res['max_h']);
                     }
 
                     foreach ($budgetImplementation->details as $detail) {
