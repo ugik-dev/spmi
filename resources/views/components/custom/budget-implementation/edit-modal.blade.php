@@ -7,9 +7,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
             </div>
             <div class="modal-body">
-                <form id="form-edit" action="{{ route('budget_implementation.update') }}" method="POST">
-                    @csrf
-                    @method('PATCH')
+                <form id="form-edit" {{-- action="{{ route('budget_implementation.update') }}" method="POST" --}}>
+                    {{-- @csrf --}}
+                    {{-- @method('PATCH') --}}
                     <div id="edit-input_sigle_container" class="">
                     </div>
                     <div id="edit-input_container" class="input-group my-2">

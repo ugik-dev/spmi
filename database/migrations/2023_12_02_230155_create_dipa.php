@@ -25,6 +25,12 @@ return new class extends Migration
                 'wait-perencanaan', 'reject-perencanaan',
                 'accept', 'reject'
             ])->default('draft');
+            $table->unsignedBigInteger('head_id')->nullable();
+            $table->foreign('head_id')
+                ->references('id')
+                ->on('dipas')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->foreignIdFor(User::class)
                 ->nullable()
                 ->constrained()

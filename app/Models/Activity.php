@@ -21,6 +21,16 @@ class Activity extends Model
         return $this->hasMany(WithdrawalPlan::class);
     }
 
+    public function activityNote()
+    {
+        return $this->hasMany(ActivityNote::class);
+    }
+
+    public function performanceIndicator()
+    {
+        return $this->belongsTo(PerformanceIndicator::class);
+    }
+
     /**
      * Calculate the total sum of a specific field in BudgetImplementation.
      *
@@ -59,5 +69,10 @@ class Activity extends Model
     public function scopeSortedByCode($query)
     {
         return $query->orderBy('code');
+    }
+    public function scopeActive($query, $dipa)
+    {
+        // return $query->select('activities.*')->join('budget_implementations', 'budget_implementations.activity_id', 'activities.id')->where('budget_implementations.dipa_id', $dipa->id)
+        //     ->groupBy('activities.id');
     }
 }

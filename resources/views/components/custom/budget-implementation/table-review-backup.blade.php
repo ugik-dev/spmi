@@ -1,6 +1,6 @@
 <div class="table-responsive my-4">
     <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1">
-        @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
+        @if (empty($dipa) || $dipa->status == 'draft')
             <div class="d-flex flex-wrap gap-1 my-2">
                 <button id="add-activity_btn" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
                     data-bs-target="#createModal">Rekam SubKomp</button>
@@ -15,8 +15,8 @@
             <h4 class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'text-danger' : 'text-success' }}">
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
-                {{ number_format($unitBudget->pagu ?? '0', 0, ',', '.') }})</h4>
-            @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
+                {{ number_format($dipa->unit->unitBudgets[0]->pagu ?? '0', 0, ',', '.') }})</h4>
+            @if (empty($dipa) || $dipa->status == 'draft')
                 @if ($dipa)
                     <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
                         class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
@@ -57,10 +57,6 @@
                 @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
-                    <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
-                        data-res="Y">
-                        <i data-feather="printer"></i> Cetak
-                    </a>
                 </div>
             @endif
         </div>
@@ -81,7 +77,10 @@
                 <th scope="col">Volume</th>
                 <th scope="col">Satuan</th>
                 <th scope="col">Harga Satuan</th>
-                <th scope="col">Jumlah Biaya</th>
+                <th scope="col">Jumlah Usulan</th>
+                <th scope="col">Jumlah RPD</th>
+                <th scope="col">Data Dukung</th>
+                <th scope="col">Catatan</th>
             </tr>
         </thead>
         <tbody class="dipa-table">
@@ -91,10 +90,41 @@
             @foreach ($groupedBI as $activityCode => $accountGroups)
                 @php
                     $isActivityDisplayed = false;
-                    // $cr1 = 1;
+                    $totalRows = 0;
                 @endphp
+                <!-- Activity Row -->
+                @php
+                    foreach ($accountGroups as $accountCode => $budgetImplementations) {
+                        foreach ($budgetImplementations as $budgetImplementation) {
+                            // dd($budgetImplementation->details);
+                            if ($budgetImplementation->accountCode) {
+                                $totalRows++;
+                            }
+                            // endif
+                            // $totalRows += count($budgetImplementation->details) + 1;
+                            foreach ($budgetImplementation->details as $detail) {
+                                if ($detail) {
+                                    $totalRows++;
+                                }
+                                // x{{ $detail->name }};
+                                // endif
+                            }
+                        }
+                    }
+
+                    // $totalRows = count($accountGroups); // Jumlah baris dari $budgetImplementations
+                    // // dd($budgetImplementations);
+                    // // Hitung jumlah detail untuk setiap $budgetImplementation dan tambahkan ke total baris
+                    // // dd($budgetImplementations[1]->details);
+                    // foreach ($budgetImplementations as $budgetImplementation) {
+                    //     echo 'h' . count($budgetImplementation->details);
+                    //     $totalRows += count($budgetImplementation->details);
+                    // }
+                    // dd($totalRows);
+
+                @endphp
+
                 @foreach ($accountGroups as $accountCode => $budgetImplementations)
-                    <!-- Activity Row -->
                     @if (!$isActivityDisplayed)
                         <tr data-crow="{{ $cr1 }}"
                             @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
@@ -109,16 +139,77 @@
                             <td>Rp
                                 {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
                             </td>
+                            <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk lihat detail rencana penarikan dana"
+                                class="bs-tooltip"
+                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}', '2024');">
+                                Rp
+                                {{ number_format($budgetImplementations->first()->activity->withdrawalPlans->sum('amount_withdrawn')) }}
+                                <br>
+                            </td>
+                            <td rowspan="{{ $totalRows + 1 }}">
+                                @php
+                                    $rekap_file = false;
+                                    if (
+                                        !empty(
+                                            $budgetImplementations->first()->activity->activityRecap?->attachment_path
+                                        )
+                                    ) {
+                                        $filePath = Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->path(
+                                            $budgetImplementations->first()->activity->activityRecap?->attachment_path,
+                                        );
+                                        $fileMimeType = mime_content_type($filePath);
+                                        $rekap_file = true;
+                                    } else {
+                                        $fileMimeType = false;
+                                    }
+                                @endphp
+                                @if ($rekap_file)
+                                    <button type="button" class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
+                                        onclick="handleViewFile('{{ route('activity-recap.show-file', $budgetImplementations->first()->activity->activityRecap) }}', '{{ $fileMimeType }}');">
+                                        <i class="feather icon-eye"></i> Lihat File
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
+                                        <i class="feather icon-eye"></i> Belum Ada
+                                    </button>
+                                @endif
+                            </td>
+
+
+                            <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk menambahkan atau edit catatan"
+                                class="bs-tooltip"
+                                onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')">
+                                {{-- @if ($rekap_file) --}}
+                                {{-- <button
+                                    onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')"class="btn
+                                    btn-primary btn-sm me-sm-2 mb-2 mb-sm-0" role="button">
+                                    <i class="text-white" data-feather="edit"></i>
+                                </button> --}}
+
+                                {{-- @else
+                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
+                                        <i class="feather icon-eye"></i> Belum Ada
+                                    </button>
+                                @endif --}}
+                                {{-- @dd($budgetImplementations->first()->activity->activityNote) --}}
+                                {{-- <p> --}}
+                                @php $i_note = 1 @endphp
+                                @foreach ($budgetImplementations->first()->activity->activityNote as $note)
+                                    {!! $i_note != 1 ? '<br>' : '' !!}
+                                    {{ $i_note }}. {{ $note->description }}
+                                    @php $i_note++ @endphp
+                                @endforeach
+                                {{-- </p> --}}
+                            </td>
+
                         </tr>
                         @php
                             $isActivityDisplayed = true;
                             $cr2 = 1;
                         @endphp
                     @endif
-
                     @foreach ($budgetImplementations as $budgetImplementation)
                         @if ($budgetImplementation->accountCode)
-                            <!-- Account Code Row -->
                             <tr data-crow="{{ $cr1 . '-' . $cr2 }}"
                                 @if ($dipa) data-bi="{{ $budgetImplementations->first()->id }}"
                                 data-account-code="{{ $budgetImplementation->accountCode->id }}" @endif
@@ -132,6 +223,9 @@
                                 <td>Rp
                                     {{ number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.') }}
                                 </td>
+                                {{-- <td></td>
+                                <td></td>
+                                <td></td> --}}
                             </tr>
                         @endif
                         @php $cr3 = 1; @endphp
@@ -148,6 +242,10 @@
                                     <td>{{ $detail->expenditureUnit->code }}</td>
                                     <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
                                     <td class="count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    {{-- <td></td>
+                                    <td></td>
+                                    <td></td> --}}
+
                                 </tr>
                             @endif
                             @php $cr3++; @endphp

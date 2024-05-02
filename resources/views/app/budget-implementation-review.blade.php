@@ -68,8 +68,7 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table :totalSum="$totalSum" :unitBudget="$unitBudget" :dipa="$dipa"
-                    :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table-review :totalSum="$totalSum" :dipa="$dipa" :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>
@@ -98,6 +97,8 @@
     </div>
     <!-- Edit Modal -->
     <x-custom.budget-implementation.edit-modal />
+    <x-custom.budget-implementation.catatan-modal />
+    <x-custom.budget-implementation.rpd-modal :months='$months' />
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
@@ -114,7 +115,8 @@
                 const tdMoney = document.querySelectorAll(
                     'tr.expenditure-row td:nth-child(5),tr.expenditure-row td:nth-child(6)')
                 const tableBody = document.querySelector('tbody.dipa-table');
-                @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
+                tableBody.addEventListener('click', handleRowClick);
+                @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
                     const formCreate = document.getElementById('form-create');
                     const formEdit = document.getElementById('form-edit');
                     const table = document.getElementById('budget_implementation-table');
@@ -297,7 +299,7 @@
                                 `<option value="${unit.code}">${unit.code}</option>`
                             ).join('');
                             createInputContainer.innerHTML =
-                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input readonly type="text" name="total" required class="form-control" placeholder="total" >`;
+                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input disabled type="text" name="total" required class="form-control" placeholder="total">`;
 
                             // Now add the event listeners
                             const volumeInput = createInputContainer.querySelector(
@@ -308,7 +310,7 @@
                                 volumeInput.addEventListener('input', function() {
                                     const isVolumeFilled = volumeInput.value.trim() !== '';
                                     priceInput.disabled = !isVolumeFilled;
-                                    // totalInput.disabled = !isVolumeFilled;
+                                    totalInput.disabled = !isVolumeFilled;
 
                                     if (!isVolumeFilled) {
                                         // Clear values when volume is not filled
@@ -326,7 +328,6 @@
 
                     })
 
-                    tableBody.addEventListener('click', handleRowClick);
                     formCreate.addEventListener('submit', handleFormSubmit);
                     formEdit.addEventListener('submit', handleFormEditSubmit);
                     saveDipaBtn.addEventListener('click', handleSaveDipaClick);
@@ -334,6 +335,160 @@
                 @endif
 
             });
+
+            async function fetchRPD(activity, year) {
+                try {
+                    const response = await axios.get(
+                        `/api/withdrawal-plans-detail/${activity}/${year}`);
+                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
+                    resetModalAmounts();
+                    document.getElementById('select_year').value = year
+                    populateModalWithData(response.data, activity);
+                } catch (error) {
+                    showErrorAlert('Kesalahan', 'Gagal memuat data penarikan dana.');
+                }
+            }
+
+            function addCatatan(activity) {
+                fetchCatatan(activity)
+            }
+
+            async function fetchCatatan(activity) {
+                try {
+                    showLoading()
+                    const response = await axios.get(
+                        `/api/activity-note-check/${activity}`);
+                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
+                    // resetModalAmounts();
+                    // document.getElementById('select_year').value = year
+                    showCatatanModal(response.data, activity);
+                } catch (error) {
+                    let errorMessage = 'Terjadi kesalahan.';
+
+                    // Cek apakah error memiliki respons dari server
+                    if (error.response && error.response.data && error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+
+                    showErrorAlert('Kesalahan', errorMessage);
+                }
+            }
+
+            function showCatatanModal(response, activity) {
+                swal.close();
+                console.log(response)
+                document.getElementById('catatan_activity').value = activity;
+                document.getElementById('catatan_id').value = response.id ?? '';
+                document.getElementById('catatan_description').value = response.description ?? '';
+                $('#catatanModal').modal('show');
+            }
+            $('#form-catatan').on('submit', function(event) {
+                event.preventDefault();
+                let formData = new FormData(this);
+
+                axios.post(
+                        "{{ route('dipa-action.add_note') }}",
+                        formData
+                    )
+                    .then(response => {
+                        // Success feedback
+                        res_id = response.data.id
+
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil untuk disimpan.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+
+                            location.reload()
+
+                        });
+                    })
+                    .catch(error => {
+                        // Error handling
+                        let errorMessage = 'Terjadi kesalahan. Silahkan coba sesaat lagi.';
+                        if (error.response && error.response.data && error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+
+                        Swal.fire({
+                            title: 'Gangguan!',
+                            text: errorMessage,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+
+                event.target.reset();
+                $('#catatanModal').modal('hide');
+            });
+
+            function resetModalAmounts() {
+                for (let i = 1; i <= 12; i++) {
+                    const monthElement = document.getElementById(`amount-${i}`);
+                    if (monthElement) {
+                        monthElement.value = '-';
+                    }
+                }
+            }
+
+            function showLoading() {
+
+                Swal.fire({
+                    title: 'Loading',
+                    // text: 'Mohon menunggu data untuk disimpan terlebih dahulu.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            }
+
+            function showErrorAlert(title, message) {
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: 'error'
+                });
+            }
+            document.getElementById('select_year').addEventListener('change', function(e) {
+                let activityID = document.getElementById('currentActivityId').value;
+                let year = this.value;
+                // const activity = getActivityData(document.querySelector(`[data-activity-id="${activityID}"]`))
+                resetModalAmounts();
+                fetchRPD(activityID, year);
+            })
+
+            function populateModalWithData(response, activity) {
+                let totalAccumulated = 0;
+                response.data.forEach(plan => {
+                    const monthElement = document.getElementById(`amount-${plan.month}`);
+                    if (monthElement) {
+                        const amount = parseFloat(plan.amount_withdrawn) || 0;
+                        monthElement.value = amount === 0 ? "-" : window.formatAsIDRCurrency(amount);
+                        totalAccumulated += amount;
+                    }
+                });
+                let residual = response.totalActivity - totalAccumulated;
+                document.getElementById('withdrawalPlanModalLabel').innerText =
+                    `${response.activity.code} - ${response.activity.name}`;
+                document.getElementById('totalAccumulated').textContent = window.formatAsIDRCurrency(totalAccumulated);
+                // document.getElementById('accumulatedTotalSum').innerText = window.formatAsIDRCurrency(activity.accumulatedSum);
+                document.getElementById('residual').innerText = window.formatAsIDRCurrency(residual);
+                document.getElementById('currentActivityId').value = activity;
+                $('#withdrawalPlanModal').modal('show');
+            }
+
+            function handleViewFile(url, mimeType) {
+                if (mimeType === 'application/pdf' || mimeType === 'image/jpeg') {
+                    // Membuka file dalam tab baru jika PDF atau gambar
+                    window.open(url, '_blank');
+                } else if (mimeType === 'application/zip') {
+                    // Mengunduh file jika zip
+                    window.location.href = url;
+                }
+            }
 
             function handleSaveDipaClick() {
                 const dipaData = groupRows();
@@ -350,12 +505,13 @@
                     }
                 });
 
-                axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
-                        dipa: dipaData,
-                        @if (!empty($copy_of))
-                            copy_of: '{{ $copy_of }}'
-                        @endif
-                    })
+                axios.post(
+                        "{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
+                            dipa: dipaData,
+                            @if (!empty($copy_of))
+                                copy_of: '{{ $copy_of }}'
+                            @endif
+                        })
                     .then(response => {
                         // Success feedback
                         // console.log(fetchdata.data)
@@ -509,7 +665,8 @@
                                     text: 'Data berhasil dihapus.',
                                     icon: 'success'
                                 }).then(() => {
-                                    const selectedElements = document.querySelectorAll('.crow-' + crow);
+                                    const selectedElements = document.querySelectorAll('.crow-' +
+                                        crow);
                                     // Menghapus setiap elemen yang memiliki kelas "selected"
                                     selectedElements.forEach(element => {
                                         element.remove();
@@ -531,7 +688,8 @@
 
             function calculateAndUpdateTotal(volumeInput, priceInput, totalInput) {
                 const volume = parseFloat(volumeInput.value.replace(/[^0-9,.-]/g, '').replace(',', '.'));
-                let unitPrice = parseFloat(priceInput.value.replace(/Rp\s?|,00/g, '').replace(/\./g, '').replace(/[^\d]/g,
+                let unitPrice = parseFloat(priceInput.value.replace(/Rp\s?|,00/g, '').replace(/\./g, '').replace(
+                    /[^\d]/g,
                     ''));
 
                 if (!isNaN(volume) && !isNaN(unitPrice)) {
@@ -544,13 +702,14 @@
             }
 
             function handleRowClick(e) {
-
+                console.log('click')
                 if (e.target.closest('tr')) {
                     clearSelectedRows();
                     const clickedRow = e.target.closest('tr');
                     clickedRow.classList.add('selected');
-                    toggleButtonsBasedOnRow(clickedRow);
-
+                    @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
+                        toggleButtonsBasedOnRow(clickedRow);
+                    @endif
                     // Mark the clicked row as the parent for the next entry
                     if (clickedRow.classList.contains('activity-row')) {
                         clickedRow.classList.add('activity-parent');

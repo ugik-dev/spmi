@@ -35,7 +35,8 @@ class BudgetImplementationController extends Controller
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
-        return view('app.budget-implementation-list', compact('title', 'dipas', 'unitBudget',));
+        $btnCreate = true;
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'btnCreate', 'unitBudget',));
     }
     public function create()
     {
@@ -63,6 +64,8 @@ class BudgetImplementationController extends Controller
     public function dipa(Dipa $dipa)
     {
         $dipa->bi;
+        $dipa->unit;
+        // dd($dipa);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         $title = 'Daftar DIPA';
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();
@@ -73,7 +76,21 @@ class BudgetImplementationController extends Controller
         $expenditureUnits = ExpenditureUnit::all();
         return view('app.budget-implementation', compact('title', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
-
+    public function create_copy(Dipa $dipa)
+    {
+        $title = 'Buat DIPA';
+        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
+        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
+        // dd($groupedBI);
+        // $groupedBI = [];
+        $copy_of = $dipa->id;
+        $dipa = null;
+        $accountCodes = AccountCode::all();
+        $indikatorPerkin = PerformanceIndicator::all();
+        $expenditureUnits = ExpenditureUnit::all();
+        return view('app.budget-implementation', compact('title', 'copy_of', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
+    }
     public function form()
     {
         $title = 'DIPAs';
@@ -107,15 +124,33 @@ class BudgetImplementationController extends Controller
             'dipa.*.accounts.*.expenditures.*.unit' => 'required|string',
             'dipa.*.accounts.*.expenditures.*.unit_price' => 'required|numeric',
             'dipa.*.accounts.*.expenditures.*.total' => 'required|numeric',
+            'copy_of' => 'sometimes|numeric',
         ]);
+
+        // dd($validator->validated()['copy_of']);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
         try {
-            $dipa_id = Dipa::create(['year' => date('Y'), 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             $data = $validator->validated()['dipa'];
+            if (!empty($validator->validated()['copy_of'])) {
+                $copy = Dipa::find($validator->validated()['copy_of']);
+                $last = Dipa::where('head_id', !empty($copy->head_id) ? $copy->head_id : $copy->id)->latest()->first();
+                if (!empty($last)) {
+                    // dd('ada');
+                    // dd($last);
+                    $revision = $last->revision + 1;
+                } else {
+                    $revision = 1;
+                }
+                // dd($revision, $last);
+                $dipa_id = Dipa::create(['year' => date('Y'), 'revision' => $revision, 'head_id' => !empty($copy->head_id) ? $copy->head_id : $copy->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+            } else {
+                $dipa_id = Dipa::create(['year' => date('Y'), 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+            }
+            // dd($copy);
             // dd($data);
             $total = 0;
             foreach ($data as $key_ac => $activity) {
@@ -178,6 +213,7 @@ class BudgetImplementationController extends Controller
             'dipa.*.activity.code' => 'required|string',
             'dipa.*.activity.name' => 'required|string',
             'dipa.*.accounts' => 'nullable|array',
+            'dipa.*.accounts.*.account.bi' => 'sometimes|string',
             'dipa.*.accounts.*.account.id' => 'sometimes|string',
             'dipa.*.accounts.*.account.code' => 'required|string',
             'dipa.*.accounts.*.account.name' => 'required|string',
@@ -198,10 +234,12 @@ class BudgetImplementationController extends Controller
         try {
             $dipa_id = $dipa->id;
             $data = $validator->validated()['dipa'];
+            // dd($data);
             $total = 0;
             foreach ($data as $key_ac => $activity) {
                 if (!empty($activity['bi'])) {
                     Activity::where('id', $activity['activity']['id'])->update([
+                        'dipa_id' => $dipa_id,
                         'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
                         'code' => $activity['activity']['code'],
                         'name' => $activity['activity']['name'],
@@ -215,6 +253,7 @@ class BudgetImplementationController extends Controller
                         'name' => $activity['activity']['name'],
                     ])->id;
                 }
+                // dd($activity['accounts'][0]);
                 foreach ($activity['accounts'] as $account) {
                     // dd($account);
                     $accountCodeId = null;
@@ -223,26 +262,36 @@ class BudgetImplementationController extends Controller
                         $accountCodeId = $accountCode->id;
                     }
                     // dd($activity->id);
-
-                    $budgetImplementation = BudgetImplementation::firstOrCreate(
-                        [
-                            'dipa_id' => $dipa->id,
-                            'revision' => $dipa->revision,
-                            'activity_id' => $activity_id,
-                            'account_code_id' => $accountCodeId,
-                        ],
-                        [
-                            'dipa_id' => $dipa->id,
-                            'revision' => $dipa->revision,
-                            'activity_id' => $activity_id,
-                            'account_code_id' => $accountCodeId,
-                        ]
-                    );
+                    if (empty($account['account']['bi'])) {
+                        // dd($account);
+                        // dd('here');
+                        $budgetImplementation = BudgetImplementation::firstOrCreate(
+                            [
+                                'dipa_id' => $dipa->id,
+                                'revision' => $dipa->revision,
+                                'activity_id' => $activity_id,
+                                'account_code_id' => $accountCodeId,
+                            ],
+                            [
+                                'dipa_id' => $dipa->id,
+                                'revision' => $dipa->revision,
+                                'activity_id' => $activity_id,
+                                'account_code_id' => $accountCodeId,
+                            ]
+                        );
+                        $account['account']['bi'] = $budgetImplementation->id;
+                    } else {
+                        $budgetImplementation = BudgetImplementation::findOrFail($account['account']['bi']);
+                        if ($budgetImplementation->account_code_id != $accountCodeId)
+                            BudgetImplementation::where('id', $account['account']['bi'])->update([
+                                'account_code_id' => $accountCodeId,
+                            ]);
+                    }
 
                     // dd('s');
                     foreach ($account['expenditures'] as $detail) {
                         $budget_detail_att = [
-                            'budget_implementation_id' => $budgetImplementation->id,
+                            'budget_implementation_id' => $account['account']['bi'],
                             'expenditure_unit_id' => ExpenditureUnit::where('code', $detail['unit'])->first()->id,
                             'name' => $detail['description'],
                             'volume' => $detail['volume'],
@@ -265,6 +314,7 @@ class BudgetImplementationController extends Controller
             // dd();
             // return response()->json($this->budgetService->process($validator->validated()['dipa']));
         } catch (\Exception $e) {
+            // dd($key_ac, $activity, $budgetImplementation, $accountCodeId, 'C', $account['account']['code']);
             Log::error('Error in store function: ' . $e->getMessage());
 
             return response()->json(['error' => $e->getMessage()], 500);
@@ -419,6 +469,17 @@ class BudgetImplementationController extends Controller
         } catch (\Throwable $th) {
             Log::error($th);
 
+            return response()->json(['error' => 'true', 'message' => $th]);
+        }
+    }
+
+    public function delete_dipa(Request $request)
+    {
+        try {
+            Dipa::where('id', $request->id)->where('work_unit_id', Auth::user()->employee->work_unit_id)->delete();
+            return response()->json(['success' => 'true', 'message' => 'Berhasil menghapus data detail dipa.'], 200);
+        } catch (\Throwable $th) {
+            Log::error($th);
             return response()->json(['error' => 'true', 'message' => $th]);
         }
     }

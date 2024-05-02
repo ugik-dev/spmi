@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 
 class Dipa extends Model
 {
@@ -14,12 +15,26 @@ class Dipa extends Model
         'status',
         'revision',
         'total',
-        'work_unit_id'
+        'work_unit_id',
+        'head_id'
     ];
 
     public function bi()
     {
         return $this->hasMany(BudgetImplementation::class, 'dipa_id')->with(['activity', 'accountCode', 'details']);
+    }
+    public function unit()
+    {
+        return $this->belongsTo(WorkUnit::class, 'work_unit_id', 'id')->with('unitBudgets');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->with('unit')->where('work_unit_id', Auth::user()->employee->work_unit_id)->latest('revision')->first();
     }
 
     public function scopeAccessibility($query, $approval = false, $findId = false, $throw = false)
@@ -28,6 +43,19 @@ class Dipa extends Model
         $query->select('dipas.*');
 
         if (Auth::user()->hasRole('SUPER ADMIN PERENCANAAN')) {
+            if ($approval) {
+                $query =    $query->where(function ($query) {
+                    $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan'])
+                        // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
+                    ;
+                });
+            }
+            $query = $query
+                ->where(function ($query) {
+                    $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept'])
+                        // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
+                    ;
+                })->orWhere('user_id', Auth::user()->id);
         } else
         if (Auth::user()->hasRole('KEPALA UNIT KERJA')) {
             if ($approval) {

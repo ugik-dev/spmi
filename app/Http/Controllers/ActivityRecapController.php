@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\ActivityRecap;
+use App\Models\Dipa;
 use App\Supports\Disk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,9 +21,24 @@ class ActivityRecapController extends Controller
         $title = 'Rekap Kegiatan dan Upload Data Dukung';
         // Load ActivityRecap data with each Activity
         $activities = Activity::with('activityRecap')->sortedByCode()->get();
+        $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
+        $btnRekap = true;
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'btnRekap'));
+
+        // return view('app.activity-recap', compact('title', 'activities'));
+    }
+
+
+    public function open(Dipa $dipa)
+    {
+        $title = 'Rekap Kegiatan dan Upload Data Dukung';
+        // Load ActivityRecap data with each Activity
+        $activities = Activity::with('activityRecap')->sortedByCode()->where('dipa_id', $dipa->id)->get();
+
 
         return view('app.activity-recap', compact('title', 'activities'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -48,7 +65,7 @@ class ActivityRecapController extends Controller
                         Storage::disk(Disk::ActivityRecapAttachment)->size($filename) == $file->getSize();
                 });
 
-                if (! $existingFile) {
+                if (!$existingFile) {
                     if ($activityRecap->attachment_path) {
                         Storage::disk(Disk::ActivityRecapAttachment)->delete($activityRecap->attachment_path);
                     }

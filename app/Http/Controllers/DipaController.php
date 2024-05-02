@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Month;
+use App\Models\AccountCode;
+use App\Models\BudgetImplementation;
+use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
 use App\Models\DipaLog;
+use App\Models\ExpenditureUnit;
+use App\Models\PerformanceIndicator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class DipaController extends Controller
 {
@@ -16,6 +23,61 @@ class DipaController extends Controller
         $title = 'Daftar DIPA';
         $dipas = Dipa::accessibility()->get();
         return view('app.budget-implementation-approval', compact('title', 'dipas',));
+    }
+    public function review(Dipa $dipa)
+    {
+        $dipa->bi;
+        $dipa->unit;
+        // dd($dipa);
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
+        $title = 'Daftar DIPA';
+        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        $accountCodes = AccountCode::all();
+        $indikatorPerkin = PerformanceIndicator::all();
+        $expenditureUnits = ExpenditureUnit::all();
+        $months = Month::cases();
+        return view('app.budget-implementation-review', compact(
+            'title',
+            'dipa',
+            'months',
+            'groupedBI',
+            'accountCodes',
+            'expenditureUnits',
+            'totalSum',
+            'indikatorPerkin',
+            // 'unitBudget',
+        ));
+    }
+
+    public function pdf(Dipa $dipa)
+    {
+        $dompdf = new PDF();
+        $dipa->bi;
+        $dipa->unit;
+        $dipa->user;
+        // dd($dipa);
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
+        $title = 'Daftar DIPA';
+        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        // $accountCodes = AccountCode::all();
+        // $indikatorPerkin = PerformanceIndicator::all();
+        // $expenditureUnits = ExpenditureUnit::all();
+        // $months = Month::cases();
+        // return View('app.budget-implementation-pdf', compact('dipa', 'totalSum', 'groupedBI'));
+        $pdf = PDF::loadView('app.budget-implementation-pdf', compact('dipa', 'totalSum', 'groupedBI'));
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->stream('invoice.pdf');
+        // return view('app.budget-implementation-pdf', compact(
+        //     'title',
+        //     'dipa',
+        //     'months',
+        //     'groupedBI',
+        //     'accountCodes',
+        //     'expenditureUnits',
+        //     'totalSum',
+        //     'indikatorPerkin',
+        //     // 'unitBudget',
+        // ));
     }
 
     public function approval_kp(Request $request, Dipa $dipa)

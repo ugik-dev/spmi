@@ -70,9 +70,11 @@
                     @endif
                     <div class="text-start">
                         <!-- Button trigger modal -->
-                        <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
-                            Buat Usulan Baru
-                        </a>
+                        @if (!empty($btnRPD))
+                            <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
+                                Buat Usulan Baru
+                            </a>
+                        @endif
                     </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
@@ -97,14 +99,36 @@
                                         <td>{{ number_format($dipa->total) }}</td>
                                         <td>{{ $dipa->status }}</td>
                                         <td class="text-center">
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete2({{ $dipa->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-                                            <a href="{{ route('dipa.update', $dipa->id) }}"
-                                                class="btn btn-primary btn-sm" role="button">
-                                                <i class="text-white" data-feather="eye"></i>
-                                            </a>
+                                            @if (!empty($btnRPD))
+                                                <a href="{{ route('withdrawal_plan.open', $dipa->id) }}"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    <i class="text-white" data-feather="eye"></i>
+                                                </a>
+                                            @elseif (!empty($btnRekap))
+                                                <a href="{{ route('activity_recap.open', $dipa->id) }}"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    <i class="text-white" data-feather="eye"></i>
+                                                </a>
+                                            @else
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                                                    role="button" onclick="confirmDelete2({{ $dipa->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                                <a href="{{ route('dipa.update', $dipa->id) }}"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    <i class="text-white" data-feather="eye"></i>
+                                                </a>
+                                                <a href="{{ route('dipa.fpdf', $dipa->id) }}"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    <i class="text-white" data-feather="printer"></i>
+                                                </a>
+                                                @if ($dipa->status == 'accept')
+                                                    <a href="{{ route('dipa.create-revisi', $dipa->id) }}"
+                                                        class="btn btn-primary btn-sm" role="button">
+                                                        Buat Revisi
+                                                    </a>
+                                                @endif
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -173,10 +197,7 @@
                             <i data-feather="save"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
-
-
                 </div>
-
             </div>
         </div>
     </div>
@@ -209,7 +230,7 @@
 
             function deleteIKU(index) {
                 // Assuming you have a route defined in Laravel to handle the deletion that expects the index
-                axios.post("{{ route('iku.delete') }}", {
+                axios.post("{{ route('dipa.delete') }}", {
                         id: index
                     })
                     .then(function(response) {
@@ -217,7 +238,7 @@
                         // Handle success (e.g., show a success message and remove the row from the table)
                         Swal.fire(
                             'Dihapus!',
-                            'IKU telah dihapus.',
+                            'DIPA telah dihapus.',
                             'success'
                         ).then(() => {
                             window.location.reload(); // or use JavaScript to remove the row from the DOM
@@ -228,7 +249,7 @@
                         // Handle error (e.g., show an error message)
                         Swal.fire(
                             'Gangguan!',
-                            'Terjadi gangguan saat menghapus iku.',
+                            'Terjadi gangguan saat menghapus DIPA.',
                             'error'
                         );
                     });

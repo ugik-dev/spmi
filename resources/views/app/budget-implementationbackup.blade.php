@@ -113,10 +113,9 @@
                 theadTh.forEach(th => th.classList.add('bg-primary'));
                 const tdMoney = document.querySelectorAll(
                     'tr.expenditure-row td:nth-child(5),tr.expenditure-row td:nth-child(6)')
-                const tableBody = document.querySelector('tbody.dipa-table');
-                @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
-                    const formCreate = document.getElementById('form-create');
-                    const formEdit = document.getElementById('form-edit');
+                const tableBody = document.querySelector('tbody');
+                @if (empty($dipa) || $dipa->status == 'draft' || $dipa->status == 'reject')
+                    const form = document.getElementById('form-create');
                     const table = document.getElementById('budget_implementation-table');
                     const createModalEl = document.getElementById('createModal');
                     const saveDipaBtn = document.getElementById('save-dipa');
@@ -173,6 +172,7 @@
 
                         if (trSelected.classList.contains('activity-row')) {
                             editModalTitle.textContent = "Input Sub Komponen";
+
                             editInputContainer.innerHTML =
                                 `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="activity"><input type="text" name="code" value="${trSelected.children[1].textContent}" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" value="${trSelected.children[2].textContent}" required name="name" class="form-control" placeholder="Uraian">`
 
@@ -192,10 +192,7 @@
                             ).join('');
 
                             editInputContainer.innerHTML =
-                                `
-                                <input type="hidden" name="id" value="${trSelected.dataset.bi}">
-                                <input type="hidden" name="type" value="account">
-                                <select name="code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="name" class="form-control" placeholder="Uraian">`;
+                                `<input type="hidden" name="id" value="${trSelected.dataset.bi}"><input type="hidden" name="type" value="account"><select name="code" id="account-code-select" required class="form-control" style="max-width: 200px !important;"><option value="">Pilih Kode Akun</option>${options}</select><input type="text" id="account-name-input" disabled required name="name" class="form-control" placeholder="Uraian">`;
 
                             // Set the value of the select element
                             const accountCodeSelect = document.getElementById('account-code-select');
@@ -297,7 +294,7 @@
                                 `<option value="${unit.code}">${unit.code}</option>`
                             ).join('');
                             createInputContainer.innerHTML =
-                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input readonly type="text" name="total" required class="form-control" placeholder="total" >`;
+                                `<input type="text" required name="expenditure_description" class="form-control" placeholder="Uraian Detail"><input type="text" required name="expenditure_volume" class="form-control"style="max-width: 100px !important;" placeholder="Volume"><select name="unit" required class="form-control" style="max-width: 150px !important;"><option value="">Pilih Satuan</option>${options}</select><input type="text" disabled name="unit_price" required class="form-control" placeholder="Harga Satuan"><input disabled type="text" name="total" required class="form-control" placeholder="total">`;
 
                             // Now add the event listeners
                             const volumeInput = createInputContainer.querySelector(
@@ -308,7 +305,7 @@
                                 volumeInput.addEventListener('input', function() {
                                     const isVolumeFilled = volumeInput.value.trim() !== '';
                                     priceInput.disabled = !isVolumeFilled;
-                                    // totalInput.disabled = !isVolumeFilled;
+                                    totalInput.disabled = !isVolumeFilled;
 
                                     if (!isVolumeFilled) {
                                         // Clear values when volume is not filled
@@ -327,8 +324,7 @@
                     })
 
                     tableBody.addEventListener('click', handleRowClick);
-                    formCreate.addEventListener('submit', handleFormSubmit);
-                    formEdit.addEventListener('submit', handleFormEditSubmit);
+                    form.addEventListener('submit', handleFormSubmit);
                     saveDipaBtn.addEventListener('click', handleSaveDipaClick);
                     sendDipaBtn.addEventListener('click', handleSendDipaClick);
                 @endif
@@ -351,10 +347,7 @@
                 });
 
                 axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
-                        dipa: dipaData,
-                        @if (!empty($copy_of))
-                            copy_of: '{{ $copy_of }}'
-                        @endif
+                        dipa: dipaData
                     })
                     .then(response => {
                         // Success feedback
@@ -446,8 +439,7 @@
                         let accountData = {
                             id: row.dataset.accountCode,
                             code: row.children[1].textContent,
-                            name: row.children[2].textContent,
-                            bi: row.dataset.bi,
+                            name: row.children[2].textContent
                         };
                         currentAccount = {
                             account: accountData,
@@ -479,8 +471,7 @@
 
             function confirmDeleteDipa(rowType, id, name, crow) {
                 console.log('row', rowType, 'id', id, 'name', name, 'crow', crow)
-
-
+                return;
                 let rowTypeName = rowType === 'detail' ? 'detail' : (rowType === 'activiy' ? "Kode Keg" : "Kode Akun");
                 Swal.fire({
                     title: `Anda yakin ingin hapus \n(${rowTypeName} : ${name})?`,
@@ -491,16 +482,6 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
-                    if (id == undefined) {
-                        console.log('langsung delete')
-                        const selectedElements = document.querySelectorAll('.crow-' + crow);
-                        // Menghapus setiap elemen yang memiliki kelas "selected"
-                        selectedElements.forEach(element => {
-                            element.remove();
-                        });
-                        return;
-                    }
-
                     if (result.isConfirmed) {
                         axios.delete(`/admin/penganggaran/hapus-dipa/${rowType}/${id}`)
                             .then(res => {
@@ -509,11 +490,7 @@
                                     text: 'Data berhasil dihapus.',
                                     icon: 'success'
                                 }).then(() => {
-                                    const selectedElements = document.querySelectorAll('.crow-' + crow);
-                                    // Menghapus setiap elemen yang memiliki kelas "selected"
-                                    selectedElements.forEach(element => {
-                                        element.remove();
-                                    });
+                                    // window.location.reload();
                                 });
                             })
                             .catch(error => {
@@ -600,60 +577,6 @@
                 return null; // or some default type if necessary
             }
 
-
-
-            function handleFormEditSubmit(event) {
-                event.preventDefault();
-                const formElements = Array.from(event.target.elements).filter(element => element.name);
-
-                // Convert form elements to an object
-                const formData = formElements.reduce((obj, element) => {
-                    obj[element.name] = element.value;
-                    return obj;
-                }, {});
-
-                // Check the type of form data
-                const isActivity = formData.activity_code || formData.activity_name;
-                const isAccount = formData.account_code || formData.account_name;
-                const isExpenditure = formData.unit || formData.unit_price;
-                const trType = formData.type;
-
-                console.log();
-                console.log('f', formData, 'id', formData.id, 'type', trType);
-
-                const trSelectedEdit = document.querySelector('tr.selected');
-                if (formData.type == "detail") {
-                    trSelectedEdit.children[2].textContent = formData.name
-                    trSelectedEdit.children[3].textContent = formData.volume
-                    trSelectedEdit.children[4].textContent = formData.unit
-                    trSelectedEdit.children[5].textContent = formData.unit_price
-                    trSelectedEdit.children[6].textContent = formData.total
-                } else if (formData.type == "account") {
-                    var result = accountCodes.filter(obj => {
-                        return obj.code === formData.code
-                    })
-                    console.log(result[0]);
-                    trSelectedEdit.children[1].textContent = formData.code
-                    trSelectedEdit.children[2].textContent = result[0].name
-                } else if (formData.type == "activity") {
-                    trSelectedEdit.children[0].textContent = formData.performance_indicator_id
-                    trSelectedEdit.children[1].textContent = formData.code
-                    trSelectedEdit.children[2].textContent = formData.name
-                } else {
-                    return;
-                }
-                if (formData.id === 'undefined') {
-                    //
-                } else {
-                    console.log('ada id')
-                }
-                // createAndAppendRowEdit(formData, formData.type);
-                event.target.reset();
-                // Hide the modal after form submission
-                $('#editModal').modal('hide');
-            }
-
-
             function handleFormSubmit(event) {
                 event.preventDefault();
                 const formElements = Array.from(event.target.elements).filter(element => element.name);
@@ -683,7 +606,7 @@
                     return;
                 }
                 const newRow = document.createElement('tr');
-                const tableBody = document.querySelector('tbody.dipa-table');
+                const tableBody = document.querySelector('tbody');
 
                 if (type === 'activity') {
                     newRow.innerHTML =
@@ -699,7 +622,7 @@
             }
 
             function insertRowBasedOnType(newRow, type) {
-                const tableBody = document.querySelector('tbody.dipa-table');
+                const tableBody = document.querySelector('tbody');
                 const selectedRow = document.querySelector('tr.selected');
                 if (!selectedRow) {
                     return;

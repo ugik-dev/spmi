@@ -1,6 +1,6 @@
 @props(['dipa'])
 
-<button type="button" class="btn btn-sm btn-success temporary-edit mb-2 mt-2 approval_btn_ppk" data-res="Y">
+<button type="button" class="btn btn-sm btn-success temporary-edit mb-2 mt-2 log_btn" data-res="Y">
     <i data-feather="file-text"></i> Logs
 </button>
 
@@ -35,7 +35,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        $('.approval_btn_ppk').on('click', function(e) {
+        $('.log_btn').on('click', function(e) {
             e.preventDefault();
             var res = $(this).data('res');
 

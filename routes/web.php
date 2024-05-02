@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountCodeController;
 use App\Http\Controllers\AccountCodeReceptionController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ActivityRecapController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetItemController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\InstitutionalBudgetController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\PaymentReceiptController;
 use App\Http\Controllers\PaymentVerificationController;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PerformanceIndicatorController;
 use App\Http\Controllers\PPKController;
 use App\Http\Controllers\ProgramTargetController;
@@ -132,27 +134,35 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
-        Route::get('dipa/approval', [DipaController::class, 'approval'])->name('dipa.approval');
+        Route::get('permohonan-approval', [DipaController::class, 'approval'])->name('dipa.approval');
+        Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
+        Route::get('permohonan-approval/pdf/{dipa}', [DipaController::class, 'pdf'])->name('dipa.pdf');
+        Route::get('permohonan-approval/fpdf/{dipa}', [PDFController::class, 'dipa'])->name('dipa.fpdf');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
+        Route::post('dipa/approval/add-note', [ActivityController::class, 'add_note'])->name('dipa-action.add_note');
         Route::post('dipa/approval/perencanaan/{dipa}', [DipaController::class, 'approval_perencanaan'])->name('dipa-action.perencanaan');
+        Route::post('delete-dipa', [BudgetImplementationController::class, 'delete_dipa'])->name('dipa.delete');
 
 
         Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
+        Route::get('dipa/buat-revisi/{dipa}', [BudgetImplementationController::class, 'create_copy'])->name('dipa.create-revisi');
         Route::get('dipa', [BudgetImplementationController::class, 'index'])->name('budget_implementation.index');
         Route::get('dipa/{dipa}', [BudgetImplementationController::class, 'dipa'])->name('budget_implementation.dipa');
         Route::post('dipa', [BudgetImplementationController::class, 'store'])->name('budget_implementation.store');
-        Route::patch('edit-dipa', [BudgetImplementationController::class, 'update'])->name('budget_implementation.update');
+        Route::post('edit-dipa', [BudgetImplementationController::class, 'update'])->name('budget_implementation.update');
         Route::post('dipa/{dipa}', [BudgetImplementationController::class, 'update_dipa'])->name('dipa.update');
         Route::post('dipa/ajukan/{dipa}', [BudgetImplementationController::class, 'ajukan'])->name('dipa.ajukan');
         Route::delete('hapus-dipa/{type}/{id}', [BudgetImplementationController::class, 'destroy'])->name('budget_implementation.delete');
         Route::get('rekap-kegiatan-dan-upload-data-dukung', [ActivityRecapController::class, 'index'])->name('activity_recap.index');
+        Route::get('rekap-kegiatan-dan-upload-data-dukung/{dipa}', [ActivityRecapController::class, 'open'])->name('activity_recap.open');
         Route::post('rekap-kegiatan-dan-upload-data-dukung', [ActivityRecapController::class, 'store'])->name('activity_recap.store');
         Route::get('rekap-kegiatan/bukti-dukung/{activityRecap}', [ActivityRecapController::class, 'showFile'])
             ->name('activity-recap.show-file');
         Route::post('rekap-kegiatan-dan-upload-data-dukung/update-status', [ActivityRecapController::class, 'updateStatus'])->name('activity_recap.update_status');
         Route::get('rencana-penarikan-dana', [WithdrawalPlanController::class, 'index'])->name('withdrawal_plan.index');
+        Route::get('rencana-penarikan-dana/{dipa}', [WithdrawalPlanController::class, 'open'])->name('withdrawal_plan.open');
         Route::post('rencana-penarikan-dana', [WithdrawalPlanController::class, 'store'])->name('withdrawal_plan.store');
         Route::post('rencana-penarikan-dana-update', [WithdrawalPlanController::class, 'update'])->name('withdrawal_plan.update');
     });

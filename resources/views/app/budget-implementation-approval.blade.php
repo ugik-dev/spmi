@@ -97,15 +97,13 @@
                                         <td>{{ number_format($dipa->total) }}</td>
                                         <td>{{ $dipa->status }}</td>
                                         <td class="text-center">
-                                            @if ($dipa->user_id == Auth::user()->id)
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm"
-                                                    role="button" onclick="confirmDelete2({{ $dipa->id }});">
-                                                    <i class="text-white" data-feather="trash-2"></i>
-                                                </a>
-                                            @endif
-                                            <a href="{{ route('dipa.update', $dipa->id) }}"
+                                            <a href="{{ route('dipa.review', $dipa->id) }}"
                                                 class="btn btn-primary btn-sm" role="button">
                                                 <i class="text-white" data-feather="eye"></i>
+                                            </a>
+                                            <a href="{{ route('dipa.fpdf', $dipa->id) }}"
+                                                class="btn btn-primary btn-sm" role="button">
+                                                <i class="text-white" data-feather="printer"></i>
                                             </a>
                                         </td>
                                     </tr>

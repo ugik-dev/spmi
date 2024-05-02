@@ -17,6 +17,11 @@ class BudgetImplementation extends Model
         return $this->belongsTo(Activity::class, 'activity_id');
     }
 
+    public function activityReview()
+    {
+        // return $this->belongsTo(Activity::class, 'activity_id')->with('withdrawalPlans');
+    }
+
     public function accountCode()
     {
         return $this->belongsTo(AccountCode::class);
@@ -63,11 +68,10 @@ class BudgetImplementation extends Model
     /**
      * Static function to get grouped data with total sums.
      */
-    public static function getGroupedDataWithTotals($dipa_id)
+    public static function getGroupedDataWithTotals($dipa_id, $rpd = false)
     {
         $budgetImplementations = self::with(['activity', 'accountCode', 'details'])->where('dipa_id', $dipa_id)
             ->get();
-
         return $budgetImplementations
             ->groupBy('activity.code')
             ->sortKeysUsing(function ($key1, $key2) {
@@ -96,5 +100,45 @@ class BudgetImplementation extends Model
 
                 return $accountGroups;
             });
+    }
+
+    public static function getGroupedDataWithTotalsRpd($dipa_id, $rpd = false)
+    {
+        $budgetImplementations = self::with(['activity', 'accountCode', 'details'])->where('dipa_id', $dipa_id)
+            ->get();
+        // dd($budgetImplementations[0]->activity->withdrawalPlans);
+        $res =  $budgetImplementations
+            ->groupBy('activity.code')
+            ->sortKeysUsing(function ($key1, $key2) {
+                return strtolower($key1) <=> strtolower($key2); // Case-insensitive sorting
+            })
+            ->map(function ($activityGroup) {
+                $activityTotalSum = $activityGroup->reduce(function ($carry, $budgetImplementation) {
+                    return $carry + $budgetImplementation->calculateDetailsTotalSum();
+                }, 0);
+
+                $accountGroups = $activityGroup->groupBy('accountCode.code')->map(function ($accountGroup) {
+                    $accountTotalSum = $accountGroup->reduce(function ($carry, $budgetImplementation) {
+                        return $carry + $budgetImplementation->calculateDetailsTotalSum();
+                    }, 0);
+
+                    if ($accountGroup->isNotEmpty()) {
+                        $accountGroup->first()->account_total_sum = $accountTotalSum;
+                    }
+
+                    return $accountGroup;
+                });
+
+                if ($activityGroup->isNotEmpty()) {
+                    $activityGroup->first()->activity_total_sum = $activityTotalSum;
+                }
+
+                return $accountGroups;
+            });
+        return $res;
+        // foreach ($res as $r) {
+        //     dd($r->);
+        // }
+        // dd($res);
     }
 }
