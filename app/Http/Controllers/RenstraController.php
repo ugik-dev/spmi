@@ -6,6 +6,11 @@ use App\Models\Renstra;
 use App\Models\RenstraIndicator;
 use App\Models\RenstraMission;
 use Illuminate\Http\Request;
+use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+use App\Exports\MissionsExport;
+use App\Exports\IkusExport;
 
 class RenstraController extends Controller
 {
@@ -98,4 +103,51 @@ class RenstraController extends Controller
 
         return response()->json($programTargets);
     }
+
+    // fungsi download pdf
+    public function downloadMissionPdf()
+    {
+        $missions = RenstraMission::all();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Update the path to match the location of your Blade file
+        $pdf = PDF::loadView('components.custom.pdf.downloadMissionPdf', ['missions' => $missions]);
+        return $pdf->download("Mission-Report-{$date}.pdf");
+    }
+    public function downloadIkuPdf()
+    {
+        $ikus = RenstraIndicator::with('mission')->get();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Update the path to match the location of your Blade file
+        $pdf = PDF::loadView('components.custom.pdf.downloadIkuPdf', ['ikus' => $ikus]);
+        return $pdf->download("IKU-Report-{$date}.pdf");
+    }
+
+    // fungsi download excel
+    public function downloadMissionExcel()
+    {
+        // Mendapatkan tanggal dan waktu saat ini
+        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Membuat nama file dengan timestamp
+        $filename = "Mission-Report-{$timestamp}.xlsx";
+
+        return Excel::download(new MissionsExport, $filename);
+    }
+    public function downloadIkuExcel()
+    {
+        // Mendapatkan tanggal dan waktu saat ini
+        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Membuat nama file dengan timestamp
+        $filename = "IKU-Report-{$timestamp}.xlsx";
+
+        return Excel::download(new IkusExport, $filename);
+    }
+
 }

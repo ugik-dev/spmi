@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\PerformanceIndicator;
 use App\Models\ProgramTarget;
+use App\Exports\PerformanceIndicatorExport;
 use Illuminate\Http\Request;
+use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class PerformanceIndicatorController extends Controller
 {
@@ -87,5 +91,28 @@ class PerformanceIndicatorController extends Controller
 
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Indikator kinerja berhasil dihapus.');
+    }
+
+    // download pdf
+    public function downloadPerformanceIndicatorPdf()
+    {
+        $programTargetsHasPerformanceIndicators = ProgramTarget::has('performanceIndicators')->with('performanceIndicators')->get();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadPerformanceIndicatorPdf', compact('programTargetsHasPerformanceIndicators'));
+        return $pdf->download("Performance-Indicators-Report-{$date}.pdf");
+    }
+
+    // download excel
+    public function downloadPerformanceIndicatorExcel(){
+        // Mendapatkan tanggal dan waktu saat ini
+        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Membuat nama file dengan timestamp
+        $filename = "Performance-Indicators-Report-{$timestamp}.xlsx";
+
+        return Excel::download(new PerformanceIndicatorExport, $filename);
     }
 }

@@ -47,9 +47,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('visi', [RenstraController::class, 'vision'])->name('vision.index');
         Route::patch('edit-visi', [RenstraController::class, 'updateVision'])->name('vision.update');
         Route::get('misi', [RenstraController::class, 'mission'])->name('mission.index');
+        Route::get('/download-misi-pdf', [RenstraController::class, 'downloadMissionPdf'])->name('download.mission.pdf');
+        Route::get('/download-mission-excel', [RenstraController::class, 'downloadMissionExcel'])->name('download.mission.excel');
         Route::post('tambah-misi', [RenstraController::class, 'storeMission'])->name('mission.store');
         Route::post('hapus-misi', [RenstraController::class, 'deleteMission'])->name('mission.delete');
         Route::get('iku', [RenstraController::class, 'iku'])->name('iku.index');
+        Route::get('/download-iku-pdf', [RenstraController::class, 'downloadIkuPdf'])->name('download.iku.pdf');
+        Route::get('/download-iku-excel', [RenstraController::class, 'downloadIkuExcel'])->name('download.iku.excel');
         Route::post('tambah-iku', [RenstraController::class, 'storeIku'])->name('iku.store');
         Route::post('hapus-iku', [RenstraController::class, 'deleteIku'])->name('iku.delete');
     });
@@ -62,6 +66,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('indikator-kinerja', [PerformanceIndicatorController::class, 'store'])->name('performance_indicator.store');
         Route::delete('indikator-kinerja/{performanceIndicator}/hapus', [PerformanceIndicatorController::class, 'destroy'])->name('performance_indicator.delete');
         Route::patch('indikator-kinerja/{performanceIndicator}/update', [PerformanceIndicatorController::class, 'update'])->name('performance_indicator.update');
+        Route::get('/download-performance-indicators-pdf', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorPdf'])->name('download.performance-indicator.pdf');
+        Route::get('/download-performance-indicators-excel', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorExcel'])->name('download.performance-indicator.excel');
     });
     Route::prefix('pengaturan')->group(function () {
         Route::get('unit-kerja', [WorkUnitController::class, 'index'])->name('work_unit.index');
