@@ -12,6 +12,7 @@
         "vite": "^3.0.0"
     },
     "dependencies": {
+        "@jridgewell/sourcemap-codec": "^1.4.15",
         "bootstrap": "^5.2.1",
         "datatables.net-buttons": "^2.4.2",
         "jszip": "^3.10.1",

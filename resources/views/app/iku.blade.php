@@ -68,12 +68,16 @@
                                 aria-label="Close"></button>
                         </div>
                     @endif
-                    <div class="text-start">
+                    <div class="text-start" style="display: flex; justify-content: space-between;">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Indikator Kinerja Utama
                         </button>
+                        <div class="download">
+                            <a href="{{ route('download.iku.excel') }}" class="btn btn-success">Excel</a>
+                            <a href="{{ route('download.iku.pdf') }}" class="btn btn-danger">PDF</a>
+                        </div>
                     </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">

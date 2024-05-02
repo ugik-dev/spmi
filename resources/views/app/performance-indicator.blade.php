@@ -88,12 +88,17 @@
                         @endif
                     </div>
 
-                    <div class="text-start">
+                    <div class="text-start" style="display: flex; justify-content: space-between;">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Indikator Kinerja
                         </button>
+                        <div class="download">
+                            <a href="{{ route('download.performance-indicator.excel') }}"
+                                class="btn btn-success">Excel</a>
+                            <a href="{{ route('download.performance-indicator.pdf') }}" class="btn btn-danger">PDF</a>
+                        </div>
                     </div>
 
                     <div class="table-responsive mt-4">
@@ -144,6 +149,7 @@
                             </tbody>
                         </table>
                         {{ $programTargetsHasPerformanceIndicators->links() }}
+                        <!-- Pagination -->
                     </div>
 
                 </div>
