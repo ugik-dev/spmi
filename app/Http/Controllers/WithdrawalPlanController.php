@@ -24,6 +24,9 @@ class WithdrawalPlanController extends Controller
     }
     public function index()
     {
+        if (empty(Auth::user()->employee->work_unit_id)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Unit Kerja anda belum diatur, harap hubungi admin!!"]);
+        }
         $title = 'Daftar DIPA';
         $totalSum = 0;
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();

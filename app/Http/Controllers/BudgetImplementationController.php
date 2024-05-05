@@ -34,6 +34,9 @@ class BudgetImplementationController extends Controller
         $title = 'Daftar DIPA';
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
+        if (empty(Auth::user()->employee->work_unit_id)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Unit Kerja anda belum diatur, harap hubungi admin!!"]);
+        }
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
         $btnCreate = true;
         return view('app.budget-implementation-list', compact('title', 'dipas', 'btnCreate', 'unitBudget',));

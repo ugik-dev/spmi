@@ -18,6 +18,9 @@ class ActivityRecapController extends Controller
      */
     public function index()
     {
+        if (empty(Auth::user()->employee->work_unit_id)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Unit Kerja anda belum diatur, harap hubungi admin!!"]);
+        }
         $title = 'Rekap Kegiatan dan Upload Data Dukung';
         // Load ActivityRecap data with each Activity
         $activities = Activity::with('activityRecap')->sortedByCode()->get();

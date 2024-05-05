@@ -3,17 +3,24 @@
 <head>
     <style>
         table {
-            page-break-inside: avoid;
-            page-break-after: auto;
+            border-collapse: collapse;
+            width: 100%;
         }
 
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        /* Atur agar teks berada di atas dan wrap text */
         td {
             vertical-align: top;
-            height: 100%;
-            /* Set the height of the table cells */
+            white-space: normal;
+            word-wrap: break-word;
         }
     </style>
-
 </head>
 
 <body>
