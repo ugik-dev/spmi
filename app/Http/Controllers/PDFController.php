@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Models\BudgetImplementation;
 use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
@@ -10,9 +12,15 @@ use App\Supports\Disk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromView;
+use Illuminate\Contracts\View\View;
 
 use Fpdf\Fpdf;
 use Illuminate\Support\Facades\Storage;
+
+use App\Exports\DipaExport;
+
 
 class PDFController extends Controller
 {
@@ -21,12 +29,14 @@ class PDFController extends Controller
     public function cetak(Dipa $dipa)
     {
         $dataBI = RenstraMission::getWithDipa($dipa->id);
-        // echo json_encode($dataBI);
-        // die();
-        return view('app.budget-implementation-cetak', compact('dataBI'));
+        // return view('app.budget-implementation-cetak', compact('dataBI'));
 
-        // die();
-        // dd($groupedBIs);
+        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Membuat nama file dengan timestamp
+        $filename = "Dipa-Export-{$timestamp}.xlsx";
+
+        return Excel::download(new DipaExport($dataBI, $dipa), $filename);
     }
     public function dipa(Dipa $dipa)
     {
