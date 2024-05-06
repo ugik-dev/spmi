@@ -18,7 +18,7 @@
                 {{ number_format($unitBudget->pagu ?? '0', 0, ',', '.') }})</h4>
             @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
                 @if ($dipa)
-                    <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
+                    <button {{ $totalSum != ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
                         class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
                 @endif
                 <button id="save-dipa" class="btn btn-outline-success shadow-sm bs-tooltip">Simpan</button>
