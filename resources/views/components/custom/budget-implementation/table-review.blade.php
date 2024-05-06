@@ -61,6 +61,10 @@
                         data-res="Y">
                         <i data-feather="printer"></i> Cetak
                     </a>
+                    <a href="{{ route('dipa.cetak', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
+                        data-res="Y">
+                        <i data-feather="printer"></i> Excel
+                    </a>
                 </div>
             @endif
         </div>

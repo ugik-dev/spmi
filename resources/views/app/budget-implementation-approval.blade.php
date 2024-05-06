@@ -105,6 +105,10 @@
                                                 class="btn btn-primary btn-sm" role="button">
                                                 <i class="text-white" data-feather="printer"></i>
                                             </a>
+                                            <a href="{{ route('dipa.cetak', $dipa->id) }}"
+                                                class="btn btn-primary btn-sm" role="button">
+                                                Excel
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
