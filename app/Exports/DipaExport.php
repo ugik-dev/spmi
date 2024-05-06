@@ -169,7 +169,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                 $sheet->mergeCells('M3:O3');
                 $sheet->setCellValue('C1', '(' . $this->dipa->unit->code . ') ' . $this->dipa->unit->name);
                 $sheet->setCellValue('C2', $this->dipa->revision);
-                $sheet->setCellValue('C3', $this->dipa->user->name);
+                $sheet->setCellValue('C3', $this->dipa->user?->name);
                 $sheet->setCellValue('M1', $this->dipa->created_at);
                 $sheet->setCellValue('M2', $this->dipa->unit->unitBudgets[0]->pagu);
                 $sheet->setCellValue('M3', $this->dipa->total);
