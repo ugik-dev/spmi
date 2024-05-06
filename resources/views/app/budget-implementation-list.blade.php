@@ -70,11 +70,11 @@
                     @endif
                     <div class="text-start">
                         <!-- Button trigger modal -->
-                        @if (empty($dipas))
-                            <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
-                                Buat Usulan Baru
-                            </a>
-                        @endif
+                        {{-- @if (empty($dipas)) --}}
+                        <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
+                            Buat Usulan Baru
+                        </a>
+                        {{-- @endif --}}
                     </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
