@@ -161,7 +161,7 @@ class BudgetImplementationController extends Controller
                     $activity_id = Activity::create([
                         'dipa_id' => $dipa_id,
                         'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                        'code' => $activity['activity']['code'],
+                        'code' => strtoupper($activity['activity']['code']),
                         'name' => $activity['activity']['name'],
                     ])->id;
                 foreach ($activity['accounts'] as $account) {
@@ -245,7 +245,7 @@ class BudgetImplementationController extends Controller
                     Activity::where('id', $activity['activity']['id'])->update([
                         'dipa_id' => $dipa_id,
                         'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                        'code' => $activity['activity']['code'],
+                        'code' => strtoupper($activity['activity']['code']),
                         'name' => $activity['activity']['name'],
                     ]);
                     $activity_id = $activity['activity']['id'];
@@ -254,7 +254,7 @@ class BudgetImplementationController extends Controller
                         $activity_id = Activity::create([
                             'dipa_id' => $dipa_id,
                             'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                            'code' => $activity['activity']['code'],
+                            'code' => strtoupper($activity['activity']['code']),
                             'name' => $activity['activity']['name'],
                         ])->id;
                 }

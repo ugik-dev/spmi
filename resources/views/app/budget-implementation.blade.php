@@ -51,7 +51,8 @@
                 }
 
                 td:first-child,
-                td:nth-child(3),
+                td:nth-child(2),
+                td:nth-child(5),
                 td:nth-child(4) {
                     text-align: center;
                 }
