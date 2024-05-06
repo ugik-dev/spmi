@@ -200,7 +200,7 @@ class DipaController extends Controller
             if (
                 in_array($dipa->status, ['wait-perencanaan', 'reject-perencanaan']) &&
                 // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                Auth::user()->hasRole(['SPI'])
+                Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN'])
             ) {
             } else {
                 return response()->json(['error' => true,  'message' => 'Anda tidak berhak melalukan aksi ini'], 500);
