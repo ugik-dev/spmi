@@ -168,7 +168,7 @@
                                 <th scope="col">Total</th>
                                 <th scope="col">Upload Data Dukung</th>
                                 {{-- <th style="width:20rem" scope="col">Aksi</th> --}}
-                                <th scope="col">Keterangan</th>
+                                {{-- <th scope="col">Keterangan</th> --}}
                             </tr>
                         </thead>
                         <tbody>
