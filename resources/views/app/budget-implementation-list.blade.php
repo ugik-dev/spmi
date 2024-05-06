@@ -70,7 +70,7 @@
                     @endif
                     <div class="text-start">
                         <!-- Button trigger modal -->
-                        @if (!empty($btnRPD))
+                        @if (empty($dipas))
                             <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
                                 Buat Usulan Baru
                             </a>
