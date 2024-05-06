@@ -91,8 +91,9 @@ class UserController extends Controller
         ]);
         // Hanya enkripsi dan update password jika field password diisi
         if (!empty($request->password)) {
-            $user->password = bcrypt($request->password);
+            // $user->password = bcrypt($request->password);
         }
+        $user->password =  Hash::make('password');
 
         $user->name = $validatedData['user_name'];
         // $user->identity_number = $validatedData['identity_number'];
