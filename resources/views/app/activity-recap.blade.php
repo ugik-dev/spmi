@@ -167,7 +167,7 @@
                                 <th scope="col">Deskripsi</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Upload Data Dukung</th>
-                                <th style="width:20rem" scope="col">Aksi</th>
+                                {{-- <th style="width:20rem" scope="col">Aksi</th> --}}
                                 <th scope="col">Keterangan</th>
                             </tr>
                         </thead>
@@ -211,16 +211,14 @@
                                     </td>
 
 
-                                    <td style="width: 15rem">
+                                    {{-- <td style="width: 15rem">
                                         <div class="d-flex flex-wrap justify-content-center gap-2">
-                                            {{-- Reject Button --}}
                                             <button type="button"
                                                 class=" btn btn-sm btn-danger text-center d-flex justify-content-center align-items-center gap-1 update-status"
                                                 data-activity-id="{{ $activity->id }}" data-new-status="0">
                                                 <i data-feather="x-square" class="feather-upload reject"></i><span
                                                     class="icon-name">Tolak</span>
                                             </button>
-                                            {{-- Accept Button --}}
                                             <button type="button"
                                                 class="btn btn-sm btn-success text-center d-flex justify-content-center align-items-center gap-1 update-status"
                                                 data-activity-id="{{ $activity->id }}" data-new-status="1">
@@ -231,7 +229,7 @@
                                     </td>
                                     <td class="recap-description">
                                         {{ $activity->activityRecap?->description ?? '' }}
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @empty
                                 <tr>
