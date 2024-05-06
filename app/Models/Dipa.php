@@ -23,6 +23,7 @@ class Dipa extends Model
     {
         return $this->hasMany(BudgetImplementation::class, 'dipa_id')->with(['activity', 'accountCode', 'details']);
     }
+
     public function unit()
     {
         return $this->belongsTo(WorkUnit::class, 'work_unit_id', 'id')->with('unitBudgets');

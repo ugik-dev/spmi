@@ -16,16 +16,6 @@
             <div class="modal-body">
                 <input type="hidden" id="currentActivityId" value="">
                 <h2 class="mb-2 text-center fw-bold text-white bg-primary p-2" id="accumulatedTotalSum"></h2>
-                <div class="mb-3">
-                    <label class="form-label">Pilih Tahun di Tampilkan:</label>
-                    <select name="select_year" id="select_year" class="form-select w-25 d-inline-block">
-                        @for ($i = 2020; $i <= date('Y') + 10; $i++)
-                            <option value="{{ $i }}" @if ($i == date('Y')) selected @endif>
-                                {{ $i }}
-                            </option>
-                        @endfor
-                    </select>
-                </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -39,7 +29,7 @@
                                 <td>{{ $month->getName() }}</td>
                                 <td>
                                     <input type="text" class="form-control editable-amount"
-                                        id="amount-{{ $index + 1 }}" value="-">
+                                        id="amount-{{ $index + 1 }}" value="-" readonly>
                                 </td>
                             </tr>
                         @endforeach
@@ -61,9 +51,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <button id="btnSaveWithdrawalPlan" class="btn btn-lg btn-success ms-auto d-block">Simpan</button>
-
             </div>
         </div>
     </div>

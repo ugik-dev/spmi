@@ -412,13 +412,21 @@
                     })
                     .catch(error => {
                         // Error handling
-
-                        Swal.fire({
-                            title: 'Gangguan!',
-                            text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                        if (error.response.data.message) {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: error.response.data.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Gangguan!',
+                                text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
                     });
             }
 

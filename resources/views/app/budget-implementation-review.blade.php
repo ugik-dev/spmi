@@ -336,13 +336,12 @@
 
             });
 
-            async function fetchRPD(activity, year) {
+            async function fetchRPD(activity) {
                 try {
                     const response = await axios.get(
-                        `/api/withdrawal-plans-detail/${activity}/${year}`);
+                        `/api/withdrawal-plans-detail/${activity}/{{ $dipa->year }}`);
                     // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
                     resetModalAmounts();
-                    document.getElementById('select_year').value = year
                     populateModalWithData(response.data, activity);
                 } catch (error) {
                     showErrorAlert('Kesalahan', 'Gagal memuat data penarikan dana.');
@@ -452,13 +451,6 @@
                     icon: 'error'
                 });
             }
-            document.getElementById('select_year').addEventListener('change', function(e) {
-                let activityID = document.getElementById('currentActivityId').value;
-                let year = this.value;
-                // const activity = getActivityData(document.querySelector(`[data-activity-id="${activityID}"]`))
-                resetModalAmounts();
-                fetchRPD(activityID, year);
-            })
 
             function populateModalWithData(response, activity) {
                 let totalAccumulated = 0;

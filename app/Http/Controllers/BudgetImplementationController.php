@@ -12,10 +12,12 @@ use App\Models\ExpenditureUnit;
 use App\Models\PerformanceIndicator;
 use App\Models\UnitBudget;
 use App\Services\BudgetImplementationInputArrayService;
+use App\Supports\Disk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BudgetImplementationController extends Controller
 {
@@ -56,13 +58,47 @@ class BudgetImplementationController extends Controller
 
     public function ajukan(Dipa $dipa)
     {
-        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
-        $dipa->total = $totalSum;
-        $dipa->status = 'wait-kp';
-        $dipa->save();
+        try {
+            $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+            // $act = Activity::akumulasiRPD();
+            $act = Activity::where('dipa_id', $dipa->id)->get();
+            $rpd = 0;
+            foreach ($act as $ac) {
+                if (!empty($ac->activityRecap->attachment_path)) {
+                    // $filePath = 'app/activity/attachments-recap/' . $ac->activityRecap->attachment_path;
+                    // dd($filePath);
+                    // dd(Storage::exists($filePath));
+                    // if (!Storage::exists($filePath)) {
+                    //     return response()->json(['message' => 'Berkas ' . $ac->code . ' Upload ada yang rusak, harap cek !!'], 500);
+                    // }
+                } else {
+                    return response()->json(['message' => 'Berkas Upload kurang !!'], 500);
+                }
+                // $fileMimeType = mime_content_type($filePath);
+                // dd($ac->activityRecap);
+                if ($ac->activityRecap) {
+                }
+                $rpd += $ac->withdrawalPlans->sum('amount_withdrawn');
+                // echo $ac->withdrawalPlans->sum('amount_withdrawn') . '<br>';
+            }
+            if ($rpd != $totalSum) {
+                return response()->json(['message' => number_format($rpd) . 'Total RPD tidak sama dengan Usulan DIPA !!'], 500);
+            }
+            if (!in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-ppk'])) {
+                return response()->json(['message' => 'Bukan waktu untuk mengajukan !!'], 500);
+            }
+            // dd($rpd);
+            $dipa->total = $totalSum;
+            $dipa->status = 'wait-kp';
+            $dipa->save();
 
-        DipaLog::create(['dipa_id' => $dipa->id, 'user_id' => Auth::user()->id, 'description' => "Mengajukan permohonan approval"]);
-        return response()->json(['message' => 'Success']);
+            DipaLog::create(['dipa_id' => $dipa->id, 'user_id' => Auth::user()->id, 'description' => "Mengajukan permohonan approval"]);
+            return response()->json(['message' => 'Success']);
+        } catch (\Exception $e) {
+            Log::error('Error in store function: ' . $e->getMessage());
+
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
     public function dipa(Dipa $dipa)
     {
@@ -72,8 +108,24 @@ class BudgetImplementationController extends Controller
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         $title = 'Daftar DIPA';
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();
-        // dd($unitBudget);
+        // dd($groupedBI);
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        // $totalSum = Activity::where('dipa_id', $dipa->id)->get();
+        // $grand = 0;
+        // foreach ($totalSum as $am) {
+        //     $dam = 0;
+        //     foreach ($am->bi as $d) {
+        //         $dam += $d->details->sum('total');
+        //         $grand += $d->details->sum('total');
+        //     }
+        // echo number_format($dam) . '<br>';
+        // dd($am->bi[0]->details->sum('total'));
+        // }
+
+        // echo '<br> Grand ' . number_format($grand) . '<br>';
+
+        // dd('s');
+        // dd($totalSum);
         $accountCodes = AccountCode::all();
         $indikatorPerkin = PerformanceIndicator::all();
         $expenditureUnits = ExpenditureUnit::all();

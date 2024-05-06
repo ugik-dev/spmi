@@ -48,6 +48,11 @@ class Activity extends Model
         });
     }
 
+    public function akumulasiRPD()
+    {
+        return $this->withdrawalPlans->sum('amount_withdrawn');
+    }
+
     /**
      * Calculate the total sum of a specific field in BudgetImplementation and return it in IDR format.
      *

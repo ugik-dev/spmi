@@ -160,7 +160,7 @@
                             </td>
                             <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk lihat detail rencana penarikan dana"
                                 class="bs-tooltip"
-                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}', '2024');">
+                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}');">
                                 Rp
                                 {{ number_format($budgetImplementations->first()->activity->withdrawalPlans->sum('amount_withdrawn')) }}
                                 <br>
@@ -176,8 +176,22 @@
                                         $filePath = Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->path(
                                             $budgetImplementations->first()->activity->activityRecap?->attachment_path,
                                         );
-                                        $fileMimeType = mime_content_type($filePath);
-                                        $rekap_file = true;
+                                        if (
+                                            Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->exists(
+                                                $budgetImplementations->first()->activity->activityRecap
+                                                    ?->attachment_path,
+                                            )
+                                        ) {
+                                            $fileMimeType = mime_content_type($filePath);
+                                            $rekap_file = true;
+                                        } else {
+                                            // File tidak ditemukan
+                                            $fileMimeType = false;
+                                            $rekap_file = false;
+                                        }
+
+                                        // $fileMimeType = mime_content_type($filePath);
+                                        // $rekap_file = true;
                                     } else {
                                         $fileMimeType = false;
                                     }

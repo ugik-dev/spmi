@@ -19,6 +19,7 @@ class WithdrawalPlanController extends Controller
     {
         $title = 'Rencana Penarikan Dana';
         $activities = Activity::with('withdrawalPlans')->sortedByCode()->where('dipa_id', $dipa->id)->get();
+        // dd($activities); 
         $months = Month::cases(); // Assuming you have a Month Enum with cases for each month
         return view('app.withdrawal-plan', compact('title', 'activities', 'months', 'dipa'));
     }

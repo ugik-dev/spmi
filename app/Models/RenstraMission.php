@@ -29,14 +29,19 @@ class RenstraMission extends Model
         //         });
         //     })
         //     ->get();
-        $res = RenstraMission::with('indicatorDipa.sasaranDipa.indikatorPerkinDipa.activity')
-            ->whereHas('indicatorDipa.sasaranDipa.indikatorPerkinDipa.activity', function ($query) use ($dipa) {
-                // echo $dipa;
-                // die();
-                // $query->where('dipa_id', 2);
-                $query->where('dipa_id', $dipa);
+        $res = RenstraMission::with('indicatorDipa.sasaranDipa.indikatorPerkinDipa.activityDipa')
+            ->whereHas('indicatorDipa.sasaranDipa.indikatorPerkinDipa.activityDipa', function ($query) use ($dipa) {
+                $query->where('dipa_id', 1);
             })
             ->get();
+        // $res = RenstraMission::with([
+        //     'indicatorDipa.sasaranDipa.indikatorPerkinDipa.activityDipa' => function ($query) use ($dipa) {
+        //         $query->where('dipa_id', $dipa);
+        //     }
+        // ])->whereHas('indicatorDipa.sasaranDipa.indikatorPerkinDipa.activityDipa', function ($query) use ($dipa) {
+        //     $query->where('dipa_id', $dipa);
+        // })->get()->toArray();
+        // dd($res);
         // return $res;
         $new = [];
         // foreach ($res as $k_mission => $mission) {
@@ -89,18 +94,21 @@ class RenstraMission extends Model
                         $rowspan_ind_perkin = 0;
 
                         foreach ($ind_perkin->activity as $k_activity => $activity) {
-                            $rowspan_activity = 0;
-                            foreach ($activity->bi as $k_bi => $bi) {
-                                $rowspan = count($bi['details']);
-                                $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['bi'] = $bi;
-                                $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['bi']['rowspan'] = $rowspan;
-                                $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['detail'] = $bi->details;
-                                $rowspan_activity +=  $rowspan + 1;
-                            }
-                            if (!empty($new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'])) {
-                                $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['parent'] = $activity->attributes;
-                                $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['parent']['rowspan'] = $rowspan_activity;
-                                $rowspan_ind_perkin += $rowspan_activity;
+                            if ($activity->dipa_id == $dipa) {
+
+                                $rowspan_activity = 0;
+                                foreach ($activity->bi as $k_bi => $bi) {
+                                    $rowspan = count($bi['details']);
+                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['bi'] = $bi;
+                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['bi']['rowspan'] = $rowspan;
+                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['detail'] = $bi->details;
+                                    $rowspan_activity +=  $rowspan + 1;
+                                }
+                                if (!empty($new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'])) {
+                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['parent'] = $activity->attributes;
+                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['parent']['rowspan'] = $rowspan_activity;
+                                    $rowspan_ind_perkin += $rowspan_activity;
+                                }
                             }
                         }
                         if (!empty($new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'])) {
@@ -126,6 +134,8 @@ class RenstraMission extends Model
                 $new[$mission->id]['parent']['rowspan'] = $rowspan_misi;
             }
         }
+
+        // dd($new);
         return $new;
 
         return $res;
