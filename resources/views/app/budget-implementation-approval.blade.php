@@ -95,7 +95,7 @@
                                         <td>{{ $dipa->year }}</td>
                                         <td>{{ $dipa->revision }}</td>
                                         <td>{{ number_format($dipa->total) }}</td>
-                                        <td>{{ $dipa->status }}</td>
+                                        <td>{{ statusDipa($dipa->status) }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('dipa.review', $dipa->id) }}"
                                                 class="btn btn-primary btn-sm" role="button">

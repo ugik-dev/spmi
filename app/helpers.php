@@ -7,6 +7,32 @@ if (!function_exists('newRowDipa')) {
         return "</tr><tr>";
     }
 }
+if (!function_exists('statusDipa')) {
+    function statusDipa($data)
+    {
+        if ($data == 'accept') {
+            return "Sedang di Buat";
+        } else if ($data == 'wait-perencanaan') {
+            return "Menunggu Perencanaan";
+        } else if ($data == 'wait-spi') {
+            return "Menunggu Penelaahan";
+        } else if ($data == 'wait-ppk') {
+            return "Menunggu PPK";
+        } else if ($data == 'wait-kp') {
+            return "Menunggu Persetujuan Atasan";
+        } else if ($data == 'reject-kp') {
+            return "Ditolak Atasan";
+        } else if ($data == 'reject-perencanaan') {
+            return "Ditolak Perencanaan";
+        } else if ($data == 'reject-spi') {
+            return "Ditolak SPI";
+        } else if ($data == 'reject-perencanaan') {
+            return "Ditolak PPK";
+        } else
+            return "";
+    }
+}
+
 if (!function_exists('layoutConfig')) {
     function layoutConfig()
     {
