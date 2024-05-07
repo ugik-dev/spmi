@@ -28,6 +28,8 @@ if (!function_exists('statusDipa')) {
             return "Ditolak SPI";
         } else if ($data == 'reject-perencanaan') {
             return "Ditolak PPK";
+        } elseif ($data == 'release') {
+            return "Sudah Terbit";
         } else
             return "";
     }

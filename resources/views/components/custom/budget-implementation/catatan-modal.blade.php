@@ -10,8 +10,8 @@
                 <form id="form-catatan" action="" method="POST">
                     @csrf
                     @method('post')
-                    <input id="catatan_activity" name="activity_id">
-                    <input id="catatan_id" name="catatan_id">
+                    <input id="catatan_activity" name="activity_id" hidden>
+                    <input id="catatan_id" name="catatan_id" hidden>
                     {{-- <div class="mb-4 row"> --}}
                     {{-- <label for="selectTypeReceipt" class="col-sm-2 col-form-label">Jenis Kuitansi</label> --}}
                     {{-- <div class="col-sm-8"> --}}

@@ -228,4 +228,39 @@ class DipaController extends Controller
             return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function approval_release(Request $request, Dipa $dipa)
+    {
+        try {
+            if (
+                in_array($dipa->status, ['accept']) &&
+                // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN'])
+            ) {
+            } else {
+                return response()->json(['error' => true,  'message' => 'Anda tidak berhak melalukan aksi ini'], 500);
+            }
+            $log = new DipaLog();
+            if ($request->res == 'Y') {
+                $dipa->status = 'release';
+                $log->label = "success";
+                $log->description = "Terbit POK";
+            } else {
+                $dipa->status = 'reject-perencanaan';
+                $log->label = "danger";
+                if (!empty($request->description)) $log->description = "Melakukan Penolakan dengan alasan " . $request->description;
+                else $log->description = "Melakukan Penolakan";
+            }
+            $dipa->save();
+
+            $log->dipa_id = $dipa->id;
+            $log->user_id = Auth::user()->id;
+            $log->save();
+
+            return response()->json(['error' => false,  'message' => $request->res], 200);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

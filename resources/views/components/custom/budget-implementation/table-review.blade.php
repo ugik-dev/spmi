@@ -55,6 +55,13 @@
                         <x-custom.dipa.perencanaan-modal :dipa="$dipa" />
                     </div>
                 @endif
+                @if (in_array($dipa->status, ['accept']) &&
+                        // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.perencanaan2-modal :dipa="$dipa" />
+                    </div>
+                @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
                     <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"

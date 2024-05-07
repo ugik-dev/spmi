@@ -54,7 +54,7 @@ class Dipa extends Model
             }
             $query = $query
                 ->where(function ($query) {
-                    $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept'])
+                    $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept', 'release'])
                         // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
                     ;
                 })->orWhere('user_id', Auth::user()->id);
@@ -68,7 +68,7 @@ class Dipa extends Model
             }
             $query = $query
                 ->where(function ($query) {
-                    $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept'])
+                    $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept', 'release'])
                         ->where('work_unit_id',  Auth::user()->employee->work_unit_id);
                 })->orWhere('user_id', Auth::user()->id);
         } else
@@ -82,7 +82,7 @@ class Dipa extends Model
             }
             $query = $query
                 ->where(function ($query) {
-                    $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'wait-ppk', 'reject-ppk', 'accept'])
+                    $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'wait-ppk', 'reject-ppk', 'accept', 'release'])
                         // ->where('ppk_id',  Auth::user()->id)
                     ;
                 })->orWhere('user_id', Auth::user()->id);
@@ -93,7 +93,7 @@ class Dipa extends Model
             }
             $query = $query
                 ->where(function ($query) {
-                    $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'wait-ppk', 'reject-ppk', 'accept']);
+                    $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'wait-ppk', 'reject-ppk', 'accept', 'release']);
                 })->orWhere('user_id', Auth::user()->id);
         } else
         if (Auth::user()->hasRole('STAF PPK')) {

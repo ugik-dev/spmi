@@ -152,6 +152,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
         Route::post('dipa/approval/add-note', [ActivityController::class, 'add_note'])->name('dipa-action.add_note');
         Route::post('dipa/approval/perencanaan/{dipa}', [DipaController::class, 'approval_perencanaan'])->name('dipa-action.perencanaan');
+        Route::post('dipa/approval/release/{dipa}', [DipaController::class, 'approval_release'])->name('dipa-action.release');
         Route::post('delete-dipa', [BudgetImplementationController::class, 'delete_dipa'])->name('dipa.delete');
 
 
