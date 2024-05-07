@@ -24,11 +24,17 @@ class DipaController extends Controller
         $dipas = Dipa::accessibility()->get();
         return view('app.budget-implementation-approval', compact('title', 'dipas',));
     }
+
+    public function rekap()
+    {
+        $title = 'Rekap DIPA';
+        $dipas = Dipa::accessibility()->where('status', '=', 'release')->get();
+        return view('app.budget-implementation-rekap', compact('title', 'dipas',));
+    }
     public function review(Dipa $dipa)
     {
         $dipa->bi;
         $dipa->unit;
-        // dd($dipa);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
         $title = 'Daftar DIPA';
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
@@ -37,6 +43,29 @@ class DipaController extends Controller
         $expenditureUnits = ExpenditureUnit::all();
         $months = Month::cases();
         return view('app.budget-implementation-review', compact(
+            'title',
+            'dipa',
+            'months',
+            'groupedBI',
+            'accountCodes',
+            'expenditureUnits',
+            'totalSum',
+            'indikatorPerkin',
+            // 'unitBudget',
+        ));
+    }
+    public function review_rekap(Dipa $dipa)
+    {
+        $dipa->bi;
+        $dipa->unit;
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
+        $title = 'Daftar DIPA';
+        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        $accountCodes = AccountCode::all();
+        $indikatorPerkin = PerformanceIndicator::all();
+        $expenditureUnits = ExpenditureUnit::all();
+        $months = Month::cases();
+        return view('app.budget-implementation-review-rekap', compact(
             'title',
             'dipa',
             'months',

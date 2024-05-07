@@ -142,6 +142,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
+        Route::get('rekap', [DipaController::class, 'rekap'])->name('dipa.rekap');
+        Route::get('rekap/{dipa}', [DipaController::class, 'review_rekap'])->name('dipa.review-rekap');
         Route::get('permohonan-approval', [DipaController::class, 'approval'])->name('dipa.approval');
         Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
         Route::get('permohonan-approval/pdf/{dipa}', [DipaController::class, 'pdf'])->name('dipa.pdf');
