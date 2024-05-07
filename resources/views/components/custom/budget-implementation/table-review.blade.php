@@ -58,7 +58,7 @@
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
                     <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
-                        data-res="Y">
+                        data-res="Y" target="_blank">
                         <i data-feather="printer"></i> Cetak
                     </a>
                     <a href="{{ route('dipa.cetak', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
@@ -93,7 +93,7 @@
                 <th scope="col">Volume</th>
                 <th scope="col">Satuan</th>
                 <th scope="col">Harga Satuan</th>
-                <th scope="col">Jumlah Usulan</th>
+                <th scope="col">Jumlah Total</th>
                 <th scope="col">Jumlah RPD</th>
                 <th scope="col">Data Dukung</th>
                 <th scope="col">Catatan</th>

@@ -84,6 +84,7 @@
                                     <th scope="col">Revisi ke</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Unit Kerja</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -96,6 +97,7 @@
                                         <td>{{ $dipa->revision }}</td>
                                         <td>{{ number_format($dipa->total) }}</td>
                                         <td>{{ statusDipa($dipa->status) }}</td>
+                                        <td>{{ $dipa->unit->name }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('dipa.review', $dipa->id) }}"
                                                 class="btn btn-primary btn-sm" role="button">
