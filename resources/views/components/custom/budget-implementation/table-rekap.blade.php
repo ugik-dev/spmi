@@ -101,9 +101,6 @@
                 <th scope="col">Satuan</th>
                 <th scope="col">Harga Satuan</th>
                 <th scope="col">Jumlah Total</th>
-                <th scope="col">Jumlah RPD</th>
-                <th scope="col">Data Dukung</th>
-                <th scope="col">Catatan</th>
             </tr>
         </thead>
         <tbody class="dipa-table">
@@ -166,83 +163,6 @@
                             <td>Rp
                                 {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
                             </td>
-                            <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk lihat detail rencana penarikan dana"
-                                class="bs-tooltip"
-                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}');">
-                                Rp
-                                {{ number_format($budgetImplementations->first()->activity->withdrawalPlans->sum('amount_withdrawn')) }}
-                                <br>
-                            </td>
-                            <td rowspan="{{ $totalRows + 1 }}">
-                                @php
-                                    $rekap_file = false;
-                                    if (
-                                        !empty(
-                                            $budgetImplementations->first()->activity->activityRecap?->attachment_path
-                                        )
-                                    ) {
-                                        $filePath = Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->path(
-                                            $budgetImplementations->first()->activity->activityRecap?->attachment_path,
-                                        );
-                                        if (
-                                            Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->exists(
-                                                $budgetImplementations->first()->activity->activityRecap
-                                                    ?->attachment_path,
-                                            )
-                                        ) {
-                                            $fileMimeType = mime_content_type($filePath);
-                                            $rekap_file = true;
-                                        } else {
-                                            // File tidak ditemukan
-                                            $fileMimeType = false;
-                                            $rekap_file = false;
-                                        }
-
-                                        // $fileMimeType = mime_content_type($filePath);
-                                        // $rekap_file = true;
-                                    } else {
-                                        $fileMimeType = false;
-                                    }
-                                @endphp
-                                @if ($rekap_file)
-                                    <button type="button" class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
-                                        onclick="handleViewFile('{{ route('activity-recap.show-file', $budgetImplementations->first()->activity->activityRecap) }}', '{{ $fileMimeType }}');">
-                                        <i class="feather icon-eye"></i> Lihat File
-                                    </button>
-                                @else
-                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
-                                        <i class="feather icon-eye"></i> Belum Ada
-                                    </button>
-                                @endif
-                            </td>
-
-
-                            <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk menambahkan atau edit catatan"
-                                class="bs-tooltip"
-                                onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')">
-                                {{-- @if ($rekap_file) --}}
-                                {{-- <button
-                                    onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')"class="btn
-                                    btn-primary btn-sm me-sm-2 mb-2 mb-sm-0" role="button">
-                                    <i class="text-white" data-feather="edit"></i>
-                                </button> --}}
-
-                                {{-- @else
-                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
-                                        <i class="feather icon-eye"></i> Belum Ada
-                                    </button>
-                                @endif --}}
-                                {{-- @dd($budgetImplementations->first()->activity->activityNote) --}}
-                                {{-- <p> --}}
-                                @php $i_note = 1 @endphp
-                                @foreach ($budgetImplementations->first()->activity->activityNote as $note)
-                                    {!! $i_note != 1 ? '<br>' : '' !!}
-                                    {{ $i_note }}. {{ $note->description }}
-                                    @php $i_note++ @endphp
-                                @endforeach
-                                {{-- </p> --}}
-                            </td>
-
                         </tr>
                         @php
                             $isActivityDisplayed = true;
@@ -264,9 +184,6 @@
                                 <td>Rp
                                     {{ number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.') }}
                                 </td>
-                                {{-- <td></td>
-                                <td></td>
-                                <td></td> --}}
                             </tr>
                         @endif
                         @php $cr3 = 1; @endphp
@@ -283,10 +200,6 @@
                                     <td>{{ $detail->expenditureUnit->code }}</td>
                                     <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
                                     <td class="count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}</td>
-                                    {{-- <td></td>
-                                    <td></td>
-                                    <td></td> --}}
-
                                 </tr>
                             @endif
                             @php $cr3++; @endphp

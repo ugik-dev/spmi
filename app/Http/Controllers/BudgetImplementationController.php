@@ -10,9 +10,10 @@ use App\Models\Dipa;
 use App\Models\DipaLog;
 use App\Models\ExpenditureUnit;
 use App\Models\PerformanceIndicator;
+use App\Models\Timeline;
 use App\Models\UnitBudget;
 use App\Services\BudgetImplementationInputArrayService;
-use App\Supports\Disk;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -45,6 +46,14 @@ class BudgetImplementationController extends Controller
     }
     public function create()
     {
+        $currentDateTime = Carbon::now(); // Get the current date and time
+
+        $timelines = Timeline::where('start', '<=', $currentDateTime)
+            ->where('end', '>=', $currentDateTime)->where('category', '=', 'creat')
+            ->first();
+        if (empty($timelines)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan masa pembuatan usulan Dipa"]);
+        }
         $title = 'Buat DIPA';
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
@@ -136,6 +145,15 @@ class BudgetImplementationController extends Controller
     }
     public function create_copy(Dipa $dipa)
     {
+        $currentDateTime = Carbon::now(); // Get the current date and time
+
+        $timelines = Timeline::where('start', '<=', $currentDateTime)
+            ->where('end', '>=', $currentDateTime)->where('category', '=', 'revision')
+            ->first();
+        if (empty($timelines)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan Waktu untuk revisi"]);
+        }
+
         $title = 'Buat DIPA';
         $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
@@ -193,32 +211,51 @@ class BudgetImplementationController extends Controller
 
         try {
             $data = $validator->validated()['dipa'];
+            $currentDateTime = Carbon::now();
+            $copy = false;
             if (!empty($validator->validated()['copy_of'])) {
-                $copy = Dipa::find($validator->validated()['copy_of']);
-                $last = Dipa::where('head_id', !empty($copy->head_id) ? $copy->head_id : $copy->id)->latest()->first();
+                $copy = $validator->validated()['copy_of'];
+                $timelines = Timeline::where('start', '<=', $currentDateTime)
+                    ->where('end', '>=', $currentDateTime)->where('category', '=', 'revision')
+                    ->first();
+                if (empty($timelines)) {
+                    return response()->json(['error' => "Bukan masa revisi"], 500);
+                }
+
+                $copyData = Dipa::find($validator->validated()['copy_of']);
+                $last = Dipa::where('head_id', !empty($copyData->head_id) ? $copyData->head_id : $copyData->id)->latest()->first();
                 if (!empty($last)) {
-                    // dd('ada');
-                    // dd($last);
                     $revision = $last->revision + 1;
                 } else {
                     $revision = 1;
                 }
+                // dd($copyData->);
                 // dd($revision, $last);
-                $dipa_id = Dipa::create(['year' => date('Y'), 'revision' => $revision, 'head_id' => !empty($copy->head_id) ? $copy->head_id : $copy->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+                $dipa_id = Dipa::create(['year' => $timelines->year, 'timeline_id', $timelines->id, 'revision' => $revision, 'head_id' => !empty($copyData->head_id) ? $copyData->head_id : $copyData->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             } else {
-                $dipa_id = Dipa::create(['year' => date('Y'), 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+                $timelines = Timeline::where('start', '<=', $currentDateTime)
+                    ->where('end', '>=', $currentDateTime)->where('category', '=', 'creat')
+                    ->first();
+                // dd($timelines);
+                if (empty($timelines)) {
+                    return response()->json(['error' => "Bukan masa pembuatan dipa"], 500);
+                }
+
+                $dipa_id = Dipa::create(['year' => $timelines->year, 'timeline_id', $timelines->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             }
             // dd($copy);
             // dd($data);
             $total = 0;
             foreach ($data as $key_ac => $activity) {
-                if (!empty($activity['accounts']))
+                if (!empty($activity['accounts'])) {
                     $activity_id = Activity::create([
                         'dipa_id' => $dipa_id,
                         'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
                         'code' => strtoupper($activity['activity']['code']),
                         'name' => $activity['activity']['name'],
                     ])->id;
+                    Dipa::copyActivity($activity_id, strtoupper($activity['activity']['code']), $activity['activity']['name'], $copyData->id);
+                }
                 foreach ($activity['accounts'] as $account) {
                     $accountCodeId = null;
                     if ($account) {

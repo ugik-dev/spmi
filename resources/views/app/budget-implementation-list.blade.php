@@ -110,10 +110,12 @@
                                                     <i class="text-white" data-feather="eye"></i>
                                                 </a>
                                             @else
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm"
-                                                    role="button" onclick="confirmDelete2({{ $dipa->id }});">
-                                                    <i class="text-white" data-feather="trash-2"></i>
-                                                </a>
+                                                @if (in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                                                        role="button" onclick="confirmDelete2({{ $dipa->id }});">
+                                                        <i class="text-white" data-feather="trash-2"></i>
+                                                    </a>
+                                                @endif
                                                 <a href="{{ route('dipa.update', $dipa->id) }}"
                                                     class="btn btn-primary btn-sm" role="button">
                                                     <i class="text-white" data-feather="eye"></i>
@@ -126,7 +128,9 @@
                                                     class="btn btn-primary btn-sm" role="button">
                                                     <i class="text-white" data-feather="printer"></i>
                                                 </a>
-                                                @if ($dipa->status == 'release')
+                                                {{-- @dd() --}}
+
+                                                @if ($dipas->last() == $dipa && $dipa->status == 'release')
                                                     <a href="{{ route('dipa.create-revisi', $dipa->id) }}"
                                                         class="btn btn-primary btn-sm" role="button">
                                                         Buat Revisi

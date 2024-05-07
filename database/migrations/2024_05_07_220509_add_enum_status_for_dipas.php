@@ -12,16 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('dipas', function (Blueprint $table) {
-            // $table->enum('status', [
-            //     'draft',
-            //     'wait-kp', 'reject-kp',
-            //     'wait-ppk', 'reject-ppk',
-            //     'wait-spi', 'reject-spi',
-            //     'wait-perencanaan', 'reject-perencanaan',
-            //     'accept', 'reject',
-            //     'release'
-            // ])->default('draft')->after('year');
-
             $table->enum('status', [
                 'draft',
                 'wait-kp', 'reject-kp',

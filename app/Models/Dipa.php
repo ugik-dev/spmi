@@ -17,7 +17,8 @@ class Dipa extends Model
         'total',
         'work_unit_id',
         'head_id',
-        'user_id'
+        'user_id',
+        'timeline_id'
     ];
 
     public function bi()
@@ -37,6 +38,32 @@ class Dipa extends Model
     public function scopeActive($query)
     {
         return $query->with('unit')->where('work_unit_id', Auth::user()->employee->work_unit_id)->latest('revision')->first();
+    }
+
+    public function scopeCopyActivity($query, $newId, $newCode, $newName, $oldId)
+    {
+        $old = Activity::with(['withdrawalPlans', 'activityRecap'])->where('dipa_id', '=', $oldId)->where('code', '=', $newCode)->where('name', '=', $newName)->first();
+        if (!empty($old)) {
+            $newWd = [];
+            foreach ($old->withdrawalPlans as $wd) {
+                $newWd[] = [
+                    'activity_id' => $newId,
+                    'month' => $wd->month,
+                    'amount_withdrawn' => $wd->amount_withdrawn,
+                    'notes' => $wd->notes,
+                ];
+            }
+            WithdrawalPlan::insert($newWd);
+
+            if ($old->activityRecap) {
+                ActivityRecap::create([
+                    'activity_id' => $newId,
+                    'attachment_path' => $old->activityRecap->attachment_path,
+                    'description' => $old->activityRecap->description,
+                ]);
+            }
+        }
+        // return $query->with('unit')->where('work_unit_id', Auth::user()->employee->work_unit_id)->latest('revision')->first();
     }
 
     public function scopeAccessibility($query, $approval = false, $findId = false, $throw = false)
