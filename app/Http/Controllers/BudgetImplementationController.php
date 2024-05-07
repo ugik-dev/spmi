@@ -82,10 +82,13 @@ class BudgetImplementationController extends Controller
                 // echo $ac->withdrawalPlans->sum('amount_withdrawn') . '<br>';
             }
             if ($rpd != $totalSum) {
-                return response()->json(['message' => number_format($rpd) . 'Total RPD tidak sama dengan Usulan DIPA !!'], 500);
+                return response()->json(['message' => 'Total RPD tidak sama dengan Usulan DIPA !!'], 500);
             }
             if (!in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-ppk'])) {
                 return response()->json(['message' => 'Bukan waktu untuk mengajukan !!'], 500);
+            }
+            if ($dipa->user_id != Auth::user()->id) {
+                return response()->json(['message' => 'Kamu tidak berhak !!'], 500);
             }
             // dd($rpd);
             $dipa->total = $totalSum;

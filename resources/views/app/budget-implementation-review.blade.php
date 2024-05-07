@@ -339,8 +339,7 @@
             async function fetchRPD(activity) {
                 try {
                     const response = await axios.get(
-                        `/api/withdrawal-plans-detail/${activity}/{{ $dipa->year }}`);
-                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
+                        `/api/withdrawal-plans-detail/${activity}`);
                     resetModalAmounts();
                     populateModalWithData(response.data, activity);
                 } catch (error) {
@@ -357,9 +356,7 @@
                     showLoading()
                     const response = await axios.get(
                         `/api/activity-note-check/${activity}`);
-                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
-                    // resetModalAmounts();
-                    // document.getElementById('select_year').value = year
+
                     showCatatanModal(response.data, activity);
                 } catch (error) {
                     let errorMessage = 'Terjadi kesalahan.';

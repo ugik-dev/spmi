@@ -41,7 +41,7 @@ class PaymentReceiptController extends Controller
         } else {
         }
         $receipts = $receipts->get();
-        // dd($receipts);
+        // dd($receipts);     
         return view('app.payment-receipt', compact('title', 'ppks', 'treasurers', 'activities', 'receipts'));
     }
 

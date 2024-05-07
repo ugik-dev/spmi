@@ -91,6 +91,7 @@ class NavigationServiceProvider extends ServiceProvider
                     'Administrasi',
                     url('#'),
                     fn (Section $section) => $section
+                        ->add('Timeline', route('timeline.index'))
                         ->add('Unit Kerja', route('work_unit.index'))
                         ->add('Pagu Lembaga', route('ins_budget.index'))
                         ->add('Pagu Unit', route('unit_budget.index'))
@@ -102,14 +103,14 @@ class NavigationServiceProvider extends ServiceProvider
                                 ->add('Penganggaran & Pembayaran', route('account_code.index'))
                                 ->add('Penerimaan', route('account_code_reception.index'))
                         )
-                        ->add(
-                            'PIC Pembayaran',
-                            url('#'),
-                            fn (Section $section) => $section
-                                ->add('Bendahara', url('#'))
-                                ->add('PPK', route('ppk.index'))
-                                ->add('Verifikator', url('#'))
-                        )
+                        // ->add(
+                        //     'PIC Pembayaran',
+                        //     url('#'),
+                        //     fn (Section $section) => $section
+                        //         ->add('Bendahara', url('#'))
+                        //         ->add('PPK', route('ppk.index'))
+                        //         ->add('Verifikator', url('#'))
+                        // )
                         ->add('SBM dan SBI', route('sbm_sbi.index'), fn ($section) => $section->attributes(['permission' => 'view sbm&sbi']))
                         ->add('Manajemen User', route('user.index'))
                         ->attributes(['permission' => 'view sbm&sbi'])

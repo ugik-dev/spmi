@@ -291,23 +291,13 @@
                 });
             });
 
-            // Add the onchange event select_year withdrawal plans data
-            // document.getElementById('select_year').addEventListener('change', function(e) {
-            //     let activityID = document.getElementById('currentActivityId').value;
-            //     const activity = getActivityData(document.querySelector(`[data-activity-id="${activityID}"]`))
-            //     resetModalAmounts();
-            //     fetchAndPopulateModal(activity);
-            // })
 
             async function savingWithdrawalPlans(withdrawalPlans) {
                 try {
                     let activityId = document.getElementById('currentActivityId').value;
-                    // let year = document.querySelector('select[name="select_year"]').value;
                     const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana-update', {
-                        // const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana', {
                         "activityId": activityId,
                         "withdrawalPlans": withdrawalPlans,
-                        "year": '{{ $dipa->year }}'
                     });
 
                     if (response.status === 200) {
@@ -473,7 +463,7 @@
             async function fetchAndPopulateModal(activity) {
                 try {
                     const response = await axios.get(
-                        `/api/withdrawal-plans/${activity.id}/{{ $dipa->year }}`);
+                        `/api/withdrawal-plans/${activity.id}`);
                     populateModalWithData(response.data, activity);
                 } catch (error) {
                     showErrorAlert('Kesalahan', 'Gagal memuat data penarikan dana.');

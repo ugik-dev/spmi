@@ -23,6 +23,7 @@ use App\Http\Controllers\ReceptionController;
 use App\Http\Controllers\RenstraController;
 use App\Http\Controllers\RuhPaymentController;
 use App\Http\Controllers\SBMSBIController;
+use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\TreasurerController;
 use App\Http\Controllers\UnitBudgetController;
 use App\Http\Controllers\UserController;
@@ -98,6 +99,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             'destroy' => 'treasurer.destroy',
         ])->parameters([
             'bendahara' => 'treasurer',
+        ]);
+
+        Route::resource('timeline', TimelineController::class)->names([
+            'index' => 'timeline.index',
+            'store' => 'timeline.store',
+            'update' => 'timeline.update',
+            'destroy' => 'timeline.destroy',
         ]);
 
         // PPK Routes

@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('withdrawal_plans', function (Blueprint $table) {
-            // $table->dropColumn('year');
-            $table->dropUnique(['year', 'month', 'activity_id']); // Hapus indeks unik yang berisi kolom year
+            $table->dropColumn('year');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('withdrawal_plans', function (Blueprint $table) {
-            // $table->year('year');
-            $table->unique(['year', 'month', 'activity_id']); // 
+            $table->year('year');
         });
     }
 };
