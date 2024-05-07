@@ -72,7 +72,7 @@ class TimelineController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function store_update(Request $request)
     {
         $validatedData = $this->validate($request, [
             'category' => 'required|in:creat,revision',

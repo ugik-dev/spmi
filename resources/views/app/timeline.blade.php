@@ -186,7 +186,7 @@
                 <div class="modal-body">
                     <form id="contentForm" method="POST">
                         @csrf
-                        <input id="dataId" name="id">
+                        <input id="dataId" name="id" hidden>
                         <div class="mb-4 row">
                             <label for="category" class="col-sm-2 col-form-label">Jenis</label>
                             <div class="col-sm-8">
@@ -372,7 +372,7 @@
                 contentModal.form.on('submit', function(event, action) {
                     event.preventDefault()
                     var url = contentModal.addBtn.is(':visible') ? '{{ route('timeline.store') }}' :
-                        '{{ route('timeline.update') }}';
+                        '{{ route('timeline.store_update') }}';
 
                     Swal.fire({
                         title: "Apakah anda Yakin?",
