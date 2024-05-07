@@ -68,6 +68,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                                         $detail['price'],
                                         $detail['total'],
                                     ];
+                                    // dd
                                     $exportData->push($dataPush);
                                 }
                             }
