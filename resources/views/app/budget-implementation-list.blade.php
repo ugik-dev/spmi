@@ -126,7 +126,11 @@
                                                 </a>
                                                 <a href="{{ route('dipa.cetak', $dipa->id) }}" target="_blank"
                                                     class="btn btn-primary btn-sm" role="button">
-                                                    <i class="text-white" data-feather="printer"></i>
+                                                    Excel
+                                                </a>
+                                                <a href="{{ route('dipa.cetak-mapping', $dipa->id) }}" target="_blank"
+                                                    class="btn btn-primary btn-sm" role="button">
+                                                    Mapping
                                                 </a>
                                                 {{-- @dd() --}}
 

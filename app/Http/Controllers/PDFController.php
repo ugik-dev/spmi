@@ -20,6 +20,7 @@ use Fpdf\Fpdf;
 use Illuminate\Support\Facades\Storage;
 
 use App\Exports\DipaExport;
+use App\Exports\DipaMappingExport;
 
 
 class PDFController extends Controller
@@ -29,14 +30,17 @@ class PDFController extends Controller
     public function cetak(Dipa $dipa)
     {
         $dataBI = RenstraMission::getWithDipa($dipa->id);
-        // return view('app.budget-implementation-cetak', compact('dataBI'));
-
         $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
-
-        // Membuat nama file dengan timestamp
-        $filename = "Dipa-Export-{$timestamp}.xlsx";
-
+        $filename = "Dipa-{$dipa->year}-Revisi-{$dipa->revision}-{$timestamp}.xlsx";
         return Excel::download(new DipaExport($dataBI, $dipa), $filename);
+    }
+
+    public function cetak_mapping(Dipa $dipa)
+    {
+        $dataBI = RenstraMission::getWithDipa($dipa->id);
+        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
+        $filename = "Dipa-Mapping-{$dipa->year}-Revisi-{$dipa->revision}-{$timestamp}.xlsx";
+        return Excel::download(new DipaMappingExport($dataBI, $dipa), $filename);
     }
     public function dipa(Dipa $dipa)
     {

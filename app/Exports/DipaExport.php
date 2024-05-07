@@ -25,7 +25,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
     }
     public function startCell(): string
     {
-        return 'A5';
+        return 'A6';
     }
     public function collection()
     {
@@ -133,7 +133,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                 $sheet->getColumnDimension('N')->setWidth($w[13]);
                 $sheet->getColumnDimension('O')->setWidth($w[14]);
 
-                $i = 4;
+                $i = 5;
                 $sheet->mergeCells('A' . $i . ':B' . $i + 1);
                 // $sheet->mergeCells('B' . $i . ':B' . $i + 1);
                 $sheet->mergeCells('C' . $i . ':C' . $i + 1);
@@ -190,11 +190,11 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                 $sheet->setCellValue('I' . $i + 1, "DESKRIPSI");
                 $sheet->setCellValue('J' . $i, "KEGIATAN");
                 $sheet->setCellValue('K' . $i, "VOLUME");
-                $sheet->setCellValue('M' . $i, "UNIT");
+                $sheet->setCellValue('M' . $i, "SATUAN");
                 $sheet->setCellValue('N' . $i, "HARGA");
                 $sheet->setCellValue('O' . $i, "TOTAL");
 
-                $event->sheet->getDefaultRowDimension()->setRowHeight(40);
+                $event->sheet->getDefaultRowDimension()->setRowHeight(15);
 
                 $styleArray = [
                     'alignment' => [
@@ -215,7 +215,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
                     ],
                 ];
-                $i = $j  = $k = $l = $m = $n = $o = 6;
+                $i = $j  = $k = $l = $m = $n = $o = 7;
                 // dd($this->dataBI);
                 foreach ($this->dataBI as $misi) {
                     foreach ($misi['child_missi'] as $iku) {
@@ -256,7 +256,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
                     ],
                 ];
-                $cellRange = 'A' . 6 . ':O' . $n - 1; // All headers
+                $cellRange = 'A' . 5 . ':O' . $n - 1; // All headers
                 $event->sheet->getDelegate()->getStyle($cellRange)->applyFromArray($styleArray);
 
                 $styleArray = [
@@ -270,7 +270,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles, WithCustom
                 // $sheet->setAutoSize(true);
                 $event->sheet->autoSize();
                 // Mengaplikasikan style border ke seluruh kolom dan baris yang digabungkan
-                $cellRange = 'A4:O' . $n - 1; // All data rows
+                $cellRange = 'A5:O' . $n - 1; // All data rows
                 $event->sheet->getDelegate()->getStyle($cellRange)->applyFromArray($styleArray);
                 $mergedCells = $sheet->getMergeCells();
                 foreach ($mergedCells as $mergedCell) {

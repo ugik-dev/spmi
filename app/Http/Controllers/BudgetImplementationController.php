@@ -148,7 +148,8 @@ class BudgetImplementationController extends Controller
         $currentDateTime = Carbon::now(); // Get the current date and time
 
         $timelines = Timeline::where('start', '<=', $currentDateTime)
-            ->where('end', '>=', $currentDateTime)->where('category', '=', 'revision')
+            ->where('end', '>=', $currentDateTime)
+            ->where('year', '=', $dipa->year)
             ->first();
         if (empty($timelines)) {
             return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan Waktu untuk revisi"]);
@@ -215,14 +216,16 @@ class BudgetImplementationController extends Controller
             $copy = false;
             if (!empty($validator->validated()['copy_of'])) {
                 $copy = $validator->validated()['copy_of'];
+                $copyData = Dipa::find($validator->validated()['copy_of']);
+
                 $timelines = Timeline::where('start', '<=', $currentDateTime)
                     ->where('end', '>=', $currentDateTime)->where('category', '=', 'revision')
+                    ->where('year', '=', $copyData->year)
                     ->first();
                 if (empty($timelines)) {
                     return response()->json(['error' => "Bukan masa revisi"], 500);
                 }
 
-                $copyData = Dipa::find($validator->validated()['copy_of']);
                 $last = Dipa::where('head_id', !empty($copyData->head_id) ? $copyData->head_id : $copyData->id)->latest()->first();
                 if (!empty($last)) {
                     $revision = $last->revision + 1;
