@@ -107,14 +107,8 @@
                 <div class="table-responsive my-4 p-2">
                     <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1">
                         <div class="d-flex flex-wrap gap-1 my-2">
-                            <button class="btn btn-primary shadow-sm" id="addBtn">Rekam
-                                Kuitansi Pembayaran
+                            <button class="btn btn-primary shadow-sm" id="addBtn">Tambah Timeline
                             </button>
-                        </div>
-                        <div class="d-flex flex-wrap gap-2 my-2">
-                            <button id="save-dipa" class="btn btn-outline-success shadow-sm bs-tooltip">Simpan</button>
-                            <button id="edit-dipa" class="btn btn-outline-warning shadow-sm bs-tooltip">Ubah</button>
-                            <button id="delete-dipa" class="btn btn-outline-danger shadow-sm bs-tooltip">Hapus</button>
                         </div>
                     </div>
                     <table id="receipt-table" class="table table-bordered">
