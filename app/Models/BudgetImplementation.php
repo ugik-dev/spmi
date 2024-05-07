@@ -73,7 +73,7 @@ class BudgetImplementation extends Model
         $budgetImplementations = self::with(['activity', 'accountCode', 'details'])->where('dipa_id', $dipa_id)
             ->get();
         return $budgetImplementations
-            ->groupBy('activity.id')
+            ->groupBy('activity.code')
             ->sortKeysUsing(function ($key1, $key2) {
                 return strtolower($key1) <=> strtolower($key2); // Case-insensitive sorting
             })
