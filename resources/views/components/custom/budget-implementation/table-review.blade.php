@@ -27,6 +27,11 @@
             @elseif($dipa->status == 'draft')
             @endif
             @if ($dipa)
+                @if (in_array($dipa->status, ['wait-kpa', 'reject-kpa']) && Auth::user()->hasRole(['KPA (REKTOR)']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.kpa-modal :dipa="$dipa" />
+                    </div>
+                @endif
                 @if (in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
                         $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
                         Auth::user()->hasRole(['KEPALA UNIT KERJA']))
@@ -64,14 +69,7 @@
                 @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
-                    <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
-                        data-res="Y" target="_blank">
-                        <i data-feather="printer"></i> Cetak
-                    </a>
-                    <a href="{{ route('dipa.cetak', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
-                        data-res="Y">
-                        <i data-feather="printer"></i> Excel
-                    </a>
+                    <x-custom.budget-implementation.export-btn :dipaId="$dipa->id" :btnExport="$btnExport" />
                 </div>
             @endif
         </div>

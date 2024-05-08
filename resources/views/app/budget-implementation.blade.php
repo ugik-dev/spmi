@@ -69,8 +69,8 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table :totalSum="$totalSum" :unitBudget="$unitBudget" :dipa="$dipa"
-                    :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table :totalSum="$totalSum" :unitBudget="$unitBudget" :btnExport="$btnExport"
+                    :dipa="$dipa" :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>
@@ -353,8 +353,11 @@
 
                 axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
                         dipa: dipaData,
+                        @if (!empty($timeline->id))
+                            timeline: '{{ $timeline->id }}',
+                        @endif
                         @if (!empty($copy_of))
-                            copy_of: '{{ $copy_of }}'
+                            copy_of: '{{ $copy_of }}',
                         @endif
                     })
                     .then(response => {

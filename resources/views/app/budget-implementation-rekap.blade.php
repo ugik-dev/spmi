@@ -68,12 +68,6 @@
                                 aria-label="Close"></button>
                         </div>
                     @endif
-                    <div class="text-start">
-                        <!-- Button trigger modal -->
-                        <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
-                            Buat Usulan Baru
-                        </a>
-                    </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
                             <thead class="bg-light">
@@ -102,14 +96,6 @@
                                             <a href="{{ route('dipa.review-rekap', $dipa->id) }}"
                                                 class="btn btn-primary btn-sm" role="button">
                                                 <i class="text-white" data-feather="eye"></i>
-                                            </a>
-                                            <a href="{{ route('dipa.fpdf', $dipa->id) }}"
-                                                class="btn btn-primary btn-sm" role="button">
-                                                <i class="text-white" data-feather="printer"></i>
-                                            </a>
-                                            <a href="{{ route('dipa.cetak', $dipa->id) }}"
-                                                class="btn btn-primary btn-sm" role="button">
-                                                Excel
                                             </a>
                                         </td>
                                     </tr>

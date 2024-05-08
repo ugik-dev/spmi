@@ -57,10 +57,11 @@
                 @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
-                    <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
+                    <x-custom.budget-implementation.export-btn :dipaId="$dipa->id" :btn="$btnExport" />
+                    {{-- <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
                         data-res="Y" target="_blank">
                         <i data-feather="printer"></i> Cetak
-                    </a>
+                    </a> --}}
                 </div>
             @endif
         </div>

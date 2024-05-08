@@ -41,6 +41,11 @@ class DipaController extends Controller
         $accountCodes = AccountCode::all();
         $indikatorPerkin = PerformanceIndicator::all();
         $expenditureUnits = ExpenditureUnit::all();
+        $btnExport = [
+            'pdf' => true,
+            'exl_simple' => true,
+            'exl_mapping' => true,
+        ];
         $months = Month::cases();
         return view('app.budget-implementation-review', compact(
             'title',
@@ -51,7 +56,7 @@ class DipaController extends Controller
             'expenditureUnits',
             'totalSum',
             'indikatorPerkin',
-            // 'unitBudget',
+            'btnExport',
         ));
     }
     public function review_rekap(Dipa $dipa)
@@ -62,6 +67,11 @@ class DipaController extends Controller
         $title = 'Daftar DIPA';
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
         $accountCodes = AccountCode::all();
+        $btnExport = [
+            'pdf' => true,
+            'exl_simple' => true,
+            'exl_mapping' => true,
+        ];
         $indikatorPerkin = PerformanceIndicator::all();
         $expenditureUnits = ExpenditureUnit::all();
         $months = Month::cases();
@@ -74,7 +84,8 @@ class DipaController extends Controller
             'expenditureUnits',
             'totalSum',
             'indikatorPerkin',
-            // 'unitBudget',
+            'btnExport',
+
         ));
     }
 
@@ -122,7 +133,16 @@ class DipaController extends Controller
             }
             $log = new DipaLog();
             if ($request->res == 'Y') {
-                $dipa->status = 'wait-ppk';
+
+                if (in_array($dipa->work_unit_id, ['16', '22'])) {
+                    // $dipa->status = 'wait-kpa';
+                } else {
+                    if ($dipa->timeline->metode == 'ppk')
+                        $dipa->status = 'wait-ppk';
+                    else if ($dipa->timeline->metode == 'kpa')
+                        $dipa->status = 'wait-kpa';
+                }
+
                 $log->label = "success";
                 $log->description = "Melakukan Approv";
             } else {
@@ -143,6 +163,53 @@ class DipaController extends Controller
             return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function approval_kpa(Request $request, Dipa $dipa)
+    {
+        try {
+            if (
+                in_array($dipa->status, ['wait-kpa', 'reject-kpa']) &&
+                Auth::user()->hasRole(['KPA (REKTOR)'])
+            ) {
+            } else {
+                return response()->json(['error' => true,  'message' => 'Anda tidak berhak melalukan aksi ini'], 500);
+            }
+            $log = new DipaLog();
+            if ($request->res == 'Y') {
+
+                if (in_array($dipa->work_unit_id, ['16', '22'])) {
+                    if ($dipa->timeline->metode == 'ppk')
+                        $dipa->status = 'wait-ppk';
+                    else
+                        $dipa->status = 'wait-spi';
+                } else {
+                    if ($dipa->timeline->metode == 'ppk')
+                        $dipa->status = 'wait-ppk';
+                    else if ($dipa->timeline->metode == 'kpa')
+                        $dipa->status = 'wait-spi';
+                }
+
+                $log->label = "success";
+                $log->description = "Melakukan Approv";
+            } else {
+                $dipa->status = 'reject-kp';
+                $log->label = "danger";
+                if (!empty($request->description)) $log->description = "Melakukan Penolakan dengan alasan " . $request->description;
+                else $log->description = "Melakukan Penolakan";
+            }
+            $dipa->save();
+
+            $log->dipa_id = $dipa->id;
+            $log->user_id = Auth::user()->id;
+            $log->save();
+
+            return response()->json(['error' => false,  'message' => $request->res], 200);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
+
     public function log(Request $request, Dipa $dipa)
     {
         try {

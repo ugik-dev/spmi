@@ -25,8 +25,6 @@ use App\Exports\DipaMappingExport;
 
 class PDFController extends Controller
 {
-    //
-
     public function cetak(Dipa $dipa)
     {
         $dataBI = RenstraMission::getWithDipa($dipa->id);

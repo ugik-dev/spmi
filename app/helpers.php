@@ -30,8 +30,12 @@ if (!function_exists('statusDipa')) {
             return "Ditolak PPK";
         } elseif ($data == 'release') {
             return "Sudah Terbit";
+        } elseif ($data == 'wait-kpa') {
+            return "Menunggu KPA";
+        } elseif ($data == 'reject-kpa') {
+            return "Ditolak KPA";
         } else
-            return "";
+            return $data;
     }
 }
 

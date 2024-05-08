@@ -101,7 +101,8 @@ class RenstraMission extends Model
                                     $rowspan = count($bi['details']);
                                     $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['bi'] = $bi;
                                     $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['bi']['rowspan'] = $rowspan;
-                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['detail'] = $bi->details;
+                                    $new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'][$bi->id]['detail'] = $bi->details2;
+                                    // dd($bi->details2);
                                     $rowspan_activity +=  $rowspan + 1;
                                 }
                                 if (!empty($new[$mission->id]['child_missi'][$indicator_dipa->id]['child_iku'][$sasaranDipa->id]['child_sasaran'][$ind_perkin->id]['child_ind_perkin'][$activity->id]['child_activity'])) {

@@ -68,33 +68,13 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table-rekap :totalSum="$totalSum" :dipa="$dipa" :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table-rekap :totalSum="$totalSum" :dipa="$dipa" :btnExport="$btnExport"
+                    :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>
     <!-- Create Modal -->
-    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createModalTitle">Input Sub Komponen</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-create">
-                        <div id="create-input_sigle_container" class="">
-                        </div>
-                        <div id="create-input_container" class="input-group my-2">
-                        </div>
-                        <button class="btn btn-primary text-center align-items-center mt-1 mt-2 py-auto" type="submit">
-                            <span class="icon-name">Simpan</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <!-- Edit Modal -->
     <x-custom.budget-implementation.edit-modal />
     <x-custom.budget-implementation.catatan-modal />

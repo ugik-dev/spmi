@@ -151,6 +151,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('permohonan-approval/fpdf/{dipa}', [PDFController::class, 'dipa'])->name('dipa.fpdf');
         Route::get('permohonan-approval/cetak/{dipa}', [PDFController::class, 'cetak'])->name('dipa.cetak');
         Route::get('permohonan-approval/cetak-mapping/{dipa}', [PDFController::class, 'cetak_mapping'])->name('dipa.cetak-mapping');
+        Route::post('dipa/approval/kpa/{dipa}', [DipaController::class, 'approval_kpa'])->name('dipa-action.kpa');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
@@ -160,7 +161,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('delete-dipa', [BudgetImplementationController::class, 'delete_dipa'])->name('dipa.delete');
 
 
-        Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
+        Route::get('dipa/create/{timeline}', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
         Route::get('dipa/buat-revisi/{dipa}', [BudgetImplementationController::class, 'create_copy'])->name('dipa.create-revisi');
         Route::get('dipa', [BudgetImplementationController::class, 'index'])->name('budget_implementation.index');
         Route::get('dipa/{dipa}', [BudgetImplementationController::class, 'dipa'])->name('budget_implementation.dipa');

@@ -28,12 +28,16 @@ class Activity extends Model
 
     public function bi()
     {
-        return $this->hasMany(BudgetImplementation::class)->with(['accountCode', 'details']);
+        return $this->hasMany(BudgetImplementation::class)->with(['accountCode', 'details2']);
     }
 
     public function performanceIndicator()
     {
         return $this->belongsTo(PerformanceIndicator::class);
+    }
+    public function dipa()
+    {
+        return $this->belongsTo(Dipa::class);
     }
 
     /**

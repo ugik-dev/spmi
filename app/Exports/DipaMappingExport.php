@@ -64,7 +64,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                                         $detail['name'],
                                         $detail['volume'],
                                         '',
-                                        $detail['volume'],
+                                        $detail->expenditureUnit->code,
                                         $detail['price'],
                                         $detail['total'],
                                     ];
@@ -150,7 +150,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                 $sheet->mergeCells('O' . $i . ':O' . $i + 1);
 
                 $sheet->setCellValue('A1', 'Unit Kerja');
-                $sheet->setCellValue('A2', 'Revisi ke');
+                $sheet->setCellValue('A2', 'Revisi');
                 $sheet->setCellValue('A3', 'Petugas');
 
                 $sheet->setCellValue('J1', 'Tanggal');
@@ -169,7 +169,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                 $sheet->mergeCells('M2:O2');
                 $sheet->mergeCells('M3:O3');
                 $sheet->setCellValue('C1', '(' . $this->dipa->unit->code . ') ' . $this->dipa->unit->name);
-                $sheet->setCellValue('C2', $this->dipa->revision);
+                $sheet->setCellValue('C2', "ke- " . $this->dipa->revision);
                 $sheet->setCellValue('C3', $this->dipa->user?->name);
                 $sheet->setCellValue('M1', $this->dipa->created_at);
                 $sheet->setCellValue('M2', $this->dipa->unit->unitBudgets[0]->pagu);
@@ -224,12 +224,14 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                                 foreach ($ind_perkin['child_ind_perkin'] as $activity) {
                                     $j_c = 0;
                                     foreach ($activity['child_activity'] as $bi) {
-                                        $sheet->mergeCells('H' . $i . ':H' . $i + $bi['bi']['rowspan'] - 1);
-                                        $sheet->mergeCells('I' . $i . ':I' . $i + $bi['bi']['rowspan'] - 1);
+                                        if (count($bi['detail']) > 1) {
+                                            $sheet->mergeCells('H' . $i . ':H' . $i + $bi['bi']['rowspan'] - 1);
+                                            $sheet->mergeCells('I' . $i . ':I' . $i + $bi['bi']['rowspan'] - 1);
+                                        }
                                         $i = $i + $bi['bi']['rowspan'];
                                         foreach ($bi['detail'] as $detail) {
                                             $sheet->mergeCells('K' . $o . ':L' . $o);
-                                            $sheet->getRowDimension($o)->setRowHeight(15);
+                                            // $sheet->getRowDimension($o)->setRowHeight(15);
                                             $o++;
                                         }
                                     }
@@ -256,9 +258,24 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
                     ],
                 ];
-                $cellRange = 'A' . 5 . ':O' . $n - 1; // All headers
+                $cellRange = 'A7:O' . $n - 1; // All headers
                 $event->sheet->getDelegate()->getStyle($cellRange)->applyFromArray($styleArray);
+                $event->sheet->getDelegate()->getStyle('K5:M' . $n - 1)->applyFromArray([
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    ],
+                ]);
 
+                $event->sheet->getDelegate()->getStyle('F7:F' . $n - 1)->applyFromArray([
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    ],
+                ]);
+                $event->sheet->getDelegate()->getStyle('H7:H' . $n - 1)->applyFromArray([
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    ],
+                ]);
                 $styleArray = [
                     'borders' => [
                         'allBorders' => [
@@ -271,7 +288,12 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                 $event->sheet->autoSize();
                 // Mengaplikasikan style border ke seluruh kolom dan baris yang digabungkan
                 $cellRange = 'A5:O' . $n - 1; // All data rows
+                $formatRp = '_-Rp* #.##0_-;-Rp* #.##0_-;_-Rp* "-"_-;_-@_-';
+                $formatNumber = '#,##0_-';
                 $event->sheet->getDelegate()->getStyle($cellRange)->applyFromArray($styleArray);
+                $event->sheet->getDelegate()->getStyle('N7:O' . $n - 1)->getNumberFormat()->setFormatCode($formatNumber);
+                $event->sheet->getDelegate()->getStyle('M2:O3')->getNumberFormat()->setFormatCode($formatNumber);
+
                 $mergedCells = $sheet->getMergeCells();
                 foreach ($mergedCells as $mergedCell) {
 

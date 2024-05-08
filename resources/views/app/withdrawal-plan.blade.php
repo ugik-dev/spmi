@@ -440,6 +440,7 @@
                 document.getElementById('btnSaveWithdrawalPlan').disabled = residual < 0;
 
                 document.getElementById('residual').innerText = window.formatAsIDRCurrency(residual);
+                document.getElementById('totalAccumulated').innerText = window.formatAsIDRCurrency(totalInputAmount);
             }
 
             function getActivityData(row) {

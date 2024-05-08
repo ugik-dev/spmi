@@ -30,6 +30,12 @@ class Dipa extends Model
     {
         return $this->belongsTo(WorkUnit::class, 'work_unit_id', 'id')->with('unitBudgets');
     }
+
+    public function timeline()
+    {
+        return $this->belongsTo(Timeline::class, 'timeline_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -86,6 +92,21 @@ class Dipa extends Model
                     ;
                 })->orWhere('user_id', Auth::user()->id);
         } else
+        if (Auth::user()->hasRole('KPA (REKTOR)')) {
+            if ($approval) {
+                $query =    $query->where(function ($query) {
+                    $query->whereIn('dipas.status', ['wait-kpa', 'reject-kpa'])
+                        // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
+                    ;
+                });
+            }
+            $query = $query
+                ->where(function ($query) {
+                    $query->whereIn('dipas.status', ['wait-kpa', 'reject-kpa', 'wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept', 'release'])
+                        // ->where('work_unit_id',  Auth::user()->employee->work_unit_id)
+                    ;
+                })->orWhere('user_id', Auth::user()->id);
+        } else
         if (Auth::user()->hasRole('KEPALA UNIT KERJA')) {
             if ($approval) {
                 $query =    $query->where(function ($query) {
@@ -95,7 +116,7 @@ class Dipa extends Model
             }
             $query = $query
                 ->where(function ($query) {
-                    $query->whereIn('dipas.status', ['wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept', 'release'])
+                    $query->whereIn('dipas.status', ['wait-kpa', 'reject-kpa', 'wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept', 'release'])
                         ->where('work_unit_id',  Auth::user()->employee->work_unit_id);
                 })->orWhere('user_id', Auth::user()->id);
         } else
@@ -107,12 +128,17 @@ class Dipa extends Model
                     ;
                 });
             }
+            // ->leftJoin('users as ss', 'pp.user_id', 'ss.id')
+            //     ->where(function ($query) {
+            //         $query->whereIn('dipas.status', ['wait-spi', 'reject-spi', 'wait-treasurer', 'reject-treasurer', 'wait-verificator', 'reject-verificator', 'wait-ppk', 'reject-ppk', 'accept'])
+            //             ->where('ss.id',  Auth::user()->id);
+            //     })
             $query = $query
+                ->leftJoin('timelines as t', 't.id', 'dipas.timeline_id')
                 ->where(function ($query) {
                     $query->whereIn('dipas.status', ['wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'wait-ppk', 'reject-ppk', 'accept', 'release'])
-                        // ->where('ppk_id',  Auth::user()->id)
-                    ;
-                })->orWhere('user_id', Auth::user()->id);
+                        ->where('t.metode', 'ppk');
+                })->orWhere('dipas.user_id', Auth::user()->id);
         } else
         if (Auth::user()->hasRole('SPI')) {
             if ($approval) {
