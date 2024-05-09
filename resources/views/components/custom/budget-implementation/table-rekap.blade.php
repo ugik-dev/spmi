@@ -72,22 +72,26 @@
 
     <style>
         #budget_implementation-table td:nth-child(1),
+        {
+        text-align: center;
+        }
+
+        #budget_implementation-table td:nth-child(1),
         #budget_implementation-table td:nth-child(2),
         #budget_implementation-table td:nth-child(3),
         #budget_implementation-table td:nth-child(4) {
             white-space: pre-wrap;
             word-wrap: break-word;
             vertical-align: top;
-            text-align: left;
+        }
+
+        .money {
+            text-align: end
         }
     </style>
     <table id="budget_implementation-table" class="table table-bordered">
         <thead>
             <tr class="text-center">
-                <th hidden scope="col">MISI (RENSTRA)</th>
-                <th hidden scope="col">IKU (RENSTRA)</th>
-                <th hidden scope="col">Sasaran(PERKIN)</th>
-                <th hidden scope="col">Indikator (PERKIN)</th>
                 <th scope="col">Kode</th>
                 <th scope="col">SubKomponen</th>
                 <th scope="col">Volume</th>
@@ -120,16 +124,6 @@
                         }
                     }
 
-                    // $totalRows = count($accountGroups); // Jumlah baris dari $budgetImplementations
-                    // // dd($budgetImplementations);
-                    // // Hitung jumlah detail untuk setiap $budgetImplementation dan tambahkan ke total baris
-                    // // dd($budgetImplementations[1]->details);
-                    // foreach ($budgetImplementations as $budgetImplementation) {
-                    //     echo 'h' . count($budgetImplementation->details);
-                    //     $totalRows += count($budgetImplementation->details);
-                    // }
-                    // dd($totalRows);
-
                 @endphp
 
                 @foreach ($accountGroups as $accountCode => $budgetImplementations)
@@ -142,18 +136,12 @@
                             @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
                             data-bi="{{ $budgetImplementations->first()->id }}" @endif
                             class="activity-row crow-{{ $cr1 }}">
-                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $misi }}</td>
-                            <td hidden rowspan="{{ $totalRows + 1 }}">
-                                {{ $Indikator?->programTarget?->iku?->description }}
-                            </td>
-                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->name }}</td>
-                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->name }}</td>
                             <td>{{ $budgetImplementations->first()->activity->code }}</td>
                             <td>{{ $budgetImplementations->first()->activity->name }}</td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td>Rp
+                            <td class="money">Rp
                                 {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
                             </td>
                         </tr>
@@ -168,13 +156,12 @@
                                 @if ($dipa) data-bi="{{ $budgetImplementations->first()->id }}"
                                 data-account-code="{{ $budgetImplementation->accountCode->id }}" @endif
                                 class="account-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }}">
-                                <td hidden></td>
                                 <td>{{ $budgetImplementation->accountCode->code }}</td>
                                 <td>{{ $budgetImplementation->accountCode->name }}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>Rp
+                                <td class="money">Rp
                                     {{ number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.') }}
                                 </td>
                             </tr>
@@ -186,13 +173,13 @@
                                 <tr data-crow="{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}"
                                     @if ($dipa) data-expenditure="{{ $detail->id }}" @endif
                                     class="expenditure-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }} crow-{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}">
-                                    <td hidden></td> <!-- Empty cells for activity and account columns -->
-                                    <td></td> <!-- Empty cells for activity and account columns -->
+                                    <td></td>
                                     <td>{{ $detail->name }}</td>
                                     <td>{{ $detail->volume }}</td>
                                     <td>{{ $detail->expenditureUnit->code }}</td>
-                                    <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
-                                    <td class="count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}</td>
+                                    <td class="money">Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
+                                    <td class="money count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}
+                                    </td>
                                 </tr>
                             @endif
                             @php $cr3++; @endphp

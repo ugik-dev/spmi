@@ -210,7 +210,7 @@ class BudgetImplementationController extends Controller
             'dipa.*.accounts.*.expenditures.*.unit_price' => 'required|numeric',
             'dipa.*.accounts.*.expenditures.*.total' => 'required|numeric',
             'copy_of' => 'sometimes|numeric',
-            'timeline' => 'required|numeric',
+            'timeline' => 'sometimes|numeric',
         ]);
 
         // dd($validator->validated()['copy_of']);

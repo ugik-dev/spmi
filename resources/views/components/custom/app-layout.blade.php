@@ -29,6 +29,7 @@
     @endif
 
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/bootstrap/bootstrap.min.css') }}">
     @vite(['resources/scss/light/assets/main.scss', 'resources/scss/dark/assets/main.scss'])
 
@@ -49,6 +50,10 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('plugins/highlight/styles/monokai-sublime.css') }}">
         @vite(['resources/scss/light/plugins/perfect-scrollbar/perfect-scrollbar.scss'])
 
+        <script>
+            window.MIX_PUSHER_APP_KEY = "{{ env('PUSHER_APP_KEY') }}";
+            window.MIX_PUSHER_APP_CLUSTER = "{{ env('PUSHER_APP_CLUSTER') }}";
+        </script>
 
         @if (Request::is('modern-light-menu/*'))
             @vite(['resources/scss/layouts/modern-light-menu/light/structure.scss', 'resources/scss/layouts/modern-light-menu/dark/structure.scss'])
@@ -235,6 +240,10 @@
         <!-- END GLOBAL MANDATORY STYLES -->
 
     @endif
+    <script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
+
+    {{-- @vite(['resources/assets/js/NotificationComponent.js']) --}}
+
     <script>
         window.Laravel = {
             csrfToken: "{{ csrf_token() }}",
@@ -244,6 +253,23 @@
             }
             // Add other variables here
         };
+
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('0692e41e02b68080e3e6', {
+            cluster: 'mt1'
+        });
+
+        var channel = pusher.subscribe('private-user.1');
+        channel.bind('new-request', function(data) {
+            alert(JSON.stringify(data));
+        });
+
+        // var channel = Echo.channel('private-user.1');
+        // channel.listen('new-request', function(data) {
+        //     console.log('adsd');
+        //     alert(JSON.stringify(data));
+        // });
     </script>
     @vite(['resources/js/app.js'])
 

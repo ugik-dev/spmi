@@ -30,6 +30,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificatorController;
 use App\Http\Controllers\WithdrawalPlanController;
 use App\Http\Controllers\WorkUnitController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -45,6 +46,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         'index' => 'my-profile.index',
         'update' => 'my-profile.update',
     ]);
+
+    Route::get('notification/test', [NotificationController::class, 'test'])->name('notification.test');
+
 
     Route::prefix('renstra')->group(function () {
         Route::get('visi', [RenstraController::class, 'vision'])->name('vision.index');
