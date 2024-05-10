@@ -159,7 +159,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles,  WithCusto
                 $sheet->setCellValue('C2', "ke- " . $this->dipa->revision);
                 $sheet->setCellValue('C3', $this->dipa->user?->name);
                 $sheet->setCellValue('J1', $this->dipa->created_at);
-                $sheet->setCellValue('J2', $this->pagu);
+                $sheet->setCellValue('J2', $this->pagu->nominal);
                 $sheet->setCellValue('J3', $this->dipa->total);
                 // dd($this->dipa->unit);
 

@@ -174,7 +174,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                 $sheet->setCellValue('C2', "ke- " . $this->dipa->revision);
                 $sheet->setCellValue('C3', $this->dipa->user?->name);
                 $sheet->setCellValue('M1', $this->dipa->created_at);
-                $sheet->setCellValue('M2',                 $this->pagu);
+                $sheet->setCellValue('M2',                 $this->pagu->nominal);
 
                 $sheet->setCellValue('M3', $this->dipa->total);
                 // dd($this->dipa->unit);
