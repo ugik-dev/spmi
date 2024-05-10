@@ -13,7 +13,7 @@
         @endif
         <div class="d-flex flex-wrap gap-2 my-2">
             <h4
-                class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->nominal ?? 0) ? 'text-danger' : 'text-success' }}">
+                class="totalCost mx-4 my-2 {{ $totalSum != ($unitBudget->nominal ?? 0) ? 'text-danger' : 'text-success' }}">
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
                 {{ number_format($unitBudget->nominal ?? '0', 0, ',', '.') }})</h4>
