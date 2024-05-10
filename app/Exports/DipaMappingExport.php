@@ -17,11 +17,13 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
 {
     protected $dataBI;
     protected $dipa;
+    protected $pagu;
 
-    public function __construct($dataBI, $dipa)
+    public function __construct($dataBI, $dipa, $pagu)
     {
         $this->dataBI = $dataBI;
         $this->dipa = $dipa;
+        $this->pagu = $pagu;
     }
     public function startCell(): string
     {
@@ -172,7 +174,8 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                 $sheet->setCellValue('C2', "ke- " . $this->dipa->revision);
                 $sheet->setCellValue('C3', $this->dipa->user?->name);
                 $sheet->setCellValue('M1', $this->dipa->created_at);
-                $sheet->setCellValue('M2', $this->dipa->unit->unitBudgets[0]->pagu);
+                $sheet->setCellValue('M2',                 $this->pagu);
+
                 $sheet->setCellValue('M3', $this->dipa->total);
                 // dd($this->dipa->unit);
 

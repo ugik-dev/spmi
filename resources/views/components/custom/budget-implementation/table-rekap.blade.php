@@ -15,7 +15,7 @@
             <h4 class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'text-danger' : 'text-success' }}">
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
-                {{ number_format($dipa->unit->unitBudgets[0]->pagu ?? '0', 0, ',', '.') }})</h4>
+                {{ number_format($unitBudget->pagu ?? '0', 0, ',', '.') }})</h4>
             @if (empty($dipa) || ($dipa->status == 'draft' && $dipa->user_id == Auth::user()->id))
                 @if ($dipa)
                     <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
@@ -98,6 +98,7 @@
                 <th scope="col">Satuan</th>
                 <th scope="col">Harga Satuan</th>
                 <th scope="col">Jumlah Total</th>
+                <th scope="col">Catatan</th>
             </tr>
         </thead>
         <tbody class="dipa-table">
@@ -143,6 +144,17 @@
                             <td></td>
                             <td class="money">Rp
                                 {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
+                            </td>
+                            <td rowspan="{{ $totalRows + 1 }}" {{-- title="Klik untuk menambahkan atau edit catatan"
+                                class="bs-tooltip"
+                                onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')" --}}>
+                                @php $i_note = 1 @endphp
+                                @foreach ($budgetImplementations->first()->activity->activityNote as $note)
+                                    {!! $i_note != 1 ? '<br>' : '' !!}
+                                    {{ $note->user->name }}:<br> {!! nl2br($note->description) !!}
+                                    @php $i_note++ @endphp
+                                @endforeach
+                                {{-- </p> --}}
                             </td>
                         </tr>
                         @php

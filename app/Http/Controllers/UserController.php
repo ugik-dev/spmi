@@ -67,6 +67,7 @@ class UserController extends Controller
             }
             $user->assignRole($validatedData['user_role']);
             $user->save();
+            $user->sendEmailVerificationNotification();
 
             // Kirim email dengan password yang digenerate
             // Mail::to($user->email)->send(new UserRegistered($user, $randomPassword));
@@ -99,6 +100,9 @@ class UserController extends Controller
         if ($user->email != $validatedData['email']) {
             $user->email_verified_at = null;
             $user->email = $validatedData['email'];
+            $resent_mail = true;
+        } else {
+            $resent_mail = false;
         }
         $user->email = $validatedData['email'];
         $employee = $user->load('employee')->employee;
@@ -138,6 +142,8 @@ class UserController extends Controller
 
         $user->syncRoles($validatedData['user_role']);
         $user->save();
+        if ($resent_mail)
+            $user->sendEmailVerificationNotification();
         if ($request->ajax()) {
             return response()->json(['success' => 'Data user berhasil diperbaharui.'], 200);
         }
@@ -151,7 +157,12 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'User berhasil dihapus.');
     }
+    public function resendEmail(User $user)
+    {
+        $user->sendEmailVerificationNotification();
 
+        return redirect()->back()->with('success', 'Verification link sent!');
+    }
     public function getUsers(Request $request)
     {
         $search = $request->input('search', '');

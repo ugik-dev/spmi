@@ -219,24 +219,10 @@
                             <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk menambahkan atau edit catatan"
                                 class="bs-tooltip"
                                 onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')">
-                                {{-- @if ($rekap_file) --}}
-                                {{-- <button
-                                    onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')"class="btn
-                                    btn-primary btn-sm me-sm-2 mb-2 mb-sm-0" role="button">
-                                    <i class="text-white" data-feather="edit"></i>
-                                </button> --}}
-
-                                {{-- @else
-                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
-                                        <i class="feather icon-eye"></i> Belum Ada
-                                    </button>
-                                @endif --}}
-                                {{-- @dd($budgetImplementations->first()->activity->activityNote) --}}
-                                {{-- <p> --}}
                                 @php $i_note = 1 @endphp
                                 @foreach ($budgetImplementations->first()->activity->activityNote as $note)
                                     {!! $i_note != 1 ? '<br>' : '' !!}
-                                    {{ $i_note }}. {{ $note->description }}
+                                    {{ $note->user->name }}:<br> {!! nl2br($note->description) !!}
                                     @php $i_note++ @endphp
                                 @endforeach
                                 {{-- </p> --}}

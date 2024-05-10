@@ -31,12 +31,22 @@ use App\Http\Controllers\VerificatorController;
 use App\Http\Controllers\WithdrawalPlanController;
 use App\Http\Controllers\WorkUnitController;
 use App\Http\Controllers\NotificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
 
-Route::get('activation/{code}',  [UserController::class, 'activation_email'])->name('activation_email');
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    // dd($request->fulfill());
+    // return redirect()->route('login')->with('success', 'Verification link sent!');
+    // return view('auth.verify-email');
+    return redirect('/login')->with('success', 'Data email berhasil diverifikasi.');
+})->middleware(['auth'])->name('verification.verify');
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('dasbor', function () {
@@ -96,6 +106,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('pagu-unit', [UnitBudgetController::class, 'store'])->name('unit_budget.store');
         Route::get('kelola-user', [UserController::class, 'index'])->name('user.index');
         Route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('can:create user');
+        Route::post('user/{user}/resend-mail', [UserController::class, 'resendEmail'])->name('user.resend-mail');
         Route::patch('user/{user}/update', [UserController::class, 'update'])->name('user.update');
         Route::delete('user/{user}/hapus', [UserController::class, 'destroy'])->name('user.delete');
 

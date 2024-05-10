@@ -129,6 +129,8 @@ class DipaController extends Controller
         $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
         $title = 'Daftar DIPA';
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        $unitBudget = PaguUnit::unityear($dipa->year, $dipa->work_unit_id)->first();
+
         $accountCodes = AccountCode::all();
         $btnExport = [
             'pdf' => true,
@@ -148,7 +150,7 @@ class DipaController extends Controller
             'totalSum',
             'indikatorPerkin',
             'btnExport',
-
+            'unitBudget'
         ));
     }
 

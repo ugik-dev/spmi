@@ -98,7 +98,8 @@
                                     <td>{{ $user->employee->position ?? '-' }}</td>
                                     {{-- @dd($user->employee->workUnit) --}}
                                     <td>{{ $user->employee->workUnit->name ?? '-' }}</td>
-                                    <td>{{ $user->email ?? '-' }}</td>
+                                    <td>{{ $user->email ?? '-' }}
+                                        ({{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }})</td>
                                     <td class="text-center">
                                         {{-- <button type="button" class="btn btn-sm btn-info"
                                             data-bs-target="#changePasswordModal" data-bs-toggle="modal">
@@ -126,6 +127,18 @@
                                             style="display: none;">
                                             @csrf
                                             @method('DELETE')
+                                        </form>
+
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
+                                            onclick="resendMail({{ $user->id }});">
+                                            Resent e-Mail
+                                        </a>
+                                        <!-- Hidden form for delete request -->
+                                        <form id="resend-form-{{ $user->id }}"
+                                            action="{{ route('user.resend-mail', $user->id) }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                            @method('POST')
                                         </form>
                                     </td>
                                 </tr>
@@ -176,7 +189,23 @@
                 feather.replace();
             })
 
+            function resendMail(id) {
+                Swal.fire({
+                    title: "Anda yakin?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    // confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Ya, Kirim!",
+                    cancelButtonText: "Batalkan",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("resend-form-" + id).submit();
+                    }
+                });
+            }
             document.addEventListener('DOMContentLoaded', function() {
+
                 $("#changePasswordModal").on('shown.bs.modal', function() {
                     document.getElementById('togglePassword').addEventListener('click', function(e) {
                         // toggle the type attribute
