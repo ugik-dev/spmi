@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\AccountCode;
 use App\Models\Activity;
 use App\Models\BudgetImplementation;
@@ -9,6 +10,7 @@ use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
 use App\Models\DipaLog;
 use App\Models\ExpenditureUnit;
+use App\Models\PaguUnit;
 use App\Models\PerformanceIndicator;
 use App\Models\Timeline;
 use App\Models\UnitBudget;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 
 class BudgetImplementationController extends Controller
 {
@@ -42,14 +45,13 @@ class BudgetImplementationController extends Controller
         ];
         $timelines = Timeline::active('creat')->get();
         // dd($timelines);
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
         $totalSum = 0;
         if (empty(Auth::user()->employee->work_unit_id)) {
             return view('errors.405', ['pageTitle' => "Error", 'message' => "Unit Kerja anda belum diatur, harap hubungi admin!!"]);
         }
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->latest('year', 'revision')->get();
         $btnCreate = true;
-        return view('app.budget-implementation-list', compact('title', 'dipas', 'timelines', 'btnExport', 'btnCreate', 'unitBudget',));
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'timelines', 'btnExport', 'btnCreate',));
     }
     public function create(Timeline $timeline)
     {
@@ -66,7 +68,7 @@ class BudgetImplementationController extends Controller
             return view('errors.405', ['pageTitle' => "Error", 'message' => "Dipa untuk periode ini sudah pernah dibuat"]);
         }
         $title = 'Buat DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
+        $unitBudget = PaguUnit::unityear($timeline->year, Auth::user()->employee->work_unit_id ?? false)->first();
         $totalSum = 0;
         $groupedBI = [];
         $btnExport = [];
@@ -77,58 +79,7 @@ class BudgetImplementationController extends Controller
         return view('app.budget-implementation', compact('title', 'timeline', 'dipa', 'btnExport', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
 
-    public function ajukan(Dipa $dipa)
-    {
-        try {
-            $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
-            // $act = Activity::akumulasiRPD();
-            $act = Activity::where('dipa_id', $dipa->id)->get();
-            $rpd = 0;
-            foreach ($act as $ac) {
-                if (!empty($ac->activityRecap->attachment_path)) {
-                    // $filePath = 'app/activity/attachments-recap/' . $ac->activityRecap->attachment_path;
-                    // dd($filePath);
-                    // dd(Storage::exists($filePath));
-                    // if (!Storage::exists($filePath)) {
-                    //     return response()->json(['message' => 'Berkas ' . $ac->code . ' Upload ada yang rusak, harap cek !!'], 500);
-                    // }
-                } else {
-                    return response()->json(['message' => 'Berkas Upload kurang !!'], 500);
-                }
-                // $fileMimeType = mime_content_type($filePath);
-                // dd($ac->activityRecap);
-                if ($ac->activityRecap) {
-                }
-                $rpd += $ac->withdrawalPlans->sum('amount_withdrawn');
-                // echo $ac->withdrawalPlans->sum('amount_withdrawn') . '<br>';
-            }
-            if ($rpd != $totalSum) {
-                return response()->json(['message' => 'Total RPD tidak sama dengan Usulan DIPA !!'], 500);
-            }
-            if (!in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-ppk'])) {
-                return response()->json(['message' => 'Bukan waktu untuk mengajukan !!'], 500);
-            }
-            if ($dipa->user_id != Auth::user()->id) {
-                return response()->json(['message' => 'Kamu tidak berhak !!'], 500);
-            }
-            // dd($rpd);
-            // dd($dipa->timeline);
-            $dipa->total = $totalSum;
-            if (in_array($dipa->work_unit_id, ['16', '22'])) {
-                $dipa->status = 'wait-kpa';
-            } else {
-                $dipa->status = 'wait-kp';
-            };
-            $dipa->save();
 
-            DipaLog::create(['dipa_id' => $dipa->id, 'user_id' => Auth::user()->id, 'description' => "Mengajukan permohonan approval"]);
-            return response()->json(['message' => 'Success']);
-        } catch (\Exception $e) {
-            Log::error('Error in store function: ' . $e->getMessage());
-
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
     public function dipa(Dipa $dipa)
     {
         $dipa->bi;
@@ -136,7 +87,7 @@ class BudgetImplementationController extends Controller
         // dd($dipa);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         $title = 'Daftar DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();
+        $unitBudget = PaguUnit::unityear($dipa->year, $dipa->work_unit_id)->first();
         // dd($groupedBI);
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
         $btnExport = [
@@ -155,16 +106,13 @@ class BudgetImplementationController extends Controller
 
         $timelines = Timeline::active('revision')
             ->where('year', '=', $dipa->year)
-            // ->where('year', '=', '2024')
             ->first();
-        // dd($timelines);
         if (empty($timelines)) {
             return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan Waktu untuk revisi"]);
         }
         $newDipa = Dipa::where('year', $dipa->year)->where('work_unit_id', '=', $dipa->work_unit_id)->latest('revision')->first();
-        // dd($newDipa);
         $title = 'Buat DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
+        $unitBudget = PaguUnit::unityear($dipa->year, Auth::user()->employee->work_unit_id ?? false)->first();
         $totalSum = BudgetImplementationDetail::CountTotal($newDipa->id);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($newDipa->id);
         // dd($groupedBI);

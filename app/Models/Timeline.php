@@ -15,7 +15,10 @@ class Timeline extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    public function paguLembaga()
+    {
+        return $this->belongsTo(PaguLembaga::class, 'year', 'year');
+    }
     public function scopeActive($query, $category = false, $id = false)
     {
         $currentDateTime = Carbon::now(); // Get the current date and time
@@ -29,7 +32,6 @@ class Timeline extends Model
         if ($id) {
             $query = $query->where('id', '=', $id);
         }
-
         return $query;
     }
 }

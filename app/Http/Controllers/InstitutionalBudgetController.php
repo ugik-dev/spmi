@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InstitutionalBudget;
+use App\Models\PaguLembaga;
 use Illuminate\Http\Request;
 
 class InstitutionalBudgetController extends Controller
@@ -14,8 +15,10 @@ class InstitutionalBudgetController extends Controller
     {
         $title = 'Pagu Lembaga';
         $institutionalBudget = InstitutionalBudget::first();
+        $pagus = PaguLembaga::get();
 
-        return view('app.institutional-budget', compact('title', 'institutionalBudget'));
+        return view('app.pagu', compact('title', 'pagus'));
+        // return view('app.institutional-budget', compact('title', 'institutionalBudget'));
     }
 
     /**
@@ -24,27 +27,31 @@ class InstitutionalBudgetController extends Controller
     public function store(Request $request)
     {
         // Preprocess 'pagu' input: remove 'Rp' and commas, then convert to integer
-        $paguInput = $request->input('pagu');
-        $cleanedPagu = intval(str_replace(['Rp', ','], '', $paguInput));
+        $paguInput = $request->input('nominal');
+        $cleanedPagu = intval(str_replace(['Rp', '.'], '', $paguInput));
 
         // Validate the request
         $validatedData = $request->validate([
-            'ins_budget_id' => 'nullable|exists:institutional_budgets,id',
+            'id' => 'nullable|exists:pagu_lembagas,id',
+            'year' => 'required|date_format:Y',
         ]);
 
-        // Find or create the InstitutionalBudget record
-        $institutionalBudget = InstitutionalBudget::findOrNew($validatedData['ins_budget_id'] ?? null);
-
+        // $institutionalBudget = InstitutionalBudget::findOrNew($validatedData['ins_budget_id'] ?? null);
+        PaguLembaga::updateOrCreate(
+            [
+                'year' => $validatedData['year']
+            ],
+            [
+                'nominal' =>    $cleanedPagu
+            ],
+            // Values to update or create
+        );
         // Update or set the 'pagu' field with the cleaned value
-        $institutionalBudget->pagu = $cleanedPagu;
-        $institutionalBudget->save();
+        // $institutionalBudget->pagu = $cleanedPagu;
+        // $institutionalBudget->save();
 
-        // Add a response for successful creation or update
-        $message = $institutionalBudget->wasRecentlyCreated ?
-            'Berhasil menambahkan pagu lembaga.' :
-            'Berhasil mengupdate pagu lembaga.';
-
-        return redirect()->back()->with('success', $message);
+        // // Add a response for successful creation or update
+        return response()->json(['error' => false,  'message' => 'Success'], 200);
     }
 
     /**

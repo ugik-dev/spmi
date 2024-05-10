@@ -68,8 +68,8 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table-review :totalSum="$totalSum" :dipa="$dipa" :btnExport="$btnExport"
-                    :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table-review :totalSum="$totalSum" :unitBudget="$unitBudget" :dipa="$dipa"
+                    :btnExport="$btnExport" :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>

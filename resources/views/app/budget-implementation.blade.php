@@ -110,6 +110,7 @@
             const indikatorPerkin = @json($indikatorPerkin);
             const expenditureUnits = @json($expenditureUnits);
             document.addEventListener('DOMContentLoaded', function() {
+                test_call_app_js();
                 const theadTh = document.querySelectorAll('thead tr th');
                 theadTh.forEach(th => th.classList.add('bg-primary'));
                 const tdMoney = document.querySelectorAll(
@@ -241,7 +242,9 @@
                                 priceInput, totalInput));
                             priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
                                 priceInput, totalInput));
+
                             volumeInput.addEventListener('keypress', window.enforceNumericInput);
+                            console.log('enforceNumericInput');
                         }
                     });
 
@@ -323,6 +326,8 @@
                             priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
                                 priceInput, totalInput));
                             volumeInput.addEventListener('keypress', window.enforceNumericInput);
+                            console.log('enforceNumericInput');
+
                         }
 
                     })
@@ -548,6 +553,7 @@
 
                 if (!isNaN(volume) && !isNaN(unitPrice)) {
                     const total = volume * unitPrice;
+                    console.log(total, unitPrice)
                     totalInput.value = window.formatAsIDRCurrency(total);
                     priceInput.value = window.formatAsIDRCurrency(unitPrice);
                 } else {

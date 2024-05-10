@@ -24,7 +24,6 @@ class NewRequestNotification implements ShouldBroadcast
 
     public function __construct($user, $message)
     {
-
         $this->user = $user;
         $this->message = $message;
     }
@@ -41,6 +40,6 @@ class NewRequestNotification implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'new-request';
+        return 'new_notification';
     }
 }

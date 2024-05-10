@@ -1,22 +1,26 @@
 import.meta.glob(["../images/**"]);
 import "./import.plugins";
 
-import Echo from "laravel-echo";
-import Pusher from "pusher-js";
+// import Echo from "laravel-echo";
+// import Pusher from "pusher-js";
 
-window.Pusher = Pusher;
-window.Echo = new Echo({
-    broadcaster: "pusher",
-    key: "0692e41e02b68080e3e6",
-    cluster: "mt1",
-    forceTLS: true,
-});
+// window.Pusher = Pusher;
 
-// var channel = Echo.channel("private-user.1");
-// channel.listen(".new-request", function (data) {
-//     alert(JSON.stringify(data));
+// window.Echo = new Echo({
+//     broadcaster: "pusher",
+//     key: import.meta.env.VITE_PUSHER_APP_KEY,
+//     wsHost:
+//         import.meta.env.VITE_PUSHER_HOST ??
+//         `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? "https") === "https",
+//     enabledTransports: ["ws", "wss"],
 // });
 
+function test_call_app_js() {
+    console.log("test_call_app_js");
+}
 function formatAsIDRCurrency(value) {
     if (!isNaN(value)) {
         return new Intl.NumberFormat("id-ID", {
@@ -112,6 +116,7 @@ function populateSelectWithOptions(
     }
 }
 
+window.test_call_app_js = test_call_app_js;
 window.formatAsIDRCurrency = formatAsIDRCurrency;
 window.enforceNumericInput = enforceNumericInput;
 window.confirmDelete = confirmDelete;

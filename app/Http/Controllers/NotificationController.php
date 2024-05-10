@@ -17,7 +17,8 @@ class NotificationController extends Controller
             'url' => 'penganggaran/permohonan-approval/1'
         ]);
 
-        $res =  Event::dispatch(new NewRequestNotification(1, 'New request has been submitted.'));
-        dd($res);
+        broadcast(new NewRequestNotification(1, 'New request has been submitted.'));
+        // $res =  Event::dispatch(new NewRequestNotification(1, 'New request has been submitted.'));
+        dd('s');
     }
 }

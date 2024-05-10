@@ -12,13 +12,14 @@
             </div>
         @endif
         <div class="d-flex flex-wrap gap-2 my-2">
-            <h4 class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'text-danger' : 'text-success' }}">
+            <h4
+                class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->nominal ?? 0) ? 'text-danger' : 'text-success' }}">
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
-                {{ number_format($dipa->unit->unitBudgets[0]->pagu ?? '0', 0, ',', '.') }})</h4>
+                {{ number_format($unitBudget->nominal ?? '0', 0, ',', '.') }})</h4>
             @if (empty($dipa) || ($dipa->status == 'draft' && $dipa->user_id == Auth::user()->id))
                 @if ($dipa)
-                    <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
+                    <button {{ $totalSum > ($unitBudget->nominal ?? 0) ? 'disabled' : '' }} id="send-dipa"
                         class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
                 @endif
                 <button id="save-dipa" class="btn btn-outline-success shadow-sm bs-tooltip">Simpan</button>
@@ -89,10 +90,10 @@
     <table id="budget_implementation-table" class="table table-bordered">
         <thead>
             <tr class="text-center">
-                <th scope="col">MISI (RENSTRA)</th>
-                <th scope="col">IKU (RENSTRA)</th>
-                <th scope="col">Sasaran(PERKIN)</th>
-                <th scope="col">Indikator (PERKIN)</th>
+                <th scope="col" hidden>MISI (RENSTRA)</th>
+                <th scope="col" hidden>IKU (RENSTRA)</th>
+                <th scope="col" hidden>Sasaran(PERKIN)</th>
+                <th scope="col" hidden>Indikator (PERKIN)</th>
                 <th scope="col">Kode</th>
                 <th scope="col">SubKomponen</th>
                 <th scope="col">Volume</th>
@@ -150,11 +151,12 @@
                             @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
                             data-bi="{{ $budgetImplementations->first()->id }}" @endif
                             class="activity-row crow-{{ $cr1 }}">
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $misi }}</td>
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->iku?->description }}
+                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $misi }}</td>
+                            <td hidden rowspan="{{ $totalRows + 1 }}">
+                                {{ $Indikator?->programTarget?->iku?->description }}
                             </td>
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->name }}</td>
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->name }}</td>
+                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->name }}</td>
+                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->name }}</td>
                             <td>{{ $budgetImplementations->first()->activity->code }}</td>
                             <td>{{ $budgetImplementations->first()->activity->name }}</td>
                             <td></td>

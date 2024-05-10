@@ -36,6 +36,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('activation/{code}',  [UserController::class, 'activation_email'])->name('activation_email');
+
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('dasbor', function () {
         return view('app.dashboard', ['title' => 'Dasbor']);
@@ -87,9 +89,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('satuan-belanja/{expenditureUnit}/hapus', [ExpenditureUnitController::class, 'destroy'])->name('expenditure_unit.delete');
         Route::get('sbm-sbi', [SBMSBIController::class, 'index'])->name('sbm_sbi.index');
         Route::post('sbm-sbi', [SBMSBIController::class, 'store'])->name('sbm_sbi.store');
+        Route::get('pagu', [InstitutionalBudgetController::class, 'index'])->name('pagu.index');
         Route::get('pagu-lembaga', [InstitutionalBudgetController::class, 'index'])->name('ins_budget.index');
         Route::post('pagu-lembaga', [InstitutionalBudgetController::class, 'store'])->name('ins_budget.store');
-        Route::get('pagu-unit', [UnitBudgetController::class, 'index'])->name('unit_budget.index');
+        Route::get('pagu/unit/{year}', [UnitBudgetController::class, 'index'])->name('unit_budget.index');
         Route::post('pagu-unit', [UnitBudgetController::class, 'store'])->name('unit_budget.store');
         Route::get('kelola-user', [UserController::class, 'index'])->name('user.index');
         Route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('can:create user');
@@ -155,6 +158,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('permohonan-approval/fpdf/{dipa}', [PDFController::class, 'dipa'])->name('dipa.fpdf');
         Route::get('permohonan-approval/cetak/{dipa}', [PDFController::class, 'cetak'])->name('dipa.cetak');
         Route::get('permohonan-approval/cetak-mapping/{dipa}', [PDFController::class, 'cetak_mapping'])->name('dipa.cetak-mapping');
+        Route::post('dipa/ajukan/{dipa}', [DipaController::class, 'ajukan'])->name('dipa.ajukan');
         Route::post('dipa/approval/kpa/{dipa}', [DipaController::class, 'approval_kpa'])->name('dipa-action.kpa');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
@@ -172,7 +176,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('dipa', [BudgetImplementationController::class, 'store'])->name('budget_implementation.store');
         Route::post('edit-dipa', [BudgetImplementationController::class, 'update'])->name('budget_implementation.update');
         Route::post('dipa/{dipa}', [BudgetImplementationController::class, 'update_dipa'])->name('dipa.update');
-        Route::post('dipa/ajukan/{dipa}', [BudgetImplementationController::class, 'ajukan'])->name('dipa.ajukan');
         Route::delete('hapus-dipa/{type}/{id}', [BudgetImplementationController::class, 'destroy'])->name('budget_implementation.delete');
         Route::get('rekap-kegiatan-dan-upload-data-dukung', [ActivityRecapController::class, 'index'])->name('activity_recap.index');
         Route::get('rekap-kegiatan-dan-upload-data-dukung/{dipa}', [ActivityRecapController::class, 'open'])->name('activity_recap.open');

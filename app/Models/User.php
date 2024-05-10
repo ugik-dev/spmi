@@ -30,6 +30,7 @@ class User extends Authenticatable
         'phone',
         'identity_number',
         'identity_type',
+        'email_verified_at',
     ];
 
     /**
@@ -66,5 +67,10 @@ class User extends Authenticatable
     public function employee_staff(): HasOne
     {
         return $this->hasOne(Employee::class)->with('headOf');
+    }
+
+    public function canListerNotification($par)
+    {
+        return true;
     }
 }

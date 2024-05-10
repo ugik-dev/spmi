@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
 
@@ -13,30 +14,31 @@ class WorkUnitController extends Controller
     public function index()
     {
         $title = 'Unit Kerja';
-        $workUnits = WorkUnit::all();
-
-        return view('app.work-unit', compact('title', 'workUnits'));
+        $workUnits = WorkUnit::with(['ppkUnit'])->get();
+        $ppks = User::whereHas('roles', function ($q) {
+            $q->where('name', 'PPK');
+        })->get();
+        $kepalas = User::whereHas('roles', function ($q) {
+            $q->where('name', 'KEPALA UNIT KERJA');
+        })->get(); //cari where has role PPK
+        return view('app.work-unit', compact('title', 'ppks', 'kepalas', 'workUnits'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'work_unit_name.*' => 'required|string|max:255', // Validation for names
-            'work_unit_code.*' => 'nullable|string|max:255', // Validation for codes
+            'work_unit_name' => 'required|string|max:255', // Validation for names
+            'work_unit_code' => 'nullable|string|max:255', // Validation for codes
+            'kepala' => 'nullable|integer', // Validation for codes
+            'ppk' => 'nullable|integer', // Validation for codes
         ]);
 
-        $names = $request->input('work_unit_name');
-        $codes = $request->input('work_unit_code');
-
-        foreach ($names as $index => $name) {
-            $code = $codes[$index] ?? null; // Use null if the code is not provided
-
-            // Create a new WorkUnit
-            WorkUnit::create([
-                'name' => $name,
-                'code' => $code,
-            ]);
-        }
+        WorkUnit::create([
+            'name' => $request->work_unit_name,
+            'code' => $request->work_unit_code,
+            'ppk' => $request->ppk,
+            'kepala' => $request->kepala,
+        ]);
 
         return redirect()->back()->with('success', 'Berhasil menambahkan unit kerja.');
     }
@@ -50,6 +52,8 @@ class WorkUnitController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255', // Assuming 'name' is a required field
             'code' => 'nullable|string|max:255', // Assuming 'code' is optional
+            'kepala' => 'nullable|integer', // Validation for codes
+            'ppk' => 'nullable|integer', // Validation for codes
         ]);
 
         // Update the WorkUnit with validated data

@@ -96,8 +96,10 @@ class UserController extends Controller
         // $user->password =  Hash::make('password');
 
         $user->name = $validatedData['user_name'];
-        // $user->identity_number = $validatedData['identity_number'];
-        // $user->identity_type = $validatedData['identity_type'];
+        if ($user->email != $validatedData['email']) {
+            $user->email_verified_at = null;
+            $user->email = $validatedData['email'];
+        }
         $user->email = $validatedData['email'];
         $employee = $user->load('employee')->employee;
         if (!$employee) {
