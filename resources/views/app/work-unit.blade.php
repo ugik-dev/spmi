@@ -54,7 +54,7 @@
     <div class="row layout-top-spacing">
         <div class="col-lg-12 layout-spacing">
             <div class="statbox widget box box-shadow">
-                <div style="min-height:50vh;" class="widget-content widget-content-area">
+                <div class="widget-content widget-content-area" style="min-height:50vh;">
                     <div class="p-3 container">
                         @if ($errors->any())
                             <div class="alert alert-danger">
@@ -82,9 +82,9 @@
                         @endif
                     </div>
 
-                    <div class="d-flex justify-content-center justify-content-sm-start">
+                    <div class="text-center d-flex justify-content-center justify-content-sm-start px-4">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20 ms-md-4" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Unit Kerja
                         </button>
@@ -131,7 +131,6 @@
                         </table>
 
                     </div>
-
                 </div>
             </div>
         </div>
@@ -261,6 +260,7 @@
                     input.querySelector('.input-group-text').textContent = `${index + 1}.`;
                 });
             }
+
             document.addEventListener('DOMContentLoaded', function() {
                 $('#zero-config').DataTable({
                     "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
@@ -315,6 +315,7 @@
                     "lengthMenu": [7, 10, 20, 50],
                     "pageLength": 10
                 });
+
                 const workUnitContainer = document.getElementById('work_unit-inputs');
 
                 document.getElementById('add-work_unit').addEventListener('click', function() {

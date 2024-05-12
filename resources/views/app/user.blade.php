@@ -64,15 +64,16 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <div class="table-responsive">
+
+                <div class="table-responsive px-4">
                     <div class="me-1 mt-4">
-                        <button type="button" class="btn btn-primary btn-md w-20 ms-4" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#createModal">
                             Input User
                         </button>
                     </div>
                     <table id="user-table" class="table table-bordered">
-                        <thead class="bg-primary text-white">
+                        <thead class="bg-light text-center">
                             <tr>
                                 <th scope="col" style="width:40px;">No.</th>
                                 <th scope="col">User Role</th>
@@ -96,7 +97,7 @@
                                     <td>{{ $user->employee->id ?? '-' }}</td>
                                     <td>{{ $user->employee->position ?? '-' }}</td>
                                     <td>{{ $user->email ?? '-' }}</td>
-                                    <td class="text-center">
+                                    <td class="d-flex justify-content-center text-start">
                                         {{-- <button type="button" class="btn btn-sm btn-info"
                                             data-bs-target="#changePasswordModal" data-bs-toggle="modal">
                                             <i data-feather="key"></i>
@@ -201,6 +202,18 @@
                     "drawCallback": function(settings) {
                         feather.replace();
                     },
+                    // "responsive": true,
+                    // "scrollX": true,
+                    // "columnDefs": [{
+                    //         width: '40px',
+                    //         targets: 0
+                    //     }, // Mengatur lebar kolom 'No.'
+                    //     {
+                    //         width: '150px',
+                    //         targets: 1
+                    //     } // Contoh: Menetapkan lebar untuk kolom 'User Role'
+                    //     // Tambahkan pengaturan lebar lebih lanjut untuk kolom lain jika diperlukan
+                    // ],
                     "stripeClasses": [],
                     "lengthMenu": [7, 10, 20, 50],
                     "pageLength": 10

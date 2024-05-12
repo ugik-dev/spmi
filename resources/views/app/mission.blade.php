@@ -18,6 +18,9 @@
         <link rel="stylesheet" href="{{ asset('plugins/sweetalerts2/sweetalerts2.css') }}">
         @vite(['resources/scss/light/plugins/sweetalerts2/custom-sweetalert.scss'])
         @vite(['resources/scss/dark/plugins/sweetalerts2/custom-sweetalert.scss'])
+        <link rel="stylesheet" href="{{ asset('plugins/table/datatable/datatables.css') }}">
+        @vite(['resources/scss/light/plugins/table/datatable/dt-global_style.scss'])
+        @vite(['resources/scss/dark/plugins/table/datatable/dt-global_style.scss'])
         <style>
             .table-hover tbody tr:hover {
                 background-color: #f5f5f5;
@@ -36,6 +39,53 @@
                 height: 30px;
                 color: #dc3545;
             }
+
+            .actMission-btn {
+                padding-top: 12px !important;
+                padding-bottom: 12px !important;
+            }
+
+            .custom-title-editMission {
+                font-weight: 600;
+                font-size: 22px;
+                padding-top: 0;
+                padding-bottom: 18px;
+            }
+
+            .swal2-popup {
+                position: relative;
+                /* Memastikan posisi relatif untuk modal */
+            }
+
+            .swal2-close {
+                position: absolute;
+                top: 0;
+                /* Atur jarak dari atas modal */
+                right: 0;
+                /* Atur jarak dari sisi kanan modal */
+                z-index: 10;
+                /* Pastikan tombol close muncul di atas konten lain */
+            }
+
+            .swal2-close:hover {
+                color: #999;
+                /* Warna saat hover */
+            }
+
+            .wave-effect {
+                transition: transform 0.2s ease-out;
+                /* Menambahkan transisi untuk transform */
+                transition: all 0.3s ease-out;
+                -webkit-transition: all 0.3s ease-out;
+            }
+
+            /* .form-group {
+                margin-bottom: 1rem !important;
+            }
+
+            label {
+                margin-bottom: 0 !important;
+            } */
         </style>
         <!--  END CUSTOM STYLE FILE  -->
     </x-slot>
@@ -48,31 +98,34 @@
     <div class="row layout-top-spacing">
         <div class="col-lg-12 layout-spacing">
             <div class="statbox widget box box-shadow">
-                <div class="widget-content widget-content-area">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                    @endif
-                    @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
-                    @endif
-                    <div class="text-start" style="display: flex; justify-content: space-between;">
+                <div class="widget-content widget-content-area" style="min-height:50vh;">
+                    <div class="p-3 container">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="text-center d-flex justify-content-between align-items-center px-4">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
@@ -83,18 +136,33 @@
                             <a href="{{ route('download.mission.pdf') }}" class="btn btn-danger">PDF</a>
                         </div>
                     </div>
+                    {{-- <div class="d-flex justify-content-between mb-4">
+                        <!-- Results per Page dengan Bootstrap Flexbox -->
+                        <div class="d-flex align-items-center">
+                            <label for="resultsPerPage" class="me-2">Result:</label>
+                            <select class="form-select" id="resultsPerPage" onchange="applyResultsPerPage()">
+                                <option value="7">7</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
 
+                        <!-- Search -->
+                        <div class="ms-auto">
+                            <input type="text" class="form-control" id="searchField" placeholder="Cari Misi"
+                                onkeyup="applySearch()">
+                        </div>
+                    </div> --}}
 
                     {{-- <h1 style="margin-top:10vh;" class="text-center fw-bold">{{ $renstra->mission }}</h1> --}}
-
-
-                    <div class="table-responsive mt-4">
-                        <table class="table table-bordered table-hover">
-                            <thead class="bg-light">
+                    <div class="table-responsive px-4">
+                        <table id="zero-config" class="table table-bordered">
+                            <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Misi</th>
-                                    <th scope="col" class="text-center">Aksi</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,9 +170,14 @@
                                     <tr>
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $mission->description }}</td>
-                                        <td class="text-center">
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDeleteMission({{ $mission->id }});">
+                                        <td class="d-flex justify-content-center text-start">
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm mx-1"
+                                                role="button"
+                                                onclick="editMission({{ $mission->id }}, '{{ $mission->description }}');">
+                                                <i class="text-white" data-feather="edit-2"></i>
+                                            </a>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                role="button" onclick="confirmDeleteMission({{ $mission->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
                                             </a>
                                         </td>
@@ -117,7 +190,6 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -167,17 +239,22 @@
                             <i data-feather="save"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
-
-
                 </div>
 
             </div>
         </div>
     </div>
+
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
+        <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
         <script src="{{ asset('plugins/editors/quill/quill.js') }}"></script>
         <script src="{{ asset('plugins/sweetalerts2/sweetalerts2.min.js') }}"></script>
+        <script src="{{ asset('plugins/table/datatable/datatables.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/jszip.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
 
         <script>
             window.addEventListener('load', function() {
@@ -199,7 +276,6 @@
                     }
                 });
             }
-
 
             function deleteMission(index) {
                 // Assuming you have a route defined in Laravel to handle the deletion that expects the index
@@ -226,7 +302,57 @@
                     });
             }
 
-
+            function editMission(id, description) {
+                Swal.fire({
+                    title: 'Edit Misi',
+                    input: 'textarea',
+                    inputAttributes: {
+                        'style': 'width: 100%; height: 100px; margin: auto;' // Gaya untuk textarea
+                    },
+                    inputValue: description,
+                    showCancelButton: true,
+                    showCloseButton: true,
+                    confirmButtonText: 'Simpan',
+                    confirmButtonColor: '#4361ee',
+                    cancelButtonText: 'Batal',
+                    cancelButtonColor: 'rgb(221, 51, 51)',
+                    width: '600px',
+                    padding: '2em',
+                    customClass: {
+                        title: 'custom-title-editMission',
+                        confirmButton: 'btn btn-primary wave-effect',
+                        cancelButton: 'btn btn-danger wave-effect'
+                    },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Anda harus mengisi deskripsi misi!';
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.post('{{ route('mission.update') }}', {
+                                id: id,
+                                description: result.value
+                            })
+                            .then(function(response) {
+                                Swal.fire(
+                                    'Diperbarui!',
+                                    'Misi telah diperbarui.',
+                                    'success'
+                                ).then(() => {
+                                    window.location.reload();
+                                });
+                            })
+                            .catch(function(error) {
+                                Swal.fire(
+                                    'Gangguan!',
+                                    'Terjadi gangguan saat memperbarui misi.',
+                                    'error'
+                                );
+                            });
+                    }
+                });
+            }
 
             function updateNumbering() {
                 const missionInputs = document.querySelectorAll('#mission-inputs .input-group');
@@ -234,7 +360,30 @@
                     input.querySelector('.input-group-text').textContent = `${index + 1}.`;
                 });
             }
+
             document.addEventListener('DOMContentLoaded', function() {
+                $('#zero-config').DataTable({
+                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'f>>>" +
+                        "<'table-responsive'tr>" +
+                        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "oLanguage": {
+                        "oPaginate": {
+                            "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                            "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "drawCallback": function(settings) {
+                        feather.replace();
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 10
+                });
+
                 const missionContainer = document.getElementById('mission-inputs');
 
                 document.getElementById('add-mission').addEventListener('click', function() {
@@ -244,7 +393,7 @@
                         <button type="button" class="btn btn-danger remove-mission">
                             <i data-feather="trash"></i>
                         </button>
-                      </div>`;
+                        </div>`;
                     missionContainer.insertAdjacentHTML('beforeend', newInput);
                     feather.replace();
                     updateNumbering();

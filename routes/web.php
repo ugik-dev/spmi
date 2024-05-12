@@ -49,10 +49,11 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('visi', [RenstraController::class, 'vision'])->name('vision.index');
         Route::patch('edit-visi', [RenstraController::class, 'updateVision'])->name('vision.update');
         Route::get('misi', [RenstraController::class, 'mission'])->name('mission.index');
+        Route::post('tambah-misi', [RenstraController::class, 'storeMission'])->name('mission.store');
+        Route::post('update-misi', [RenstraController::class, 'updateMission'])->name('mission.update');
+        Route::post('hapus-misi', [RenstraController::class, 'deleteMission'])->name('mission.delete');
         Route::get('/download-misi-pdf', [RenstraController::class, 'downloadMissionPdf'])->name('download.mission.pdf');
         Route::get('/download-mission-excel', [RenstraController::class, 'downloadMissionExcel'])->name('download.mission.excel');
-        Route::post('tambah-misi', [RenstraController::class, 'storeMission'])->name('mission.store');
-        Route::post('hapus-misi', [RenstraController::class, 'deleteMission'])->name('mission.delete');
         Route::get('iku', [RenstraController::class, 'iku'])->name('iku.index');
         Route::get('/download-iku-pdf', [RenstraController::class, 'downloadIkuPdf'])->name('download.iku.pdf');
         Route::get('/download-iku-excel', [RenstraController::class, 'downloadIkuExcel'])->name('download.iku.excel');
