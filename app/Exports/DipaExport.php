@@ -42,7 +42,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles,  WithCusto
         // $i = 4;
         foreach ($dataBI as $misi) {
             $rowspanMisi = count($misi['child_missi']);
-            $rowspanIKU = 0; // Jumlah row untuk IKU
+            $rowspanIKU = 0; // Jumlah row untuk SASARAN PROGRAM
             $rowspanSasaran = 0; // Jumlah row untuk Sasaran
             $rowspanIndPerkin = 0; // Jumlah row untuk Ind Perkin
             $rowspanActivity = 0; // Jumlah row untuk Activity
@@ -87,7 +87,7 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles,  WithCusto
     {
         return [
             // 'Misi',
-            // 'IKU',
+            // 'SASARAN PROGRAM',
             // 'Sasaran',
             // 'Indikator',
             // 'Kode',
@@ -165,8 +165,8 @@ class DipaExport implements FromCollection, WithHeadings, WithStyles,  WithCusto
 
 
                 // $sheet->setCellValue('A' . $i, 'MISI');
-                // $sheet->setCellValue('B' . $i, 'IKU');
-                // $sheet->setCellValue('C' . $i, 'IKU');
+                // $sheet->setCellValue('B' . $i, 'SASARAN PROGRAM');
+                // $sheet->setCellValue('C' . $i, 'SASARAN PROGRAM');
                 // $sheet->setCellValue('D' . $i, 'SASARAN');
                 // $sheet->setCellValue('E' . $i, 'INDIKATOR');
                 $sheet->setCellValue('A' . $i, "KOMPONEN");

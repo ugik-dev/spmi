@@ -10,14 +10,14 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class IkusExport implements FromCollection, WithHeadings, WithMapping
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return RenstraIndicator::with('mission')->get();
     }
 
-     /**
+    /**
      * Map data for each row.
      *
      * @param mixed $mission
@@ -39,6 +39,6 @@ class IkusExport implements FromCollection, WithHeadings, WithMapping
      */
     public function headings(): array
     {
-        return ["No", "Misi", "IKU"];
+        return ["No", "Misi", "SASARAN PROGRAM"];
     }
 }

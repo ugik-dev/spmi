@@ -77,7 +77,7 @@ class RenstraController extends Controller
         ]);
         foreach ($validatedData['iku'] as $data)
             RenstraIndicator::create(['renstra_mission_id' => $validatedData['misi'], 'description' => $data]);
-        return redirect()->route('iku.index')->with('success', 'IKU berhasil ditambahkan.');
+        return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM berhasil ditambahkan.');
     }
     // Add this method to your RenstraController
 
@@ -125,7 +125,7 @@ class RenstraController extends Controller
 
         // Update the path to match the location of your Blade file
         $pdf = PDF::loadView('components.custom.pdf.downloadIkuPdf', ['ikus' => $ikus]);
-        return $pdf->download("IKU-Report-{$date}.pdf");
+        return $pdf->download("SASARAN PROGRAM-Report-{$date}.pdf");
     }
 
     // fungsi download excel
@@ -145,9 +145,8 @@ class RenstraController extends Controller
         $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
 
         // Membuat nama file dengan timestamp
-        $filename = "IKU-Report-{$timestamp}.xlsx";
+        $filename = "SASARAN PROGRAM-Report-{$timestamp}.xlsx";
 
         return Excel::download(new IkusExport, $filename);
     }
-
 }
