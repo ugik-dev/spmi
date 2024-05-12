@@ -10,6 +10,8 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-dompdf": "^2.1",
+        "beyondcode/laravel-websockets": "^1.14",
+        "fpdf/fpdf": "^1.86",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/fortify": "^1.13",
         "laravel/framework": "^10.0",
@@ -17,9 +19,9 @@
         "laravel/tinker": "^2.7",
         "league/flysystem-path-prefixing": "^3.0",
         "maatwebsite/excel": "^3.1",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-navigation": "^1.2",
-        "spatie/laravel-permission": "^6.3",
-        "fpdf/fpdf": "^1.86"
+        "spatie/laravel-permission": "^6.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

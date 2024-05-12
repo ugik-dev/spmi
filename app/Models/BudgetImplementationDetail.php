@@ -23,6 +23,10 @@ class BudgetImplementationDetail extends Model
 
     public function scopeCountTotal($query, $dipa)
     {
+        // dd($query
+        //     ->join('budget_implementations as bi', 'bi.id', '=', 'budget_implementation_details.budget_implementation_id')
+        //     ->where('bi.dipa_id', $dipa)->get()->toArray());
+
         return  $query
             ->join('budget_implementations as bi', 'bi.id', '=', 'budget_implementation_details.budget_implementation_id')
             ->where('bi.dipa_id', $dipa)->sum('total');

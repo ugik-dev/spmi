@@ -50,6 +50,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\NavigationServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
 
         Spatie\Permission\PermissionServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,

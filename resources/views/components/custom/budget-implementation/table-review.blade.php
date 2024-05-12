@@ -12,13 +12,14 @@
             </div>
         @endif
         <div class="d-flex flex-wrap gap-2 my-2">
-            <h4 class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'text-danger' : 'text-success' }}">
+            <h4
+                class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->nominal ?? 0) ? 'text-danger' : 'text-success' }}">
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
-                {{ number_format($dipa->unit->unitBudgets[0]->pagu ?? '0', 0, ',', '.') }})</h4>
+                {{ number_format($unitBudget->nominal ?? '0', 0, ',', '.') }})</h4>
             @if (empty($dipa) || ($dipa->status == 'draft' && $dipa->user_id == Auth::user()->id))
                 @if ($dipa)
-                    <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
+                    <button {{ $totalSum > ($unitBudget->nominal ?? 0) ? 'disabled' : '' }} id="send-dipa"
                         class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
                 @endif
                 <button id="save-dipa" class="btn btn-outline-success shadow-sm bs-tooltip">Simpan</button>
@@ -27,6 +28,11 @@
             @elseif($dipa->status == 'draft')
             @endif
             @if ($dipa)
+                @if (in_array($dipa->status, ['wait-kpa', 'reject-kpa']) && Auth::user()->hasRole(['KPA (REKTOR)']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.kpa-modal :dipa="$dipa" />
+                    </div>
+                @endif
                 @if (in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
                         $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
                         Auth::user()->hasRole(['KEPALA UNIT KERJA']))
@@ -43,7 +49,7 @@
                 @endif
                 @if (in_array($dipa->status, ['wait-spi', 'reject-spi']) &&
                         // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                        Auth::user()->hasRole(['SPI']))
+                        Auth::user()->hasRole(['KEPALA SPI']))
                     <div class="float-end p-2">
                         <x-custom.dipa.spi-modal :dipa="$dipa" />
                     </div>
@@ -55,12 +61,16 @@
                         <x-custom.dipa.perencanaan-modal :dipa="$dipa" />
                     </div>
                 @endif
+                @if (in_array($dipa->status, ['accept']) &&
+                        // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN']))
+                    <div class="float-end p-2">
+                        <x-custom.dipa.perencanaan2-modal :dipa="$dipa" />
+                    </div>
+                @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
-                    <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
-                        data-res="Y">
-                        <i data-feather="printer"></i> Cetak
-                    </a>
+                    <x-custom.budget-implementation.export-btn :dipaId="$dipa->id" :btnExport="$btnExport" />
                 </div>
             @endif
         </div>
@@ -80,16 +90,16 @@
     <table id="budget_implementation-table" class="table table-bordered">
         <thead>
             <tr class="text-center">
-                <th scope="col">MISI (RENSTRA)</th>
-                <th scope="col">IKU (RENSTRA)</th>
-                <th scope="col">Sasaran(PERKIN)</th>
-                <th scope="col">Indikator (PERKIN)</th>
+                <th scope="col" hidden>MISI (RENSTRA)</th>
+                <th scope="col" hidden>IKU (RENSTRA)</th>
+                <th scope="col" hidden>Sasaran(PERKIN)</th>
+                <th scope="col" hidden>Indikator (PERKIN)</th>
                 <th scope="col">Kode</th>
                 <th scope="col">SubKomponen</th>
                 <th scope="col">Volume</th>
                 <th scope="col">Satuan</th>
                 <th scope="col">Harga Satuan</th>
-                <th scope="col">Jumlah Usulan</th>
+                <th scope="col">Jumlah Total</th>
                 <th scope="col">Jumlah RPD</th>
                 <th scope="col">Data Dukung</th>
                 <th scope="col">Catatan</th>
@@ -141,11 +151,12 @@
                             @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
                             data-bi="{{ $budgetImplementations->first()->id }}" @endif
                             class="activity-row crow-{{ $cr1 }}">
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $misi }}</td>
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->iku?->description }}
+                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $misi }}</td>
+                            <td hidden rowspan="{{ $totalRows + 1 }}">
+                                {{ $Indikator?->programTarget?->iku?->description }}
                             </td>
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->name }}</td>
-                            <td rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->name }}</td>
+                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->programTarget?->name }}</td>
+                            <td hidden rowspan="{{ $totalRows + 1 }}">{{ $Indikator?->name }}</td>
                             <td>{{ $budgetImplementations->first()->activity->code }}</td>
                             <td>{{ $budgetImplementations->first()->activity->name }}</td>
                             <td></td>
@@ -156,7 +167,7 @@
                             </td>
                             <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk lihat detail rencana penarikan dana"
                                 class="bs-tooltip"
-                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}', '2024');">
+                                onclick="fetchRPD('{{ $budgetImplementations->first()->activity->id }}');">
                                 Rp
                                 {{ number_format($budgetImplementations->first()->activity->withdrawalPlans->sum('amount_withdrawn')) }}
                                 <br>
@@ -172,8 +183,22 @@
                                         $filePath = Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->path(
                                             $budgetImplementations->first()->activity->activityRecap?->attachment_path,
                                         );
-                                        $fileMimeType = mime_content_type($filePath);
-                                        $rekap_file = true;
+                                        if (
+                                            Storage::disk(App\Supports\Disk::ActivityRecapAttachment)->exists(
+                                                $budgetImplementations->first()->activity->activityRecap
+                                                    ?->attachment_path,
+                                            )
+                                        ) {
+                                            $fileMimeType = mime_content_type($filePath);
+                                            $rekap_file = true;
+                                        } else {
+                                            // File tidak ditemukan
+                                            $fileMimeType = false;
+                                            $rekap_file = false;
+                                        }
+
+                                        // $fileMimeType = mime_content_type($filePath);
+                                        // $rekap_file = true;
                                     } else {
                                         $fileMimeType = false;
                                     }
@@ -194,24 +219,10 @@
                             <td rowspan="{{ $totalRows + 1 }}" title="Klik untuk menambahkan atau edit catatan"
                                 class="bs-tooltip"
                                 onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')">
-                                {{-- @if ($rekap_file) --}}
-                                {{-- <button
-                                    onclick="addCatatan('{{ $budgetImplementations->first()->activity->id }}')"class="btn
-                                    btn-primary btn-sm me-sm-2 mb-2 mb-sm-0" role="button">
-                                    <i class="text-white" data-feather="edit"></i>
-                                </button> --}}
-
-                                {{-- @else
-                                    <button type="button" class="btn btn-danger btn-sm me-sm-2 mb-2 mb-sm-0">
-                                        <i class="feather icon-eye"></i> Belum Ada
-                                    </button>
-                                @endif --}}
-                                {{-- @dd($budgetImplementations->first()->activity->activityNote) --}}
-                                {{-- <p> --}}
                                 @php $i_note = 1 @endphp
                                 @foreach ($budgetImplementations->first()->activity->activityNote as $note)
                                     {!! $i_note != 1 ? '<br>' : '' !!}
-                                    {{ $i_note }}. {{ $note->description }}
+                                    {{ $note->user->name }}:<br> {!! nl2br($note->description) !!}
                                     @php $i_note++ @endphp
                                 @endforeach
                                 {{-- </p> --}}

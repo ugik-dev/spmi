@@ -23,16 +23,30 @@ use App\Http\Controllers\ReceptionController;
 use App\Http\Controllers\RenstraController;
 use App\Http\Controllers\RuhPaymentController;
 use App\Http\Controllers\SBMSBIController;
+use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\TreasurerController;
 use App\Http\Controllers\UnitBudgetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificatorController;
 use App\Http\Controllers\WithdrawalPlanController;
 use App\Http\Controllers\WorkUnitController;
+use App\Http\Controllers\NotificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    // dd($request->fulfill());
+    // return redirect()->route('login')->with('success', 'Verification link sent!');
+    // return view('auth.verify-email');
+    return redirect('/login')->with('success', 'Data email berhasil diverifikasi.');
+})->middleware(['auth'])->name('verification.verify');
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('dasbor', function () {
@@ -44,6 +58,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         'index' => 'my-profile.index',
         'update' => 'my-profile.update',
     ]);
+
+    Route::get('notification/test', [NotificationController::class, 'test'])->name('notification.test');
+
 
     Route::prefix('renstra')->group(function () {
         Route::get('visi', [RenstraController::class, 'vision'])->name('vision.index');
@@ -83,12 +100,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('satuan-belanja/{expenditureUnit}/hapus', [ExpenditureUnitController::class, 'destroy'])->name('expenditure_unit.delete');
         Route::get('sbm-sbi', [SBMSBIController::class, 'index'])->name('sbm_sbi.index');
         Route::post('sbm-sbi', [SBMSBIController::class, 'store'])->name('sbm_sbi.store');
+        Route::get('pagu', [InstitutionalBudgetController::class, 'index'])->name('pagu.index');
         Route::get('pagu-lembaga', [InstitutionalBudgetController::class, 'index'])->name('ins_budget.index');
         Route::post('pagu-lembaga', [InstitutionalBudgetController::class, 'store'])->name('ins_budget.store');
-        Route::get('pagu-unit', [UnitBudgetController::class, 'index'])->name('unit_budget.index');
+        Route::get('pagu/unit/{year}', [UnitBudgetController::class, 'index'])->name('unit_budget.index');
         Route::post('pagu-unit', [UnitBudgetController::class, 'store'])->name('unit_budget.store');
         Route::get('kelola-user', [UserController::class, 'index'])->name('user.index');
         Route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('can:create user');
+        Route::post('user/{user}/resend-mail', [UserController::class, 'resendEmail'])->name('user.resend-mail');
         Route::patch('user/{user}/update', [UserController::class, 'update'])->name('user.update');
         Route::delete('user/{user}/hapus', [UserController::class, 'destroy'])->name('user.delete');
 
@@ -100,6 +119,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         ])->parameters([
             'bendahara' => 'treasurer',
         ]);
+
+        Route::resource('timeline', TimelineController::class)->names([
+            'index' => 'timeline.index',
+            'store' => 'timeline.store',
+            // 'store_update' => 'timeline.store_update',
+            'destroy' => 'timeline.destroy',
+        ]);
+        Route::post('timeline/store_update', [TimelineController::class, 'store_update'])->name('timeline.store_update');
 
         // PPK Routes
         Route::resource('ppk', PPKController::class);
@@ -135,26 +162,32 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
+        Route::get('rekap', [DipaController::class, 'rekap'])->name('dipa.rekap');
+        Route::get('rekap/{dipa}', [DipaController::class, 'review_rekap'])->name('dipa.review-rekap');
         Route::get('permohonan-approval', [DipaController::class, 'approval'])->name('dipa.approval');
         Route::get('permohonan-approval/{dipa}', [DipaController::class, 'review'])->name('dipa.review');
         Route::get('permohonan-approval/pdf/{dipa}', [DipaController::class, 'pdf'])->name('dipa.pdf');
         Route::get('permohonan-approval/fpdf/{dipa}', [PDFController::class, 'dipa'])->name('dipa.fpdf');
+        Route::get('permohonan-approval/cetak/{dipa}', [PDFController::class, 'cetak'])->name('dipa.cetak');
+        Route::get('permohonan-approval/cetak-mapping/{dipa}', [PDFController::class, 'cetak_mapping'])->name('dipa.cetak-mapping');
+        Route::post('dipa/ajukan/{dipa}', [DipaController::class, 'ajukan'])->name('dipa.ajukan');
+        Route::post('dipa/approval/kpa/{dipa}', [DipaController::class, 'approval_kpa'])->name('dipa-action.kpa');
         Route::post('dipa/approval/ka/{dipa}', [DipaController::class, 'approval_kp'])->name('dipa-action.ka');
         Route::post('dipa/approval/ppk/{dipa}', [DipaController::class, 'approval_ppk'])->name('dipa-action.ppk');
         Route::post('dipa/approval/spi/{dipa}', [DipaController::class, 'approval_spi'])->name('dipa-action.spi');
         Route::post('dipa/approval/add-note', [ActivityController::class, 'add_note'])->name('dipa-action.add_note');
         Route::post('dipa/approval/perencanaan/{dipa}', [DipaController::class, 'approval_perencanaan'])->name('dipa-action.perencanaan');
+        Route::post('dipa/approval/release/{dipa}', [DipaController::class, 'approval_release'])->name('dipa-action.release');
         Route::post('delete-dipa', [BudgetImplementationController::class, 'delete_dipa'])->name('dipa.delete');
 
 
-        Route::get('dipa/create', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
+        Route::get('dipa/create/{timeline}', [BudgetImplementationController::class, 'create'])->name('budget_implementation.create');
         Route::get('dipa/buat-revisi/{dipa}', [BudgetImplementationController::class, 'create_copy'])->name('dipa.create-revisi');
         Route::get('dipa', [BudgetImplementationController::class, 'index'])->name('budget_implementation.index');
         Route::get('dipa/{dipa}', [BudgetImplementationController::class, 'dipa'])->name('budget_implementation.dipa');
         Route::post('dipa', [BudgetImplementationController::class, 'store'])->name('budget_implementation.store');
         Route::post('edit-dipa', [BudgetImplementationController::class, 'update'])->name('budget_implementation.update');
         Route::post('dipa/{dipa}', [BudgetImplementationController::class, 'update_dipa'])->name('dipa.update');
-        Route::post('dipa/ajukan/{dipa}', [BudgetImplementationController::class, 'ajukan'])->name('dipa.ajukan');
         Route::delete('hapus-dipa/{type}/{id}', [BudgetImplementationController::class, 'destroy'])->name('budget_implementation.delete');
         Route::get('rekap-kegiatan-dan-upload-data-dukung', [ActivityRecapController::class, 'index'])->name('activity_recap.index');
         Route::get('rekap-kegiatan-dan-upload-data-dukung/{dipa}', [ActivityRecapController::class, 'open'])->name('activity_recap.open');

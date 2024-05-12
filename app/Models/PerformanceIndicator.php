@@ -30,6 +30,15 @@ class PerformanceIndicator extends Model
     {
         return $this->belongsTo(ProgramTarget::class);
     }
+    public function activity()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+    public function activityDipa()
+    {
+        return $this->hasMany(Activity::class);
+    }
 
     public function isAboveThreshold($threshold)
     {

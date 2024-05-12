@@ -70,11 +70,15 @@
                     @endif
                     <div class="text-start">
                         <!-- Button trigger modal -->
-                        @if (!empty($btnRPD))
-                            <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
-                                Buat Usulan Baru
+                        {{-- @if (empty($dipas)) --}}
+                        @foreach ($timelines as $timeline)
+                            <a href="{{ route('budget_implementation.create', $timeline->id) }}"
+                                class="btn btn-primary btn-md w-20">
+                                Buat Usulan Baru ({{ $timeline->year }}) <span
+                                    id="countdown_timeline_{{ $timeline->id }}"></span>
                             </a>
-                        @endif
+                        @endforeach
+                        {{-- @endif --}}
                     </div>
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
@@ -90,6 +94,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $cur_year = '-' @endphp
                                 @foreach ($dipas as $dipa)
                                     <tr>
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
@@ -97,7 +102,7 @@
                                         <td>{{ $dipa->year }}</td>
                                         <td>{{ $dipa->revision }}</td>
                                         <td>{{ number_format($dipa->total) }}</td>
-                                        <td>{{ $dipa->status }}</td>
+                                        <td>{{ statusDipa($dipa->status) }}</td>
                                         <td class="text-center">
                                             @if (!empty($btnRPD))
                                                 <a href="{{ route('withdrawal_plan.open', $dipa->id) }}"
@@ -110,19 +115,27 @@
                                                     <i class="text-white" data-feather="eye"></i>
                                                 </a>
                                             @else
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm"
-                                                    role="button" onclick="confirmDelete2({{ $dipa->id }});">
-                                                    <i class="text-white" data-feather="trash-2"></i>
-                                                </a>
+                                                @if (in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                                                        role="button" onclick="confirmDelete2({{ $dipa->id }});">
+                                                        <i class="text-white" data-feather="trash-2"></i>
+                                                    </a>
+                                                @endif
                                                 <a href="{{ route('dipa.update', $dipa->id) }}"
                                                     class="btn btn-primary btn-sm" role="button">
                                                     <i class="text-white" data-feather="eye"></i>
                                                 </a>
-                                                <a href="{{ route('dipa.fpdf', $dipa->id) }}"
-                                                    class="btn btn-primary btn-sm" role="button">
-                                                    <i class="text-white" data-feather="printer"></i>
-                                                </a>
-                                                @if ($dipa->status == 'accept')
+                                                <x-custom.budget-implementation.export-btn :dipaId="$dipa->id"
+                                                    :btn="$btnExport" />
+                                                @php
+                                                    if ($cur_year == $dipa->year) {
+                                                        $revision = false;
+                                                    } else {
+                                                        $revision = true;
+                                                    }
+                                                    $cur_year = $dipa->year;
+                                                @endphp
+                                                @if ($revision && $dipa->status == 'release')
                                                     <a href="{{ route('dipa.create-revisi', $dipa->id) }}"
                                                         class="btn btn-primary btn-sm" role="button">
                                                         Buat Revisi
@@ -210,6 +223,41 @@
             window.addEventListener('load', function() {
                 feather.replace();
             })
+
+            function updateClock() {
+                @foreach ($timelines as $timeline)
+                    var now = new Date(); // Ambil waktu saat ini
+                    var end = new Date("{{ $timeline->end }}"); // Konversi waktu akhir dari PHP ke JavaScript
+                    var timeDiff = end.getTime() - now.getTime(); // Hitung selisih waktu dalam milidetik
+                    var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Hitung hari
+                    var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Hitung jam
+                    var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)); // Hitung menit
+                    var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000); // Hitung detik
+
+                    var displayTime = ''; // String untuk menampilkan sisa waktu
+
+                    // Menambahkan keterangan waktu yang tersisa sesuai dengan kondisi
+                    if (days > 0) {
+                        displayTime = days + " hari dan " + hours + " jam";
+                    } else if (hours > 0) {
+                        displayTime = hours + " jam dan " + minutes + " menit";
+                    } else if (minutes > 0) {
+                        displayTime = minutes + " menit dan " + seconds + " detik";
+                    } else {
+                        displayTime = seconds + " detik";
+                    }
+
+                    // Tampilkan waktu yang dihitung dalam elemen dengan ID "countdown"
+                    document.getElementById("countdown_timeline_{{ $timeline->id }}").innerHTML =
+                        //  "Sisa Waktu: " + days +
+                        //     " hari, " + hours + " jam, " +
+                        //     minutes + " menit, " + seconds + " detik";
+                        "Sisa Waktu: " + displayTime;
+                @endforeach
+            }
+
+            // Memanggil fungsi updateClock() setiap detik
+            setInterval(updateClock, 1000);
 
             function confirmDelete2(index) {
                 Swal.fire({

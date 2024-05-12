@@ -21,7 +21,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view pembayaran',
                 'view penganggaran',
                 'approval pembayaran',
-                'approval penganggaran'
+                'approval penganggaran',
+                'rekap penganggaran',
             ],
             'SPI' => [
                 'view sbmsbi',
@@ -31,7 +32,19 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view perencanaan',
                 'approval pembayaran',
                 'approval penganggaran',
-                'approval and comment perencanaan'
+                'approval and comment perencanaan',
+                'rekap penganggaran',
+            ],
+            'KEPALA SPI' => [
+                'view sbmsbi',
+                'view pelaporan',
+                'view pembayaran',
+                'view penganggaran',
+                'view perencanaan',
+                'approval pembayaran',
+                'approval penganggaran',
+                'approval and comment perencanaan',
+                'rekap penganggaran',
             ],
             'STAF PPK' => [
                 'view sbmsbi',
@@ -50,6 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view penganggaran',
                 'input penganggaran',
                 'edit penganggaran',
+                'rekap penganggaran'
             ],
             'KEPALA UNIT KERJA' => [
                 'view sbmsbi',
@@ -60,12 +74,15 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view penganggaran',
                 'input penganggaran',
                 'approval penganggaran',
+                'rekap penganggaran'
             ],
             'KPA (REKTOR)' => [
                 'view pelaporan',
                 'view perencanaan',
                 'view penganggaran',
                 'view pembayaran',
+                'approval penganggaran',
+                'rekap penganggaran'
             ],
             'BENDAHARA' => [
                 'view sbmsbi',
@@ -91,6 +108,8 @@ class RolesAndPermissionsSeeder extends Seeder
         }
         Role::where('name', 'SUPER ADMIN PERENCANAAN')->first()->givePermissionTo(Permission::all());
 
+        // sintak memperbaharui
+        // php artisan db:seed --class=RolesAndPermissionsSeeder
         // Role::where('name', 'ADMIN FAKULTAS/UNIT')->first()->givePermissionTo('view SBM&SBI');
     }
 }

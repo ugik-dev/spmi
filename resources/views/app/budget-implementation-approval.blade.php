@@ -68,12 +68,7 @@
                                 aria-label="Close"></button>
                         </div>
                     @endif
-                    <div class="text-start">
-                        <!-- Button trigger modal -->
-                        <a href="{{ route('budget_implementation.create') }}" class="btn btn-primary btn-md w-20">
-                            Buat Usulan Baru
-                        </a>
-                    </div>
+
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered table-hover">
                             <thead class="bg-light">
@@ -84,6 +79,7 @@
                                     <th scope="col">Revisi ke</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Unit Kerja</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -95,15 +91,12 @@
                                         <td>{{ $dipa->year }}</td>
                                         <td>{{ $dipa->revision }}</td>
                                         <td>{{ number_format($dipa->total) }}</td>
-                                        <td>{{ $dipa->status }}</td>
+                                        <td>{{ statusDipa($dipa->status) }}</td>
+                                        <td>{{ $dipa->unit->name }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('dipa.review', $dipa->id) }}"
                                                 class="btn btn-primary btn-sm" role="button">
                                                 <i class="text-white" data-feather="eye"></i>
-                                            </a>
-                                            <a href="{{ route('dipa.fpdf', $dipa->id) }}"
-                                                class="btn btn-primary btn-sm" role="button">
-                                                <i class="text-white" data-feather="printer"></i>
                                             </a>
                                         </td>
                                     </tr>

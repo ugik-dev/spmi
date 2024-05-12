@@ -19,16 +19,21 @@ class WithdrawalPlanController extends Controller
     {
         $title = 'Rencana Penarikan Dana';
         $activities = Activity::with('withdrawalPlans')->sortedByCode()->where('dipa_id', $dipa->id)->get();
+        // dd($activities); 
         $months = Month::cases(); // Assuming you have a Month Enum with cases for each month
         return view('app.withdrawal-plan', compact('title', 'activities', 'months', 'dipa'));
     }
     public function index()
     {
+        if (empty(Auth::user()->employee->work_unit_id)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Unit Kerja anda belum diatur, harap hubungi admin!!"]);
+        }
         $title = 'Daftar DIPA';
         $totalSum = 0;
+        $timelines = [];
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
         $btnRPD = true;
-        return view('app.budget-implementation-list', compact('title', 'dipas', 'btnRPD'));
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'timelines', 'btnRPD'));
     }
     /**
      * Show the form for creating a new resource.
@@ -59,7 +64,6 @@ class WithdrawalPlanController extends Controller
                     [
                         'activity_id' => $validatedData['activityId'],
                         'month' => $monthEnum,
-                        'year' => $validatedData['year'] ?? date('Y'),
                     ],
                     [
                         'amount_withdrawn' => $planData['amount_withdrawn'],
@@ -101,7 +105,6 @@ class WithdrawalPlanController extends Controller
             'withdrawalPlans' => 'required|array',
             'withdrawalPlans.*.month' => 'required|integer|min:1|max:12',
             'withdrawalPlans.*.amount_withdrawn' => 'required|numeric|min:0',
-            'year' => 'required|integer|digits:4',
         ]);
 
         foreach ($validatedData['withdrawalPlans'] as $planData) {
@@ -111,7 +114,6 @@ class WithdrawalPlanController extends Controller
                 [
                     'activity_id' => $validatedData['activityId'],
                     'month' => $monthEnum,
-                    'year' => $validatedData['year'] ?? date('Y'),
                 ],
                 [
                     'amount_withdrawn' => $planData['amount_withdrawn'],
@@ -136,25 +138,19 @@ class WithdrawalPlanController extends Controller
      * @param  int  $activityId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getWithdrawalPlans($activityId, $year = null)
+    public function getWithdrawalPlans($activityId)
     {
-        // If $year is not provided, set it to the current year
-        $year = $year ?? date('Y');
 
         $withdrawalPlans = WithdrawalPlan::where('activity_id', $activityId)
-            ->where('year', $year)
             ->get();
 
         return response()->json($withdrawalPlans);
     }
 
-    public function getWithdrawalPlansDetail($activityId, $year = null)
+    public function getWithdrawalPlansDetail($activityId)
     {
-        // If $year is not provided, set it to the current year
-        $year = $year ?? date('Y');
         $activity = Activity::find($activityId);
         $withdrawalPlans = WithdrawalPlan::where('activity_id', $activityId)
-            ->where('year', $year)
             ->get();
 
         return response()->json(['activity' => $activity, 'data' => $withdrawalPlans, 'totalPlan' => $withdrawalPlans->sum('amount_withdrawn'), 'totalActivity' => $activity->calculateTotalSum()]);

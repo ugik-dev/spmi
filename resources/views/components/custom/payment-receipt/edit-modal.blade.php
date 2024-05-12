@@ -74,8 +74,8 @@
                     <div class="mb-4 row">
                         <label for="inputActivityDate" class="col-sm-2 col-form-label">Tanggal Kegiatan</label>
                         <div class="col-sm-8 flatpickr">
-                            <input id="basicFlatpickr" name="activity_date"
-                                class="form-control flatpickr flatpickr-input active text-dark" type="text"
+                            <input id="inputDateEdit" name="activity_date"
+                                class="form-control flatpickr flatpickr-input active text-dark" type="date"
                                 placeholder="Pilih tanggal..">
                         </div>
                     </div>

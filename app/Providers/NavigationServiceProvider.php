@@ -25,34 +25,37 @@ class NavigationServiceProvider extends ServiceProvider
                                 ->add('Visi', route('vision.index'))
                                 ->add('Misi', route('mission.index'))
                                 ->add('Indikator Kinerja Utama', route('iku.index'))
-                                ->add('Capaian Kinerja Tahun Sebelumnya', url('#'))
-                                ->attributes(['permission' => 'view perencanaan'])
-                        )
-                        ->add(
-                            'RKT',
-                            url('#'),
-                            fn (Section $section) => $section
-                                ->add('Visi', route('vision.index'))
-                                ->add('Misi', route('mission.index'))
-                                ->add('Indikator Kinerja Utama', url('#'))
-                                ->add('Capaian Kinerja Tahun Sebelumnya', url('#'))
-                                ->attributes(['permission' => 'view perencanaan'])
-                        )
-                        ->add(
-                            'Perkin',
-                            url('#'),
-                            fn (Section $section) => $section
                                 ->add('Sasaran Program', route('program_target.index'))
-                                ->add('Indikator Kinerja', route('performance_indicator.index'))
+                                ->add('(IKSK) Indikator Kinerja', route('performance_indicator.index'))
+                                // ->add('Capaian Kinerja Tahun Sebelumnya', url('#'))
                                 ->attributes(['permission' => 'view perencanaan'])
                         )
-                        ->attributes(['permission' => 'view perencanaan'])
+                    // ->add(
+                    //     'RKT',
+                    //     url('#'),
+                    //     fn (Section $section) => $section
+                    //         ->add('Visi', route('vision.index'))
+                    //         ->add('Misi', route('mission.index'))
+                    //         ->add('Indikator Kinerja Utama', url('#'))
+                    //         ->add('Capaian Kinerja Tahun Sebelumnya', url('#'))
+                    //         ->attributes(['permission' => 'view perencanaan'])
+                    // )
+                    // ->add(
+                    //     'Perkin',
+                    //     url('#'),
+                    //     fn (Section $section) => $section
+                    //         ->add('Sasaran Program', route('program_target.index'))
+                    //         ->add('Indikator Kinerja', route('performance_indicator.index'))
+                    //         ->attributes(['permission' => 'view perencanaan'])
+                    // )
+                    // ->attributes(['permission' => 'view perencanaan'])
                 )
                 ->add(
                     'Penganggaran',
                     url('#'),
                     fn (Section $section) => $section
                         ->add('Permohonan Approval', route('dipa.approval'), fn ($section) => $section->attributes(['permission' => 'approval penganggaran']))
+                        ->add('Rekap', route('dipa.rekap'), fn ($section) => $section->attributes(['permission' => 'approval penganggaran']))
                         ->add('Usulan Dipa', route('budget_implementation.index'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
                         // ->add('Revisi Dipa', url('#'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
                         ->add('Rencana Penarikan Dana', route('withdrawal_plan.index'), fn ($section) => $section->attributes(['permission' => 'view penganggaran']))
@@ -91,9 +94,10 @@ class NavigationServiceProvider extends ServiceProvider
                     'Administrasi',
                     url('#'),
                     fn (Section $section) => $section
+                        ->add('Timeline', route('timeline.index'))
                         ->add('Unit Kerja', route('work_unit.index'))
-                        ->add('Pagu Lembaga', route('ins_budget.index'))
-                        ->add('Pagu Unit', route('unit_budget.index'))
+                        ->add('Pagu', route('pagu.index'))
+                        // ->add('Pagu Unit', route('unit_budget.index'))
                         ->add('Satuan Belanja', route('expenditure_unit.index'))
                         ->add(
                             'Kode Akun',
@@ -102,14 +106,14 @@ class NavigationServiceProvider extends ServiceProvider
                                 ->add('Penganggaran & Pembayaran', route('account_code.index'))
                                 ->add('Penerimaan', route('account_code_reception.index'))
                         )
-                        ->add(
-                            'PIC Pembayaran',
-                            url('#'),
-                            fn (Section $section) => $section
-                                ->add('Bendahara', url('#'))
-                                ->add('PPK', route('ppk.index'))
-                                ->add('Verifikator', url('#'))
-                        )
+                        // ->add(
+                        //     'PIC Pembayaran',
+                        //     url('#'),
+                        //     fn (Section $section) => $section
+                        //         ->add('Bendahara', url('#'))
+                        //         ->add('PPK', route('ppk.index'))
+                        //         ->add('Verifikator', url('#'))
+                        // )
                         ->add('SBM dan SBI', route('sbm_sbi.index'), fn ($section) => $section->attributes(['permission' => 'view sbm&sbi']))
                         ->add('Manajemen User', route('user.index'))
                         ->attributes(['permission' => 'view sbm&sbi'])

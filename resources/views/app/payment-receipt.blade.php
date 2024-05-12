@@ -284,9 +284,8 @@
                         <div class="mb-4 row">
                             <label for="inputActivityDate" class="col-sm-2 col-form-label">Tanggal Kegiatan</label>
                             <div class="col-sm-8 flatpickr">
-                                <input id="basicFlatpickr" name="activity_date"
-                                    class="form-control flatpickr flatpickr-input active text-dark" type="text"
-                                    placeholder="Pilih tanggal..">
+                                <input id="activityDate" name="activity_date" class="form-control  text-dark"
+                                    type="date" placeholder="Pilih tanggal..">
                             </div>
                         </div>
                         <div class="mb-4 row">
@@ -509,10 +508,10 @@
                 // On Shown Create Modal
                 $('#createModal').on('shown.bs.modal', function(modalEvent) {
                     const inputAmountEl = document.getElementById("inputAmount");
-                    flatpickr($("#form-create").find('#basicFlatpickr'), {
-                        defaultDate: new Date(),
-                        static: true,
-                    });
+                    // flatpickr($("#form-create").find('#basicFlatpickr'), {
+                    //     defaultDate: new Date(),
+                    //     static: true,
+                    // });
                     // Restrict keyboard input
                     $('#inputAmount').on('keydown', window.allowOnlyNumericInput);
                     // Handle paste events
@@ -747,11 +746,8 @@
                     formEdit.find('#selectPerjadinReceiptEdit').val(receipt.perjadin);
                     formEdit.find('#inputSpdNumberEdit').val(receipt.spd_number);
                     formEdit.find('#inputSpdTujuanEdit').val(receipt.spd_tujuan);
+                    formEdit.find('#inputDateEdit').val(receipt.activity_date);
 
-                    flatpickr(formEdit.find('#basicFlatpickr'), {
-                        defaultDate: receipt.activity_date,
-                        static: true,
-                    });
 
                     $('#selectPerjadinReceiptEdit').on('change', function() {
                         console.log($(this).val())
@@ -982,7 +978,7 @@
                     $('#editSelectPelaksana').append(option).trigger('change');
 
                     console.log(receipt.pengikut)
-
+                    $('#createSelectPengikutEdit').html('');
                     Object.keys(receipt.pengikut).forEach(function(properti) {
                         console.log(properti + ': ' + receipt.pengikut[properti].id);
                         console.log(properti + ': ' + receipt.pengikut[properti].user.name);
@@ -1001,7 +997,6 @@
 
                 }).on('hidden.bs.modal', function() {
                     const formEdit = $("#form-edit");
-                    flatpickr(formEdit.find('#basicFlatpickr')).destroy();
                 })
                 $('#COAModal').on('show.bs.modal', function(e) {
                     if (e.relatedTarget.id !== 'editCOABtn') {
@@ -1015,14 +1010,38 @@
                 // On Show COA Modal
                 $('#COAModal').on('shown.bs.modal', async function(e) {
                     var isEdit = e.relatedTarget.id == 'editCOABtn';
+                    console.log('isEdit', isEdit);
+                    //start activity
+                    // $('#selectActivityCode').destroy();
+                    const selectActivityCode = document.getElementById('selectActivityCode');
+                    window.populateSelectWithOptions(selectActivityCode, [],
+                        'Pilih Kode Kegiatan');
+                    if (isEdit)
+                        curDate = new Date($('#editModal').find('#inputDateEdit').val());
+                    else
+                        curDate = new Date($('#createModal').find('#activityDate').val());
+                    var year = curDate.getFullYear();
+                    const activityCodesData = await getActivity(year);
 
+                    // Convert accountCodesData to options array
+                    const activityCodesOptions = activityCodesData.map(activityCode => ({
+                        value: activityCode.id,
+                        text: activityCode.code + ' :: ' + activityCode.name
+                    }));
+
+                    // Populate select options
+                    window.populateSelectWithOptions(selectActivityCode, activityCodesOptions,
+                        'Pilih Kode Kegiatan');
+
+                    // end
                     $('#selectActivityCode').on('change', async function(selectEvent) {
                         $('input,#selectBudgetDetail', '.modal.show .modal-body').val(null);
                         // Get Elements
                         const selectAccountCode = document.getElementById('selectAccountCode');
 
                         // Data Source
-                        const accountCodesData = await getAccountCodesByActivityID(selectEvent
+                        const accountCodesData = await getAccountCodesByActivityID(
+                            selectEvent
                             .currentTarget.value);
 
                         // Convert accountCodesData to options array
@@ -1034,8 +1053,10 @@
                         // Populate select options
                         window.populateSelectWithOptions(selectAccountCode, accountCodesOptions,
                             'Pilih Kode Akun');
-
-
+                        // if (isEdit)
+                        //     $('#selectActivityCode').val(3).change()
+                        // selectEvent
+                        // .currentTarget.value = 3;
                     });
                     await $('#selectAccountCode').on('change', async function(selectEvent) {
                         $('input', '.modal.show .modal-body').val(formatAsIDRCurrency(0.00));
@@ -1086,12 +1107,14 @@
                         } = await getDetail(receiptEditData.budget_implementation_detail_id);
                         await $('#selectActivityCode').val(activity.id).change();
                         setTimeout(() => {
+                            console.log(account_code, 'account_code')
                             $('#selectAccountCode').val(account_code.id).change();
-                        }, 100);
-                        setTimeout(() => {
-                            $('#selectBudgetDetail').val(receiptEditData
-                                .budget_implementation_detail_id).change();
-                        }, 150);
+                            setTimeout(() => {
+                                $('#selectBudgetDetail').val(receiptEditData
+                                    .budget_implementation_detail_id).change();
+                            }, 1350);
+                        }, 1350);
+
                     } else {
                         $(".modal.show #cancelCOA").attr('data-bs-target', '#createModal');
                         $(".modal.show #saveCOA").attr('data-bs-target', '#createModal');
@@ -1131,6 +1154,22 @@
                         });
                     }
                 }
+
+                async function getActivity(year) {
+                    // Axios POST request
+                    try {
+                        const response = await axios.get(`/api/get-activity/${year}`);
+                        return response.data;
+                    } catch (error) {
+                        Swal.fire({
+                            title: 'Gangguan!',
+                            text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }
+
                 // Get Budget Implementations By Activity ID & Account Code ID
                 async function getBudgetImplementationDetailsByActivityIDAndAccountCodeID(activityID, accountCodeID) {
                     // Axios POST request

@@ -15,6 +15,10 @@ class ProgramTarget extends Model
     {
         return $this->hasMany(PerformanceIndicator::class);
     }
+    public function indikatorPerkinDipa()
+    {
+        return $this->hasMany(PerformanceIndicator::class);
+    }
 
     public function iku()
     {

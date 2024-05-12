@@ -32,6 +32,7 @@ class UserController extends Controller
     {
         $validatedData = $this->validate($request, [
             'user_name' => 'required|max:255',
+            'password' => 'required|max:255',
             'identity_number' => 'nullable|integer',
             'identity_type' => 'nullable|string',
             'email' => 'required|email|unique:users,email',
@@ -47,7 +48,7 @@ class UserController extends Controller
             $user = User::create([
                 'name' => $validatedData['user_name'],
                 'email' => $validatedData['email'],
-                'password' => Hash::make('password'),
+                'password' => Hash::make($validatedData['password']),
             ]);
             if (!empty($validatedData['identity_number']) && !empty($validatedData['position'] && !empty($validatedData['work_unit']))) {
                 $employee = new Employee([
@@ -65,8 +66,8 @@ class UserController extends Controller
                 $user->employee()->save($employee);
             }
             $user->assignRole($validatedData['user_role']);
-
             $user->save();
+            $user->sendEmailVerificationNotification();
 
             // Kirim email dengan password yang digenerate
             // Mail::to($user->email)->send(new UserRegistered($user, $randomPassword));
@@ -91,12 +92,18 @@ class UserController extends Controller
         ]);
         // Hanya enkripsi dan update password jika field password diisi
         if (!empty($request->password)) {
-            $user->password = bcrypt($request->password);
+            $user->password = Hash::make($request->password);
         }
+        // $user->password =  Hash::make('password');
 
         $user->name = $validatedData['user_name'];
-        // $user->identity_number = $validatedData['identity_number'];
-        // $user->identity_type = $validatedData['identity_type'];
+        if ($user->email != $validatedData['email']) {
+            $user->email_verified_at = null;
+            $user->email = $validatedData['email'];
+            $resent_mail = true;
+        } else {
+            $resent_mail = false;
+        }
         $user->email = $validatedData['email'];
         $employee = $user->load('employee')->employee;
         if (!$employee) {
@@ -133,8 +140,10 @@ class UserController extends Controller
             $employee->save();
         }
 
-        $user->assignRole($validatedData['user_role']);
+        $user->syncRoles($validatedData['user_role']);
         $user->save();
+        if ($resent_mail)
+            $user->sendEmailVerificationNotification();
         if ($request->ajax()) {
             return response()->json(['success' => 'Data user berhasil diperbaharui.'], 200);
         }
@@ -148,7 +157,12 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'User berhasil dihapus.');
     }
+    public function resendEmail(User $user)
+    {
+        $user->sendEmailVerificationNotification();
 
+        return redirect()->back()->with('success', 'Verification link sent!');
+    }
     public function getUsers(Request $request)
     {
         $search = $request->input('search', '');

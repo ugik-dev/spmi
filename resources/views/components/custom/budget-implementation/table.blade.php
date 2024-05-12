@@ -12,13 +12,14 @@
             </div>
         @endif
         <div class="d-flex flex-wrap gap-2 my-2">
-            <h4 class="totalCost mx-4 my-2 {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'text-danger' : 'text-success' }}">
+            <h4
+                class="totalCost mx-4 my-2 {{ $totalSum != ($unitBudget->nominal ?? 0) ? 'text-danger' : 'text-success' }}">
                 Rp
                 {{ number_format($totalSum, 0, ',', '.') }} (max Rp
-                {{ number_format($unitBudget->pagu ?? '0', 0, ',', '.') }})</h4>
+                {{ number_format($unitBudget->nominal ?? '0', 0, ',', '.') }})</h4>
             @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
                 @if ($dipa)
-                    <button {{ $totalSum > ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
+                    <button {{ $totalSum != ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
                         class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
                 @endif
                 <button id="save-dipa" class="btn btn-outline-success shadow-sm bs-tooltip">Simpan</button>
@@ -57,10 +58,11 @@
                 @endif
                 <div class="float-end p-2">
                     <x-custom.dipa.log-modal :dipa="$dipa" />
-                    <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
-                        data-res="Y">
+                    <x-custom.budget-implementation.export-btn :dipaId="$dipa->id" :btn="$btnExport" />
+                    {{-- <a href="{{ route('dipa.fpdf', $dipa) }}" class="btn btn-sm btn-success temporary-edit mb-2 mt-2"
+                        data-res="Y" target="_blank">
                         <i data-feather="printer"></i> Cetak
-                    </a>
+                    </a> --}}
                 </div>
             @endif
         </div>

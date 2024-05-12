@@ -109,6 +109,7 @@
                         </div>
                     </div>
                     <p class="card-text mb-0">Unit Kerja : {{ $dipa->unit->name }}
+                        <br>Tahun : {{ $dipa->year }}
                         <br>Total Usulan : Rp
                         {{ number_format($dipa->total) }}
                     </p>
@@ -166,7 +167,15 @@
             </x-custom.statbox>
         </div>
     </div>
-
+    @php
+        $editable = false;
+        if (
+            $dipa->user_id == Auth::user()->id &&
+            in_array($dipa->status, ['draft', 'reject-kp', 'reject-ppk', 'reject-spi', 'reject-perencanaan'])
+        ) {
+            $editable = true;
+        }
+    @endphp
     <!-- Withdrawal Plan Modal -->
     <div class="modal fade" id="withdrawalPlanModal" tabindex="-1" role="dialog"
         aria-labelledby="withdrawalPlanModalLabel" aria-hidden="true">
@@ -186,16 +195,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="currentActivityId" value="">
                     <h2 class="mb-2 text-center fw-bold text-white bg-primary p-2" id="accumulatedTotalSum"></h2>
-                    <div class="mb-3">
-                        <label class="form-label">Pilih Tahun di Tampilkan:</label>
-                        <select name="select_year" id="select_year" class="form-select w-25 d-inline-block">
-                            @for ($i = 2000; $i <= date('Y'); $i++)
-                                <option value="{{ $i }}" @if ($i == date('Y')) selected @endif>
-                                    {{ $i }}
-                                </option>
-                            @endfor
-                        </select>
-                    </div>
+
                     <div class="month-filter-wrapper mb-3" hidden>
                         <label class="form-label">Pilih Bulan di Tampilkan:</label>
                         <div class="row month-checkboxes">
@@ -226,7 +226,8 @@
                                     <td>{{ $month->getName() }}</td>
                                     <td>
                                         <input type="text" class="form-control editable-amount"
-                                            id="amount-{{ $index + 1 }}" value="-">
+                                            id="amount-{{ $index + 1 }}" value="-"
+                                            {{ $editable ? '' : 'disabled' }}>
                                     </td>
                                 </tr>
                             @endforeach
@@ -249,7 +250,8 @@
                         </tbody>
                     </table>
 
-                    <button id="btnSaveWithdrawalPlan" class="btn btn-lg btn-success ms-auto d-block">Simpan</button>
+                    <button id="btnSaveWithdrawalPlan" class="btn btn-lg btn-success ms-auto d-block"
+                        {{ $editable ? '' : 'disabled' }}>Simpan</button>
 
                 </div>
             </div>
@@ -289,23 +291,13 @@
                 });
             });
 
-            // Add the onchange event select_year withdrawal plans data
-            document.getElementById('select_year').addEventListener('change', function(e) {
-                let activityID = document.getElementById('currentActivityId').value;
-                const activity = getActivityData(document.querySelector(`[data-activity-id="${activityID}"]`))
-                resetModalAmounts();
-                fetchAndPopulateModal(activity);
-            })
 
             async function savingWithdrawalPlans(withdrawalPlans) {
                 try {
                     let activityId = document.getElementById('currentActivityId').value;
-                    let year = document.querySelector('select[name="select_year"]').value;
                     const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana-update', {
-                        // const response = await axios.post('/admin/penganggaran/rencana-penarikan-dana', {
                         "activityId": activityId,
                         "withdrawalPlans": withdrawalPlans,
-                        "year": year
                     });
 
                     if (response.status === 200) {
@@ -448,6 +440,7 @@
                 document.getElementById('btnSaveWithdrawalPlan').disabled = residual < 0;
 
                 document.getElementById('residual').innerText = window.formatAsIDRCurrency(residual);
+                document.getElementById('totalAccumulated').innerText = window.formatAsIDRCurrency(totalInputAmount);
             }
 
             function getActivityData(row) {
@@ -471,7 +464,7 @@
             async function fetchAndPopulateModal(activity) {
                 try {
                     const response = await axios.get(
-                        `/api/withdrawal-plans/${activity.id}/${document.getElementById('select_year').value}`);
+                        `/api/withdrawal-plans/${activity.id}`);
                     populateModalWithData(response.data, activity);
                 } catch (error) {
                     showErrorAlert('Kesalahan', 'Gagal memuat data penarikan dana.');

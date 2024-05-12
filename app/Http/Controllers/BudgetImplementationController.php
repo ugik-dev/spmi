@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\AccountCode;
 use App\Models\Activity;
 use App\Models\BudgetImplementation;
@@ -9,13 +10,18 @@ use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
 use App\Models\DipaLog;
 use App\Models\ExpenditureUnit;
+use App\Models\PaguUnit;
 use App\Models\PerformanceIndicator;
+use App\Models\Timeline;
 use App\Models\UnitBudget;
 use App\Services\BudgetImplementationInputArrayService;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class BudgetImplementationController extends Controller
 {
@@ -32,35 +38,48 @@ class BudgetImplementationController extends Controller
     public function index()
     {
         $title = 'Daftar DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
+        $btnExport = [
+            'pdf' => true,
+            'exl_simple' => true,
+            'exl_mapping' => true,
+        ];
+        $timelines = Timeline::active('creat')->get();
+        // dd($timelines);
         $totalSum = 0;
-        $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
+        if (empty(Auth::user()->employee->work_unit_id)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Unit Kerja anda belum diatur, harap hubungi admin!!"]);
+        }
+        $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->latest('year', 'revision')->get();
         $btnCreate = true;
-        return view('app.budget-implementation-list', compact('title', 'dipas', 'btnCreate', 'unitBudget',));
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'timelines', 'btnExport', 'btnCreate',));
     }
-    public function create()
+    public function create(Timeline $timeline)
     {
+        $currentDateTime = Carbon::now(); // Get the current date and time
+
+        $timeline = Timeline::active('creat', $timeline->id)
+            ->first();
+        // dd($timeline);
+        if (empty($timeline)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan masa pembuatan usulan Dipa"]);
+        }
+        $check_dipa = Dipa::where('year', '=', $timeline->year)->where('work_unit_id', '=', Auth::user()->employee->work_unit_id)->first();
+        if (!empty($check_dipa)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Dipa untuk periode ini sudah pernah dibuat"]);
+        }
         $title = 'Buat DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
+        $unitBudget = PaguUnit::unityear($timeline->year, Auth::user()->employee->work_unit_id ?? false)->first();
         $totalSum = 0;
         $groupedBI = [];
+        $btnExport = [];
         $dipa = null;
         $accountCodes = AccountCode::all();
         $indikatorPerkin = PerformanceIndicator::all();
         $expenditureUnits = ExpenditureUnit::all();
-        return view('app.budget-implementation', compact('title', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
+        return view('app.budget-implementation', compact('title', 'timeline', 'dipa', 'btnExport', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
 
-    public function ajukan(Dipa $dipa)
-    {
-        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
-        $dipa->total = $totalSum;
-        $dipa->status = 'wait-kp';
-        $dipa->save();
 
-        DipaLog::create(['dipa_id' => $dipa->id, 'user_id' => Auth::user()->id, 'description' => "Mengajukan permohonan approval"]);
-        return response()->json(['message' => 'Success']);
-    }
     public function dipa(Dipa $dipa)
     {
         $dipa->bi;
@@ -68,28 +87,42 @@ class BudgetImplementationController extends Controller
         // dd($dipa);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         $title = 'Daftar DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();
-        // dd($unitBudget);
+        $unitBudget = PaguUnit::unityear($dipa->year, $dipa->work_unit_id)->first();
+        // dd($groupedBI);
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
+        $btnExport = [
+            'pdf' => true,
+            'exl_simple' => true,
+            'exl_mapping' => true,
+        ];
         $accountCodes = AccountCode::all();
         $indikatorPerkin = PerformanceIndicator::all();
         $expenditureUnits = ExpenditureUnit::all();
-        return view('app.budget-implementation', compact('title', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
+        return view('app.budget-implementation', compact('title', 'dipa', 'groupedBI', 'accountCodes', 'btnExport', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
     public function create_copy(Dipa $dipa)
     {
+        $currentDateTime = Carbon::now(); // Get the current date and time
+
+        $timelines = Timeline::active('revision')
+            ->where('year', '=', $dipa->year)
+            ->first();
+        if (empty($timelines)) {
+            return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan Waktu untuk revisi"]);
+        }
+        $newDipa = Dipa::where('year', $dipa->year)->where('work_unit_id', '=', $dipa->work_unit_id)->latest('revision')->first();
         $title = 'Buat DIPA';
-        $unitBudget = UnitBudget::where('work_unit_id', Auth::user()->employee->work_unit_id ?? false)->first();;
-        $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
-        $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
+        $unitBudget = PaguUnit::unityear($dipa->year, Auth::user()->employee->work_unit_id ?? false)->first();
+        $totalSum = BudgetImplementationDetail::CountTotal($newDipa->id);
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotals($newDipa->id);
         // dd($groupedBI);
-        // $groupedBI = [];
-        $copy_of = $dipa->id;
+        $btnExport = [];
+        $copy_of = $newDipa->id;
         $dipa = null;
         $accountCodes = AccountCode::all();
         $indikatorPerkin = PerformanceIndicator::all();
         $expenditureUnits = ExpenditureUnit::all();
-        return view('app.budget-implementation', compact('title', 'copy_of', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
+        return view('app.budget-implementation', compact('title', 'btnExport', 'copy_of', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
     public function form()
     {
@@ -125,6 +158,7 @@ class BudgetImplementationController extends Controller
             'dipa.*.accounts.*.expenditures.*.unit_price' => 'required|numeric',
             'dipa.*.accounts.*.expenditures.*.total' => 'required|numeric',
             'copy_of' => 'sometimes|numeric',
+            'timeline' => 'sometimes|numeric',
         ]);
 
         // dd($validator->validated()['copy_of']);
@@ -135,31 +169,55 @@ class BudgetImplementationController extends Controller
 
         try {
             $data = $validator->validated()['dipa'];
+            $currentDateTime = Carbon::now();
+            $copy = false;
             if (!empty($validator->validated()['copy_of'])) {
-                $copy = Dipa::find($validator->validated()['copy_of']);
-                $last = Dipa::where('head_id', !empty($copy->head_id) ? $copy->head_id : $copy->id)->latest()->first();
+                $copy = $validator->validated()['copy_of'];
+                $copyData = Dipa::find($validator->validated()['copy_of']);
+
+                $timelines = Timeline::where('start', '<=', $currentDateTime)
+                    ->where('end', '>=', $currentDateTime)->where('category', '=', 'revision')
+                    ->where('year', '=', $copyData->year)
+                    ->first();
+                if (empty($timelines)) {
+                    return response()->json(['error' => "Bukan masa revisi"], 500);
+                }
+
+                $last = Dipa::where('head_id', !empty($copyData->head_id) ? $copyData->head_id : $copyData->id)->latest()->first();
                 if (!empty($last)) {
-                    // dd('ada');
-                    // dd($last);
                     $revision = $last->revision + 1;
                 } else {
                     $revision = 1;
                 }
+                // dd($copyData->);
                 // dd($revision, $last);
-                $dipa_id = Dipa::create(['year' => date('Y'), 'revision' => $revision, 'head_id' => !empty($copy->head_id) ? $copy->head_id : $copy->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+                $dipa_id = Dipa::create(['year' => $timelines->year, 'timeline_id' => $timelines->id, 'revision' => $revision, 'head_id' => !empty($copyData->head_id) ? $copyData->head_id : $copyData->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             } else {
-                $dipa_id = Dipa::create(['year' => date('Y'), 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
+                $timelines = Timeline::active('creat', $validator->validated()['timeline'])
+                    ->first();
+                if (empty($timelines)) {
+                    return response()->json(['error' => "Bukan masa pembuatan dipa"], 500);
+                }
+                $check_dipa = Dipa::where('year', '=', $timelines->year)->where('work_unit_id', '=', Auth::user()->employee->work_unit_id)->first();
+                if (!empty($check_dipa)) {
+                    return response()->json(['error' => "Dipa periode ini sudah dibuat"], 500);
+                }
+                $dipa_id = Dipa::create(['year' => $timelines->year, 'timeline_id' => $timelines->id, 'total' => 0, 'work_unit_id' => Auth::user()->employee->work_unit_id, 'user_id' => Auth::user()->id])->id;
             }
             // dd($copy);
             // dd($data);
             $total = 0;
             foreach ($data as $key_ac => $activity) {
-                $activity_id = Activity::create([
-                    'dipa_id' => $dipa_id,
-                    'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                    'code' => $activity['activity']['code'],
-                    'name' => $activity['activity']['name'],
-                ])->id;
+                if (!empty($activity['accounts'])) {
+                    $activity_id = Activity::create([
+                        'dipa_id' => $dipa_id,
+                        'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
+                        'code' => strtoupper($activity['activity']['code']),
+                        'name' => $activity['activity']['name'],
+                    ])->id;
+                    if (!empty($copyData))
+                        Dipa::copyActivity($activity_id, strtoupper($activity['activity']['code']), $activity['activity']['name'], $copyData->id);
+                }
                 foreach ($activity['accounts'] as $account) {
                     $accountCodeId = null;
                     if ($account) {
@@ -241,17 +299,18 @@ class BudgetImplementationController extends Controller
                     Activity::where('id', $activity['activity']['id'])->update([
                         'dipa_id' => $dipa_id,
                         'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                        'code' => $activity['activity']['code'],
+                        'code' => strtoupper($activity['activity']['code']),
                         'name' => $activity['activity']['name'],
                     ]);
                     $activity_id = $activity['activity']['id'];
                 } else {
-                    $activity_id = Activity::create([
-                        'dipa_id' => $dipa_id,
-                        'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
-                        'code' => $activity['activity']['code'],
-                        'name' => $activity['activity']['name'],
-                    ])->id;
+                    if (!empty($activity['accounts']))
+                        $activity_id = Activity::create([
+                            'dipa_id' => $dipa_id,
+                            'performance_indicator_id' => $activity['activity']['performance_indicator_id'],
+                            'code' => strtoupper($activity['activity']['code']),
+                            'name' => $activity['activity']['name'],
+                        ])->id;
                 }
                 // dd($activity['accounts'][0]);
                 foreach ($activity['accounts'] as $account) {

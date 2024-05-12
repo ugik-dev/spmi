@@ -31,7 +31,6 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/bootstrap/bootstrap.min.css') }}">
     @vite(['resources/scss/light/assets/main.scss', 'resources/scss/dark/assets/main.scss'])
-
     @if (
         !Request::routeIs('404') &&
             !Request::routeIs('maintenance') &&
@@ -48,7 +47,6 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('plugins/waves/waves.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('plugins/highlight/styles/monokai-sublime.css') }}">
         @vite(['resources/scss/light/plugins/perfect-scrollbar/perfect-scrollbar.scss'])
-
 
         @if (Request::is('modern-light-menu/*'))
             @vite(['resources/scss/layouts/modern-light-menu/light/structure.scss', 'resources/scss/layouts/modern-light-menu/dark/structure.scss'])

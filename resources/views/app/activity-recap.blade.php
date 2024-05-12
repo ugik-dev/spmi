@@ -167,8 +167,8 @@
                                 <th scope="col">Deskripsi</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Upload Data Dukung</th>
-                                <th style="width:20rem" scope="col">Aksi</th>
-                                <th scope="col">Keterangan</th>
+                                {{-- <th style="width:20rem" scope="col">Aksi</th> --}}
+                                {{-- <th scope="col">Keterangan</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -178,49 +178,52 @@
                                     <td>{{ $activity->name }}</td>
                                     <td>{{ $activity->calculateTotalSumFormatted() }}</td>
                                     <td>
+                                        <div
+                                            class="d-flex flex-column flex-sm-row align-items-center justify-content-center">
+
+                                        </div>
                                         @if ($activity->activityRecap && $activity->activityRecap?->attachment_path)
                                             @php
-                                                // $filePath = Storage::disk(
-                                                //     App\Supports\Disk::ActivityRecapAttachment,
-                                                // )->path($activity->activityRecap?->attachment_path);
-                                                // $fileMimeType = mime_content_type($filePath);
+                                                $filePath = Storage::disk(
+                                                    App\Supports\Disk::ActivityRecapAttachment,
+                                                )->path($activity->activityRecap?->attachment_path);
+                                                $fileMimeType = mime_content_type($filePath);
                                             @endphp
                                             <div
                                                 class="d-flex flex-column flex-sm-row align-items-center justify-content-center">
-                                                {{-- "View File" Link/Button --}}
-                                                {{-- <button type="button"
+
+                                                <button type="button"
                                                     class="btn btn-primary btn-sm me-sm-2 mb-2 mb-sm-0"
                                                     onclick="handleViewFile('{{ route('activity-recap.show-file', $activity->activityRecap) }}', '{{ $fileMimeType }}');">
                                                     <i class="feather icon-eye"></i> Lihat File
-                                                </button> --}}
+                                                </button>
 
                                                 {{-- "Change File" Button --}}
-                                                <button type="button" class="btn btn-secondary btn-sm ms-2"
-                                                    onclick="showFilePondInput('{{ $activity->id }}');">
-                                                    <i class="feather icon-edit"></i> Ganti File
+                                                <button type="button" data-activity-id="{{ $activity->id }}"
+                                                    class="btn btn-secondary btn-sm ms-2 uploadBerkasBtn">
+                                                    <i class="feather icon-edit"></i>
+                                                    {{ !empty($activity->activityRecap->attachment_path) ? 'Ganti File' : 'Upload File' }}
                                                 </button>
                                             </div>
 
                                             {{-- Hidden FilePond Input --}}
-                                            <input type="file" id="filepond-{{ $activity->id }}"
-                                                class="filepond d-none mt-3" name="filepond" />
                                         @else
-                                            {{-- File Input for New Upload --}}
-                                            <input type="file" class="filepond" name="filepond" />
+                                            <button type="button" data-activity-id="{{ $activity->id }}"
+                                                class="btn btn-secondary btn-sm ms-2 uploadBerkasBtn">
+                                                <i class="feather icon-edit"></i> Upload File
+                                            </button>
                                         @endif
                                     </td>
 
 
-                                    <td style="width: 15rem">
+                                    {{-- <td style="width: 15rem">
                                         <div class="d-flex flex-wrap justify-content-center gap-2">
-                                            {{-- Reject Button --}}
                                             <button type="button"
                                                 class=" btn btn-sm btn-danger text-center d-flex justify-content-center align-items-center gap-1 update-status"
                                                 data-activity-id="{{ $activity->id }}" data-new-status="0">
                                                 <i data-feather="x-square" class="feather-upload reject"></i><span
                                                     class="icon-name">Tolak</span>
                                             </button>
-                                            {{-- Accept Button --}}
                                             <button type="button"
                                                 class="btn btn-sm btn-success text-center d-flex justify-content-center align-items-center gap-1 update-status"
                                                 data-activity-id="{{ $activity->id }}" data-new-status="1">
@@ -231,18 +234,14 @@
                                     </td>
                                     <td class="recap-description">
                                         {{ $activity->activityRecap?->description ?? '' }}
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="bg-light" style="height:5rem">Tidak Ada Data...</td>
-                                </tr>
                             @endforelse
                         </tbody>
 
                     </table>
                     <div class="text-end">
-                        <button id="save-activity_recap" class="btn btn-primary btn-md">Simpan Data</button>
                     </div>
                 </div>
 
@@ -250,6 +249,37 @@
         </div>
     </div>
 
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalTitle"
+        aria-hidden="true" data-bs-focus="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalTitle">Upload Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-upload" action="{{ route('activity_recap.store') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('POST')
+                        <input name="activityId" id="activityId" value="" type="hidden">
+                        <div class="mb-4 row">
+                            <label for="inputDisbursementDescription" class="col-sm-2 col-form-label">Pilih File</label>
+                            <div class="col-sm-8">
+                                <input accept=".pdf" class="form-control" type="file" name="file_upload"
+                                    id="file_upload"></input>
+                                <span class="text-danger">*max 20Mb</span>
+                            </div>
+                        </div>
+                        <button id="submitFormupload"
+                            class="btn btn-warning text-center align-items-center mt-2 py-auto" type="submit">
+                            <span class="icon-name">Simpan</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
         <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
@@ -281,6 +311,90 @@
                 const recapDescriptions = document.querySelectorAll('.recap-description');
                 const trActivityRecaps = document.querySelectorAll('tbody tr');
                 const btnSave = document.getElementById('save-activity_recap');
+
+                $('.uploadBerkasBtn').on('click', function(ev) {
+                    currentID = $(this).data('activity-id');
+                    $('#uploadModal').modal('show')
+                    $('#uploadModal').find('#activityId').val(currentID);
+                    console.log(currentID);
+
+                })
+                $('#form-upload').submit(function(e) {
+                    e.preventDefault();
+
+                    var formData = new FormData(this);
+                    var url = $(this).attr('action');
+
+                    // Tampilkan loading modal sebelum proses pengiriman dimulai
+                    var swalLoading = Swal.fire({
+                        title: 'Loading...',
+                        html: 'Upload Progress: <b></b>%',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        showCancelButton: true,
+                        cancelButtonText: 'Batal Unggah',
+                        willOpen: () => {
+                            // Swal.showLoading();
+                        }
+                    });
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.upload.addEventListener('progress', function(event) {
+                        if (event.lengthComputable) {
+                            var percent = (event.loaded / event.total) * 100;
+                            // Perbarui teks pada SweetAlert dengan persentase yang sesuai
+                            // Swal.getHtmlContainer().textContent =
+                            //     'Upload Progress: ' + percent.toFixed(2) + '%';
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            // timerInterval = setInterval(() => {
+                            b.textContent = percent.toFixed(2)
+                            // }, 100)
+                        }
+                    });
+
+                    xhr.addEventListener('load', function(event) {
+                        if (xhr.status === 200) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'File uploaded successfully',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                            }).then((result) => {
+                                location
+                                    .reload();
+                                window.location.href = window.location.href +
+                                    '#document';
+                            });
+                        } else {
+                            var errorResponse = JSON.parse(xhr.responseText);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: errorResponse.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                            });
+                        }
+                    });
+
+                    xhr.addEventListener('error', function(event) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while uploading the file',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        });
+                    });
+
+                    xhr.open('POST', url);
+                    swalLoading.then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            xhr.abort(); // Batalkan pengiriman Ajax jika tombol "Batal Unggah" diklik
+                        }
+                    });
+                    xhr.send(formData);
+
+                });
 
                 theadTh.forEach(th => th.classList.add('bg-primary'));
 

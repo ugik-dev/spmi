@@ -68,39 +68,15 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table-review :totalSum="$totalSum" :dipa="$dipa" :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table-review :totalSum="$totalSum" :unitBudget="$unitBudget" :dipa="$dipa"
+                    :btnExport="$btnExport" :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>
-    <!-- Create Modal -->
-    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createModalTitle">Input Sub Komponen</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-create">
-                        <div id="create-input_sigle_container" class="">
-                        </div>
-                        <div id="create-input_container" class="input-group my-2">
-                        </div>
-                        <button class="btn btn-primary text-center align-items-center mt-1 mt-2 py-auto" type="submit">
-                            <span class="icon-name">Simpan</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Edit Modal -->
     <x-custom.budget-implementation.edit-modal />
     <x-custom.budget-implementation.catatan-modal />
     <x-custom.budget-implementation.rpd-modal :months='$months' />
 
-    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
         <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
         <script src="{{ asset('plugins/sweetalerts2/sweetalerts2.min.js') }}"></script>
@@ -336,13 +312,11 @@
 
             });
 
-            async function fetchRPD(activity, year) {
+            async function fetchRPD(activity) {
                 try {
                     const response = await axios.get(
-                        `/api/withdrawal-plans-detail/${activity}/${year}`);
-                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
+                        `/api/withdrawal-plans-detail/${activity}`);
                     resetModalAmounts();
-                    document.getElementById('select_year').value = year
                     populateModalWithData(response.data, activity);
                 } catch (error) {
                     showErrorAlert('Kesalahan', 'Gagal memuat data penarikan dana.');
@@ -358,9 +332,7 @@
                     showLoading()
                     const response = await axios.get(
                         `/api/activity-note-check/${activity}`);
-                    // `/api/withdrawal-plans/${activity}/${document.getElementById('select_year').value}`);
-                    // resetModalAmounts();
-                    // document.getElementById('select_year').value = year
+
                     showCatatanModal(response.data, activity);
                 } catch (error) {
                     let errorMessage = 'Terjadi kesalahan.';
@@ -452,13 +424,6 @@
                     icon: 'error'
                 });
             }
-            document.getElementById('select_year').addEventListener('change', function(e) {
-                let activityID = document.getElementById('currentActivityId').value;
-                let year = this.value;
-                // const activity = getActivityData(document.querySelector(`[data-activity-id="${activityID}"]`))
-                resetModalAmounts();
-                fetchRPD(activityID, year);
-            })
 
             function populateModalWithData(response, activity) {
                 let totalAccumulated = 0;

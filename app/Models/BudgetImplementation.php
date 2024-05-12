@@ -31,7 +31,10 @@ class BudgetImplementation extends Model
     {
         return $this->hasMany(BudgetImplementationDetail::class);
     }
-
+    public function details2()
+    {
+        return $this->hasMany(BudgetImplementationDetail::class)->with('expenditureUnit');
+    }
 
     /**
      * Scope a query to group data by activity code.

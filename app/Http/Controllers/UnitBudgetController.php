@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaguLembaga;
+use App\Models\PaguUnit;
 use App\Models\UnitBudget;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
@@ -11,13 +13,23 @@ class UnitBudgetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($year)
     {
         $title = 'Pagu Unit';
-        $workUnits = WorkUnit::with('unitBudgets')->get();
-        $unitBudgets = UnitBudget::with('workUnit')->get();
+        $paguLembaga = PaguLembaga::where('year', '=', $year)->firstOrFail();
+        $workUnits = WorkUnit::with('unitBudgets', 'paguUnit')
+            ->with(['paguUnit' => function ($q) use ($paguLembaga) {
+                $q->where('pagu_lembaga_id', $paguLembaga->id);
+            }])
+            ->get();
+        // $workUnits = WorkUnit::select('work_units.*', 'pagu_units.nominal')->rightJoin('pagu_units', 'pagu_units.work_unit_id',  'work_units.id')
+        //     ->rightJoin('pagu_lembagas', 'pagu_lembagas.id',  'pagu_units.pagu_lembaga_id')
+        //     ->where('pagu_lembagas.id', '=', $paguLembaga->id)
+        //     ->get();
+        // dd($workUnits);
+        // $unitBudgets = UnitBudget::with('workUnit')->get();
 
-        return view('app.unit-budget', compact('title', 'workUnits', 'unitBudgets'));
+        return view('app.pagu-unit', compact('title', 'workUnits', 'paguLembaga'));
     }
 
     /**
@@ -33,10 +45,19 @@ class UnitBudgetController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         foreach ($request->all() as $budgetData) {
-            UnitBudget::updateOrCreate(
-                ['work_unit_id' => $budgetData['work_unit_id']], // Check for existing record based on work_unit_id
-                ['pagu' => $budgetData['pagu']] // Values to update or create
+            // UnitBudget::updateOrCreate(
+            //     ['work_unit_id' => $budgetData['work_unit_id']], // Check for existing record based on work_unit_id
+            //     ['pagu' => $budgetData['pagu']] // Values to update or create
+            // );
+
+            PaguUnit::updateOrCreate(
+                [
+                    'work_unit_id' => $budgetData['work_unit_id'],
+                    'pagu_lembaga_id' => $budgetData['pagu_lembaga_id']
+                ],
+                ['nominal' => $budgetData['pagu']] // Values to update or create
             );
         }
 

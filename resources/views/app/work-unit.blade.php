@@ -97,6 +97,8 @@
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Nama</th>
                                     <th scope="col">Kode</th>
+                                    <th scope="col">PPK</th>
+                                    <th scope="col">Kepala</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -106,9 +108,11 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $workUnit->name }}</td>
                                         <td>{{ $workUnit->code ?? '-' }}</td>
+                                        <td>{{ $workUnit->ppkUnit->name ?? '-' }}</td>
+                                        <td>{{ $workUnit->kepalaUnit->name ?? '-' }}</td>
                                         <td class="text-center ">
                                             <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="openEditModal({{ $workUnit->id }}, '{{ $workUnit->name }}', '{{ $workUnit->code }}')">
+                                                onclick="openEditModal({{ $workUnit->id }}, '{{ $workUnit->name }}', '{{ $workUnit->code }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
                                                 <i class="text-white" data-feather="edit-2"></i>
                                             </button>
 
@@ -149,22 +153,53 @@
                     <form action="{{ route('work_unit.store') }}" method="POST">
                         @csrf
                         <div class="form-group d-flex align-items-center my-2">
-                            <button type="button" id="add-work_unit" class="btn btn-sm btn-primary py-0 px-2">
+                            {{-- <button type="button" id="add-work_unit" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
-                            </button>
+                            </button> --}}
                             <label for="work_unit" class="ms-2 py-0 mb-0">Unit Kerja</label>
                         </div>
 
                         <div id="work_unit-inputs" class="mt-2">
-                            <div class="input-group mb-2">
-                                <span class="input-group-text">1.</span>
-                                <input type="text" name="work_unit_name[]" class="form-control"
-                                    placeholder="Nama Unit Kerja">
-                                <input type="text" name="work_unit_code[]" class="form-control"
-                                    placeholder="Kode Unit Kerja">
-                                <button type="button" class="btn btn-danger remove-work_unit">
-                                    <i data-feather="trash"></i>
-                                </button>
+                            <div class="">
+                                {{-- <span class="input-group-text">1.</span> --}}
+                                <div class="mb-4 row">
+                                    <label for="work_unit_name" class="col-sm-2 col-form-label">Nama Unit Kerja</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="work_unit_name" class="form-control"
+                                            placeholder="Nama Unit Kerja">
+                                    </div>
+                                </div>
+                                <div class="mb-4 row">
+                                    <label for="work_unit_code" class="col-sm-2 col-form-label">Kode</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="work_unit_code" class="form-control"
+                                            placeholder="Kode Unit Kerja">
+                                    </div>
+                                </div>
+                                <div class="mb-4 row ppkWrapper">
+                                    <label for="createSelectPPK" class="col-sm-2 col-form-label">PPK</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-select" name="ppk" id="createSelectPPK">
+                                            <option selected disabled value="">Pilih PPK...</option>
+                                            @foreach ($ppks as $ppk)
+                                                <option value="{{ $ppk->id }}">{{ $ppk->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-4 row ppkWrapper">
+                                    <label for="createSelectPPK" class="col-sm-2 col-form-label">KEPALA UNIT
+                                        KERJA</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-select" name="kepala" id="createSelectPPK">
+                                            <option selected disabled value="">Pilih KEPALA UNIT
+                                                KERJA...</option>
+                                            @foreach ($kepalas as $kepala)
+                                                <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -199,6 +234,26 @@
                             <label>Kode</label>
                             <input type="text" id="work_unit_code" name="code" class="form-control" required>
                         </div>
+                        <div class="form-group mt-3">
+                            <label>PPK</label>
+                            <select class="form-select" name="ppk" id="edit_ppk">
+                                <option selected disabled value="">Pilih PPK...</option>
+                                @foreach ($ppks as $ppk)
+                                    <option value="{{ $ppk->id }}">{{ $ppk->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>KEPALA UNIT
+                                KERJA</label>
+                            <select class="form-select" name="kepala" id="edit_kepala">
+                                <option selected disabled value="">Pilih KEPALA UNIT
+                                    KERJA...</option>
+                                @foreach ($kepalas as $kepala)
+                                    <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <!-- Add other fields as needed -->
                         <button type="submit" class="btn btn-primary mt-3">Update</button>
                     </form>
@@ -222,10 +277,12 @@
 
 
         <script>
-            function openEditModal(id, name, code) {
+            function openEditModal(id, name, code, ppk, kepala) {
                 // Populate the form fields
                 document.getElementById('work_unit_name').value = name;
                 document.getElementById('work_unit_code').value = code;
+                document.getElementById('edit_ppk').value = ppk;
+                document.getElementById('edit_kepala').value = kepala;
 
                 // Update the form action URL
                 document.getElementById('edit-form').action = '/admin/pengaturan/unit-kerja/' + id + '/update';

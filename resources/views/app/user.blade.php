@@ -80,6 +80,7 @@
                                 <th scope="col">Nama Lengkap</th>
                                 <th scope="col">NIP/NIK/NIDN</th>
                                 <th scope="col">Jabatan</th>
+                                <th scope="col">Unit Kerja</th>
                                 <th scope="col">Email</th>
                                 <th scope="col" class="text-center">Aksi</th>
                             </tr>
@@ -96,8 +97,11 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->employee->id ?? '-' }}</td>
                                     <td>{{ $user->employee->position ?? '-' }}</td>
-                                    <td>{{ $user->email ?? '-' }}</td>
-                                    <td class="d-flex justify-content-center text-start">
+                                    {{-- @dd($user->employee->workUnit) --}}
+                                    <td>{{ $user->employee->workUnit->name ?? '-' }}</td>
+                                    <td>{{ $user->email ?? '-' }}
+                                        ({{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }})</td>
+                                    <td>
                                         {{-- <button type="button" class="btn btn-sm btn-info"
                                             data-bs-target="#changePasswordModal" data-bs-toggle="modal">
                                             <i data-feather="key"></i>
@@ -124,6 +128,18 @@
                                             style="display: none;">
                                             @csrf
                                             @method('DELETE')
+                                        </form>
+
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
+                                            onclick="resendMail({{ $user->id }});">
+                                            Resent e-Mail
+                                        </a>
+                                        <!-- Hidden form for delete request -->
+                                        <form id="resend-form-{{ $user->id }}"
+                                            action="{{ route('user.resend-mail', $user->id) }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                            @method('POST')
                                         </form>
                                     </td>
                                 </tr>
@@ -174,7 +190,23 @@
                 feather.replace();
             })
 
+            function resendMail(id) {
+                Swal.fire({
+                    title: "Anda yakin?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    // confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Ya, Kirim!",
+                    cancelButtonText: "Batalkan",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById("resend-form-" + id).submit();
+                    }
+                });
+            }
             document.addEventListener('DOMContentLoaded', function() {
+
                 $("#changePasswordModal").on('shown.bs.modal', function() {
                     document.getElementById('togglePassword').addEventListener('click', function(e) {
                         // toggle the type attribute
@@ -255,18 +287,17 @@
                             cache: true
                         }
                     });
+                    formCreate.find('#selectTypeRole').val('').trigger('change');
                     formCreate.find('#selectTypeRole').on('change', function() {
                         if (formCreate.find('#selectTypeRole').val() == 'PPK') {
-                            formCreate.find('#createSelectStaff').prop('disabled', false)
+                            formCreate.find('#selectHeadOf').prop('disabled', false)
                             formCreate.find('#letter_reference').prop('disabled', false)
                         } else {
-                            formCreate.find('#createSelectStaff')
+                            formCreate.find('#selectHeadOf')
                                 .val('', '')
                                 .trigger('change')
                                 .prop('disabled', true)
                             formCreate.find('#letter_reference').prop('disabled', true)
-
-
                         }
                     })
                 })
@@ -282,7 +313,11 @@
                     formEdit.find('#selectWorkUnit').val(user.employee?.work_unit_id ?? null);
                     formEdit.find('input[name="email"]').val(user.email);
                     formEdit.find('#selectIdentityType').val(user.employee?.identity_type);
+                    formEdit.find('#inputPassword').val('');
+
+
                     formEdit.find('input[name="letter_reference"]').val(user.employee?.letter_reference);
+
                     console.log(user);
                     if (user.roles[0].name == 'PPK') {
                         var selectedTreasurerOption = new Option(

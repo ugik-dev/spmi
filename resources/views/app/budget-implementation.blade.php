@@ -51,7 +51,8 @@
                 }
 
                 td:first-child,
-                td:nth-child(3),
+                td:nth-child(2),
+                td:nth-child(5),
                 td:nth-child(4) {
                     text-align: center;
                 }
@@ -68,8 +69,8 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <x-custom.budget-implementation.table :totalSum="$totalSum" :unitBudget="$unitBudget" :dipa="$dipa"
-                    :groupedBI="$groupedBI" />
+                <x-custom.budget-implementation.table :totalSum="$totalSum" :unitBudget="$unitBudget" :btnExport="$btnExport"
+                    :dipa="$dipa" :groupedBI="$groupedBI" />
             </x-custom.statbox>
         </div>
     </div>
@@ -240,7 +241,9 @@
                                 priceInput, totalInput));
                             priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
                                 priceInput, totalInput));
+
                             volumeInput.addEventListener('keypress', window.enforceNumericInput);
+                            console.log('enforceNumericInput');
                         }
                     });
 
@@ -260,20 +263,7 @@
                         const createInputContainer = document.getElementById('create-input_container');
                         const createInputContainer2 = document.getElementById('create-input_sigle_container');
 
-                        if (btnShowModalId === 'add-activity_btn') {
-                            createInputContainer.innerHTML =
-                                `<input type="text" name="activity_code" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" required name="activity_name" class="form-control" placeholder="Uraian">`;
-                            let options = indikatorPerkin.map(code =>
-                                `<option value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
-                            ).join('');
-                            createInputContainer2.innerHTML =
-                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
-                            $('#performance_indicator_id').select2({
-                                dropdownParent: $('#createModal'),
-                                placeholder: 'Pilih IKU',
-                                theme: 'bootstrap-5'
-                            });
-                        }
+                        console.log(btnShowModalId);
                         if (btnShowModalId === 'add-account_code_btn') {
                             createInputContainer2.innerHTML = '';
                             let options = accountCodes.map(code =>
@@ -289,7 +279,7 @@
                                     const accountName = selectedOption.getAttribute('data-account-name');
                                     document.getElementById('account-name-input').value = accountName || '';
                                 });
-                        }
+                        } else
                         if (btnShowModalId === 'add-expenditure_detail_btn') {
                             createInputContainer2.innerHTML = '';
 
@@ -322,6 +312,22 @@
                             priceInput.addEventListener('input', () => calculateAndUpdateTotal(volumeInput,
                                 priceInput, totalInput));
                             volumeInput.addEventListener('keypress', window.enforceNumericInput);
+                            console.log('enforceNumericInput');
+
+                        } else {
+                            // if (btnShowModalId === 'add-activity_btn') {
+                            createInputContainer.innerHTML =
+                                `<input type="text" name="activity_code" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" required name="activity_name" class="form-control" placeholder="Uraian">`;
+                            let options = indikatorPerkin.map(code =>
+                                `<option value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
+                            ).join('');
+                            createInputContainer2.innerHTML =
+                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
+                            $('#performance_indicator_id').select2({
+                                dropdownParent: $('#createModal'),
+                                placeholder: 'Pilih IKU',
+                                theme: 'bootstrap-5'
+                            });
                         }
 
                     })
@@ -352,8 +358,11 @@
 
                 axios.post("{{ !empty($dipa->id) ? route('dipa.update', $dipa->id) : route('budget_implementation.store') }}", {
                         dipa: dipaData,
+                        @if (!empty($timeline->id))
+                            timeline: '{{ $timeline->id }}',
+                        @endif
                         @if (!empty($copy_of))
-                            copy_of: '{{ $copy_of }}'
+                            copy_of: '{{ $copy_of }}',
                         @endif
                     })
                     .then(response => {
@@ -411,13 +420,21 @@
                     })
                     .catch(error => {
                         // Error handling
-
-                        Swal.fire({
-                            title: 'Gangguan!',
-                            text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                        if (error.response.data.message) {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: error.response.data.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Gangguan!',
+                                text: 'Terjadi kesalahan. Silahkan coba sesaat lagi.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
                     });
             }
 
@@ -536,6 +553,7 @@
 
                 if (!isNaN(volume) && !isNaN(unitPrice)) {
                     const total = volume * unitPrice;
+                    console.log(total, unitPrice)
                     totalInput.value = window.formatAsIDRCurrency(total);
                     priceInput.value = window.formatAsIDRCurrency(unitPrice);
                 } else {

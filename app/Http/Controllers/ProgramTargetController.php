@@ -67,7 +67,12 @@ class ProgramTargetController extends Controller
      */
     public function update(Request $request, ProgramTarget $programTarget)
     {
-        $request->validate(['name' => 'required|string|max:255']);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // 'iku_id' => 'required|number|max:255'
+            'iku_id' => 'nullable|exists:renstra_indicators,id',
+
+        ]);
 
         $programTarget->update(['name' => $request->name, 'renstra_indicator_id' => $request->iku_id]);
 
