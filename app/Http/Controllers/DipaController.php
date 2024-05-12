@@ -16,6 +16,7 @@ use App\Mail\MailPermohonanDipa;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Activity;
 use App\Models\PaguUnit;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 use PDF;
