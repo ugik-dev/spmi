@@ -21,6 +21,11 @@ class Dipa extends Model
         'timeline_id'
     ];
 
+    public function activity()
+    {
+        return $this->hasMany(Activity::class, 'dipa_id');
+    }
+
     public function bi()
     {
         return $this->hasMany(BudgetImplementation::class, 'dipa_id')->with(['activity', 'accountCode', 'details']);

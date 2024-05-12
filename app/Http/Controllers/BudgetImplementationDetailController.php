@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\BudgetImplementationDetail;
+use App\Models\Dipa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetImplementationDetailController extends Controller
 {
@@ -77,6 +80,19 @@ class BudgetImplementationDetailController extends Controller
             })->get();
 
             return response()->json($details);
+        } catch (\Exception $e) {
+            \Log::error($e);
+
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function getActivity(Request $request, $year)
+    {
+        try {
+            $dipa = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->where('status', 'release')->where('year', $year)
+                ->first();
+            return response()->json($dipa->activity);
         } catch (\Exception $e) {
             \Log::error($e);
 

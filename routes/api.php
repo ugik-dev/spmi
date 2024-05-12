@@ -27,6 +27,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/employees/pengikut', [EmployeeController::class, 'searchPengikut'])->name('employees.search.pengikut');
     Route::get('/withdrawal-plans/{activityId}', [WithdrawalPlanController::class, 'getWithdrawalPlans'])->name('withdrawal_plans.activity');
     Route::get('/withdrawal-plans-detail/{activityId}', [WithdrawalPlanController::class, 'getWithdrawalPlansDetail'])->name('withdrawal_plans.activity-detail');
+    Route::get('/get-activity/{year}', [BudgetImplementationDetailController::class, 'getActivity'])->name('activity.by-year');
     Route::get('/activity/{activityId}/account-codes', [AccountCodeController::class, 'getAccountCodesByActivity'])->name('account_codes.activity');
     Route::get('/details/{activityId}/{accountCodeId}', [BudgetImplementationDetailController::class, 'getByActivityAccountCode'])->name('budget_implementation_details.activity_account_code');
     Route::get('/detail/{budgetImplementationDetail}', [BudgetImplementationDetailController::class, 'show'])->name('detail.show');
