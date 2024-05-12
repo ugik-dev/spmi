@@ -40,6 +40,7 @@ class PerformanceIndicatorController extends Controller
         $request->validate([
             'program_target_id' => 'required|exists:program_targets,id',
             'performance_indicator.*' => 'required|string', // Validate each indicator
+            'value' => 'required|decimal:2',
         ]);
 
         // Retrieve the program target ID from the request
@@ -51,6 +52,7 @@ class PerformanceIndicatorController extends Controller
             $performanceIndicator = new PerformanceIndicator([
                 'name' => $indicator,
                 'program_target_id' => $programTargetId,
+                'value' => $request->value,
                 // 'value' can be set here if needed, or use default value from migration
             ]);
 
@@ -106,7 +108,8 @@ class PerformanceIndicatorController extends Controller
     }
 
     // download excel
-    public function downloadPerformanceIndicatorExcel(){
+    public function downloadPerformanceIndicatorExcel()
+    {
         // Mendapatkan tanggal dan waktu saat ini
         $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
 
