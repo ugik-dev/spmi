@@ -29,7 +29,7 @@
             <tr>
                 <th>No</th>
                 <th>Misi</th>
-                <th>IKU</th>
+                <th>SASARAN PROGRAM</th>
             </tr>
         </thead>
         <tbody>

@@ -159,7 +159,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Input IKU
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Input SASARAN PROGRAM
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -192,7 +192,7 @@
                             <button type="button" id="add-iku" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
-                            <label for="iku" class="ms-2 py-0 mb-0">IKU</label>
+                            <label for="iku" class="ms-2 py-0 mb-0">SASARAN PROGRAM</label>
                         </div>
 
                         <div id="iku-inputs" class="mt-2">
@@ -270,13 +270,13 @@
                     confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        deleteIKU(index);
+                        deleteSasaranProgram(index);
                     }
                 });
             }
 
 
-            function deleteIKU(index) {
+            function deleteSasaranProgram(index) {
                 // Assuming you have a route defined in Laravel to handle the deletion that expects the index
                 axios.post("{{ route('dipa.delete') }}", {
                         id: index

@@ -39,7 +39,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
         // $i = 4;
         foreach ($dataBI as $misi) {
             $rowspanMisi = count($misi['child_missi']);
-            $rowspanIKU = 0; // Jumlah row untuk IKU
+            $rowspanIKU = 0; // Jumlah row untuk SASARAN PROGRAM
             $rowspanSasaran = 0; // Jumlah row untuk Sasaran
             $rowspanIndPerkin = 0; // Jumlah row untuk Ind Perkin
             $rowspanActivity = 0; // Jumlah row untuk Activity
@@ -78,7 +78,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
                     }
                 }
             }
-            // // Merge cells untuk kolom IKU
+            // // Merge cells untuk kolom SASARAN PROGRAM
             // $sheet->mergeCells("C{$i}:C" . ($i + $rowspanIKU - 1));
             // // Merge cells untuk kolom Sasaran
             // $sheet->mergeCells("D{$i}:D" . ($i + $rowspanSasaran - 1));
@@ -98,7 +98,7 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
     {
         return [
             'Misi',
-            'IKU',
+            'SASARAN PROGRAM',
             'Sasaran',
             'Indikator',
             'Kode',
@@ -181,8 +181,8 @@ class DipaMappingExport implements FromCollection, WithHeadings, WithStyles, Wit
 
 
                 $sheet->setCellValue('A' . $i, 'MISI');
-                // $sheet->setCellValue('B' . $i, 'IKU');
-                $sheet->setCellValue('C' . $i, 'IKU');
+                // $sheet->setCellValue('B' . $i, 'SASARAN PROGRAM');
+                $sheet->setCellValue('C' . $i, 'SASARAN PROGRAM');
                 $sheet->setCellValue('D' . $i, 'SASARAN');
                 $sheet->setCellValue('E' . $i, 'INDIKATOR');
                 $sheet->setCellValue('F' . $i, "KOMPONEN");

@@ -60,7 +60,7 @@
         <thead>
             <tr class="text-center">
                 <th scope="col">MISI (RENSTRA)</th>
-                <th scope="col">IKU (RENSTRA)</th>
+                <th scope="col">SASARAN PROGRAM (RENSTRA)</th>
                 <th scope="col">Sasaran(PERKIN)</th>
                 <th scope="col">Indikator (PERKIN)</th>
                 <th scope="col">Kode</th>

@@ -93,7 +93,7 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
-                                    <th scope="col">IKU</th>
+                                    <th scope="col">SASARAN PROGRAM</th>
                                     <th scope="col">Sasaran Program</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
@@ -155,9 +155,9 @@
                     <form action="{{ route('program_target.store') }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="iku_id">IKU</label>
+                            <label for="iku_id">SASARAN PROGRAM</label>
                             <select id="iku_id" name="iku_id" class="form-control select2">
-                                <option value="">Pilih IKU</option>
+                                <option value="">Pilih SASARAN PROGRAM</option>
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
@@ -204,9 +204,9 @@
                         @csrf
                         @method('PATCH')
                         <div class="form-group">
-                            <label for="iku_id_edit">IKU</label>
+                            <label for="iku_id_edit">SASARAN PROGRAM</label>
                             <select id="iku_id_edit" name="iku_id" class="form-control select2">
-                                <option value="">Pilih IKU</option>
+                                <option value="">Pilih SASARAN PROGRAM</option>
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
@@ -352,7 +352,7 @@
                 $('#exampleModalCenter').on('shown.bs.modal', function() {
                     $('#iku_id').select2({
                         dropdownParent: $('#exampleModalCenter'),
-                        placeholder: 'Pilih IKU',
+                        placeholder: 'Pilih SASARAN PROGRAM',
                         theme: 'bootstrap-5',
                         ajax: {
                             transport: function(params, success, failure) {

@@ -325,7 +325,7 @@
                                 `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
                             $('#performance_indicator_id').select2({
                                 dropdownParent: $('#createModal'),
-                                placeholder: 'Pilih IKU',
+                                placeholder: 'Pilih SASARAN PROGRAM',
                                 theme: 'bootstrap-5'
                             });
                         }

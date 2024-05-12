@@ -209,7 +209,7 @@ class PDFController extends Controller
         $pdf->SetFont('Arial', 'B', 7);
 
         $pdf->Cell($cel_w[0], $th, 'MISI (RENSTRA)', 1, 0, 'C');
-        $pdf->Cell($cel_w[1], $th, 'IKU (RENSTRA)', 1, 0, 'C');
+        $pdf->Cell($cel_w[1], $th, 'SASARAN PROGRAM (RENSTRA)', 1, 0, 'C');
         $pdf->Cell($cel_w[2], $th, 'Sasaran (PERKIN)', 1, 0, 'C');
         $pdf->Cell($cel_w[3], $th, 'Indikator (PERKIN)', 1, 0, 'C');
         $pdf->Cell($cel_w[4], $th, 'Kode', 1, 0, 'C');
