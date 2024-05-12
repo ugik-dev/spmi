@@ -93,7 +93,7 @@ class ActivityController extends Controller
             // ]);
 
             $validator = $request->validate([
-                'catatan_description' => 'required|string',
+                'catatan_description' => 'nullable|string',
                 'activity_id' => 'required|numeric',
                 'catatan_id' => 'nullable|numeric',
             ]);
