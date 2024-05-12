@@ -35,6 +35,17 @@ class RolesAndPermissionsSeeder extends Seeder
                 'approval and comment perencanaan',
                 'rekap penganggaran',
             ],
+            'KEPALA SPI' => [
+                'view sbmsbi',
+                'view pelaporan',
+                'view pembayaran',
+                'view penganggaran',
+                'view perencanaan',
+                'approval pembayaran',
+                'approval penganggaran',
+                'approval and comment perencanaan',
+                'rekap penganggaran',
+            ],
             'STAF PPK' => [
                 'view sbmsbi',
                 'view pelaporan',
