@@ -26,7 +26,7 @@ class NavigationServiceProvider extends ServiceProvider
                                 ->add('Misi', route('mission.index'))
                                 ->add('Sasaran Program', route('iku.index'))
                                 ->add('Indikator Kinerja Sasaran Program', route('program_target.index'))
-                                ->add('Sasaran Kegiatan', route('program_target.index'))
+                                ->add('Sasaran Kegiatan', route('performance_indicator.index'))
                                 ->add('(IKSK) Indikator Kinerja', route('performance_indicator.index'))
                                 // ->add('Indikator Kinerja Utama', route('iku.index'))
                                 // ->add('Sasaran Program', route('program_target.index'))
