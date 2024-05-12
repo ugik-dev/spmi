@@ -264,20 +264,7 @@
                         const createInputContainer = document.getElementById('create-input_container');
                         const createInputContainer2 = document.getElementById('create-input_sigle_container');
 
-                        if (btnShowModalId === 'add-activity_btn') {
-                            createInputContainer.innerHTML =
-                                `<input type="text" name="activity_code" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" required name="activity_name" class="form-control" placeholder="Uraian">`;
-                            let options = indikatorPerkin.map(code =>
-                                `<option value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
-                            ).join('');
-                            createInputContainer2.innerHTML =
-                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
-                            $('#performance_indicator_id').select2({
-                                dropdownParent: $('#createModal'),
-                                placeholder: 'Pilih IKU',
-                                theme: 'bootstrap-5'
-                            });
-                        }
+
                         if (btnShowModalId === 'add-account_code_btn') {
                             createInputContainer2.innerHTML = '';
                             let options = accountCodes.map(code =>
@@ -293,7 +280,7 @@
                                     const accountName = selectedOption.getAttribute('data-account-name');
                                     document.getElementById('account-name-input').value = accountName || '';
                                 });
-                        }
+                        } else
                         if (btnShowModalId === 'add-expenditure_detail_btn') {
                             createInputContainer2.innerHTML = '';
 
@@ -328,6 +315,20 @@
                             volumeInput.addEventListener('keypress', window.enforceNumericInput);
                             console.log('enforceNumericInput');
 
+                        } else {
+                            // if (btnShowModalId === 'add-activity_btn') {
+                            createInputContainer.innerHTML =
+                                `<input type="text" name="activity_code" required class="form-control" style="max-width: 160px !important;"placeholder="KD.Keg"> <input type="text" required name="activity_name" class="form-control" placeholder="Uraian">`;
+                            let options = indikatorPerkin.map(code =>
+                                `<option value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
+                            ).join('');
+                            createInputContainer2.innerHTML =
+                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
+                            $('#performance_indicator_id').select2({
+                                dropdownParent: $('#createModal'),
+                                placeholder: 'Pilih IKU',
+                                theme: 'bootstrap-5'
+                            });
                         }
 
                     })
