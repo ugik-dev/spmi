@@ -110,7 +110,6 @@
             const indikatorPerkin = @json($indikatorPerkin);
             const expenditureUnits = @json($expenditureUnits);
             document.addEventListener('DOMContentLoaded', function() {
-                test_call_app_js();
                 const theadTh = document.querySelectorAll('thead tr th');
                 theadTh.forEach(th => th.classList.add('bg-primary'));
                 const tdMoney = document.querySelectorAll(
