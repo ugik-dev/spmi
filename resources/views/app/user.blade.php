@@ -101,12 +101,12 @@
                                     <td>{{ $user->employee->workUnit->name ?? '-' }}</td>
                                     <td>{{ $user->email ?? '-' }}
                                         ({{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }})</td>
-                                    <td>
+                                    <td class="d-flex justify-content-around" style="width:275px;">
                                         {{-- <button type="button" class="btn btn-sm btn-info"
                                             data-bs-target="#changePasswordModal" data-bs-toggle="modal">
                                             <i data-feather="key"></i>
                                         </button> --}}
-                                        <button type="button" class="btn btn-sm btn-primary"
+                                        <button type="button" class="btn btn-primary btn-sm mx-1"
                                             data-bs-target="#editModal" data-bs-toggle="modal"
                                             data-user="{{ $user }}"
                                             data-update-url="{{ route('user.update', $user) }}">
@@ -118,7 +118,7 @@
                                             </svg>
                                         </button>
 
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1" role="button"
                                             onclick="confirmDelete({{ $user->id }});">
                                             <i class="text-white" data-feather="trash-2"></i>
                                         </a>
@@ -130,7 +130,8 @@
                                             @method('DELETE')
                                         </form>
 
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
+                                        <a href="javascript:void(0);"
+                                            class="btn btn-success btn-sm mx-1 d-flex align-items-center" role="button"
                                             onclick="resendMail({{ $user->id }});">
                                             Resent e-Mail
                                         </a>
@@ -246,6 +247,9 @@
                     //     } // Contoh: Menetapkan lebar untuk kolom 'User Role'
                     //     // Tambahkan pengaturan lebar lebih lanjut untuk kolom lain jika diperlukan
                     // ],
+                    "scrollY": '350px',
+                    "scrollCollapse": true,
+                    " paging": false,
                     "stripeClasses": [],
                     "lengthMenu": [7, 10, 20, 50],
                     "pageLength": 10
