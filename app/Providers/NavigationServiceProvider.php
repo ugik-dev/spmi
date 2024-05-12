@@ -24,10 +24,13 @@ class NavigationServiceProvider extends ServiceProvider
                             fn (Section $section) => $section
                                 ->add('Visi', route('vision.index'))
                                 ->add('Misi', route('mission.index'))
-                                ->add('Indikator Kinerja Utama', route('iku.index'))
-                                ->add('Sasaran Program', route('program_target.index'))
+                                ->add('Sasaran Program', route('iku.index'))
+                                ->add('Indikator Sasaran Program', route('program_target.index'))
+                                ->add('Sasaran Kegiatan', route('program_target.index'))
                                 ->add('(IKSK) Indikator Kinerja', route('performance_indicator.index'))
-                                // ->add('Capaian Kinerja Tahun Sebelumnya', url('#'))
+                                // ->add('Indikator Kinerja Utama', route('iku.index'))
+                                // ->add('Sasaran Program', route('program_target.index'))
+                                // ->add('(IKSK) Indikator Kinerja', route('performance_indicator.index'))
                                 ->attributes(['permission' => 'view perencanaan'])
                         )
                     // ->add(
