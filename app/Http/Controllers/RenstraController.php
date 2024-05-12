@@ -81,17 +81,20 @@ class RenstraController extends Controller
         $ikus = RenstraIndicator::with('mission')->get();
         // dd($ikus);
 
-        return view('app.iku', ['title' => 'Indikator Kinerja Utama', 'renstra' => $renstra, 'missions' => $missions, 'ikus' => $ikus]);
+        return view('app.iku', ['title' => 'Sasaran Program', 'renstra' => $renstra, 'missions' => $missions, 'ikus' => $ikus]);
     }
 
     public function storeIku(Request $request)
     {
         $validatedData = $request->validate([
             'iku.*' => 'required|string', // Validate each iku input
-            'misi' => 'required|integer', // Validate each iku input
+            // 'misi' => 'required|integer', // Validate each iku input
         ]);
         foreach ($validatedData['iku'] as $data)
-            RenstraIndicator::create(['renstra_mission_id' => $validatedData['misi'], 'description' => $data]);
+            RenstraIndicator::create([
+                // 'renstra_mission_id' => $validatedData['misi'], 
+                'description' => $data
+            ]);
         return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM berhasil ditambahkan.');
     }
     // Add this method to your RenstraController

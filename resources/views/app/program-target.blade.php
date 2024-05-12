@@ -84,7 +84,7 @@
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20 ms-3" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
-                            Input Sasaran Program
+                            Input Indikator Kinerja Sasaran Program
                         </button>
                     </div>
 
@@ -93,8 +93,8 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
-                                    <th scope="col">SASARAN PROGRAM</th>
                                     <th scope="col">Sasaran Program</th>
+                                    <th scope="col">IKSP (Indikator Kinerja Sasaran Program)</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -162,10 +162,12 @@
                             </select>
                         </div>
                         <div class="form-group d-flex align-items-center">
-                            <button type="button" id="add-program_target" class="btn btn-sm btn-primary py-0 px-2">
+                            <button type="button" id="add-program_target"
+                                class="btn btn-sm btn-primary py-0 px-2 mt-2 ">
                                 <i data-feather="plus"></i>
                             </button>
-                            <label for="program_target" class="ms-2 py-0 mb-0">Sasaran Program</label>
+                            <label for="program_target" class="ms-2 py-0 mb-0"> Indikator Kinerja Sasaran
+                                Program</label>
                         </div>
 
                         <div id="program_target-inputs" class="mt-2">
@@ -244,7 +246,7 @@
                 //     text: 's'
                 // });
                 // Update the form action URL
-                document.getElementById('edit-form').action = '/admin/perkin/sasaran-program/' + id + '/update';
+                document.getElementById('edit-form').action = '/admin/perkin/iksp/' + id + '/update';
 
                 // Show the modal
                 new bootstrap.Modal(document.getElementById('editModal')).show();

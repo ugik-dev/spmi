@@ -20,6 +20,7 @@ use Fpdf\Fpdf;
 use Illuminate\Support\Facades\Storage;
 
 use App\Exports\DipaExport;
+use App\Exports\DipaByBIExport;
 use App\Exports\DipaMappingExport;
 use App\Models\PaguUnit;
 
@@ -27,11 +28,12 @@ class PDFController extends Controller
 {
     public function cetak(Dipa $dipa)
     {
-        $dataBI = RenstraMission::getWithDipa($dipa->id);
+        // $dataBI = RenstraMission::getWithDipa($dipa->id);
         $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
         $paguUnit = PaguUnit::unityear($dipa->year, $dipa->work_unit_id)->first();
         $filename = "Dipa-{$dipa->year}-Revisi-{$dipa->revision}-{$timestamp}.xlsx";
-        return Excel::download(new DipaExport($dataBI, $dipa,   $paguUnit), $filename);
+        $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
+        return Excel::download(new DipaByBIExport($groupedBI, $dipa,   $paguUnit), $filename);
     }
 
     public function cetak_mapping(Dipa $dipa)

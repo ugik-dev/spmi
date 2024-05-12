@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class IKSK extends Model
 {
     use HasFactory;
-
+    protected $table = "iksks";
 
     protected $fillable = ['name', 'value', 'performance_indicator_id'];
 
@@ -27,9 +27,9 @@ class IKSK extends Model
         return $query->where('value', '>', $minValue);
     }
 
-    public function performanceIndicator()
+    public function performanceIndicators()
     {
-        return $this->belongsTo(PerformanceIndicator::class);
+        return $this->belongsTo(PerformanceIndicator::class, 'performance_indicator_id', 'id');
     }
     public function activity()
     {

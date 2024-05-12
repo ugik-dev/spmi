@@ -10,6 +10,7 @@ use App\Models\BudgetImplementationDetail;
 use App\Models\Dipa;
 use App\Models\DipaLog;
 use App\Models\ExpenditureUnit;
+use App\Models\IKSK;
 use App\Models\PaguUnit;
 use App\Models\PerformanceIndicator;
 use App\Models\Timeline;
@@ -74,7 +75,7 @@ class BudgetImplementationController extends Controller
         $btnExport = [];
         $dipa = null;
         $accountCodes = AccountCode::all();
-        $indikatorPerkin = PerformanceIndicator::all();
+        $indikatorPerkin = IKSK::all();
         $expenditureUnits = ExpenditureUnit::all();
         return view('app.budget-implementation', compact('title', 'timeline', 'dipa', 'btnExport', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
@@ -96,7 +97,7 @@ class BudgetImplementationController extends Controller
             'exl_mapping' => true,
         ];
         $accountCodes = AccountCode::all();
-        $indikatorPerkin = PerformanceIndicator::all();
+        $indikatorPerkin = IKSK::all();
         $expenditureUnits = ExpenditureUnit::all();
         return view('app.budget-implementation', compact('title', 'dipa', 'groupedBI', 'accountCodes', 'btnExport', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
@@ -120,7 +121,7 @@ class BudgetImplementationController extends Controller
         $copy_of = $newDipa->id;
         $dipa = null;
         $accountCodes = AccountCode::all();
-        $indikatorPerkin = PerformanceIndicator::all();
+        $indikatorPerkin = IKSK::all();
         $expenditureUnits = ExpenditureUnit::all();
         return view('app.budget-implementation', compact('title', 'btnExport', 'copy_of', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
@@ -142,7 +143,7 @@ class BudgetImplementationController extends Controller
         $validator = Validator::make($request->all(), [
             'dipa.*.bi' => 'sometimes|integer',
             'dipa.*.activity.id' => 'sometimes|integer',
-            'dipa.*.activity.performance_indicator_id' => 'required|integer',
+            'dipa.*.activity.performance_indicator_id' => 'nullable|integer',
             'dipa.*.activity.code' => 'required|string',
             'dipa.*.activity.name' => 'required|string',
             'dipa.*.accounts' => 'nullable|array',
@@ -267,7 +268,7 @@ class BudgetImplementationController extends Controller
         $validator = Validator::make($request->all(), [
             'dipa.*.bi' => 'sometimes|integer',
             'dipa.*.activity.id' => 'sometimes|integer',
-            'dipa.*.activity.performance_indicator_id' => 'required|integer',
+            'dipa.*.activity.performance_indicator_id' => 'nullable|integer',
             'dipa.*.activity.code' => 'required|string',
             'dipa.*.activity.name' => 'required|string',
             'dipa.*.accounts' => 'nullable|array',

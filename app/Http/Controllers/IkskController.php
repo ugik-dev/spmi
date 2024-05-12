@@ -2,25 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PerformanceIndicator;
-use App\Models\ProgramTarget;
-use App\Exports\PerformanceIndicatorExport;
 use Illuminate\Http\Request;
+
+use App\Models\PerformanceIndicator;
+use App\Exports\PerformanceIndicatorExport;
+use App\Models\IKSK;
+use App\Models\ProgramTarget;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 
-class PerformanceIndicatorController extends Controller
+class IkskController extends Controller
 {
+
+
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $programTargetsHasPerformanceIndicators = ProgramTarget::has('performanceIndicators')->with('performanceIndicators')->paginate();
-        $title = 'Sasaran Program';
-
-        return view('app.performance-indicator', compact('title', 'programTargetsHasPerformanceIndicators'));
+        $perforceHasIksk = PerformanceIndicator::has('iksks')->with('iksks')->paginate();
+        $title = 'IKSK';
+        // dd($iksks);
+        return view('app.iksk', compact('title', 'perforceHasIksk'));
     }
 
     /**
@@ -38,62 +44,59 @@ class PerformanceIndicatorController extends Controller
     {
         // Validate the request data
         $request->validate([
-            'program_target_id' => 'required|exists:program_targets,id',
-            'performance_indicator.*' => 'required|string', // Validate each indicator
+            'performance_indicator_id' => 'required|exists:performance_indicators,id',
+            'iksk.*' => 'required|string', // Validate each indicator
             // 'value' => 'required|decimal:2',
         ]);
 
         // Retrieve the program target ID from the request
-        $programTargetId = $request->program_target_id;
+        $programTargetId = $request->performance_indicator_id;
 
         // Process each performance indicator
-        foreach ($request->performance_indicator as $indicator) {
+        foreach ($request->iksk as $ss) {
             // Create new PerformanceIndicator
-            $performanceIndicator = new PerformanceIndicator([
-                'name' => $indicator,
-                'program_target_id' => $programTargetId,
-                // 'value' => $request->value,
+            $performanceIndicator = new IKSK([
+                'name' => $ss,
+                'performance_indicator_id' => $programTargetId,
                 'value' => 0,
-                // 'value' can be set here if needed, or use default value from migration
             ]);
 
-            // Save the performance indicator to the database
             $performanceIndicator->save();
         }
 
         // Redirect or send a response back
-        return redirect()->route('performance_indicator.index')->with('success', 'Sasaran Kegiatan berhasil disimpan.');
+        return redirect()->route('iksk.index')->with('success', 'Indikator kinerja berhasil disimpan.');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PerformanceIndicator $performanceIndicator)
+    public function update(Request $request, IKSK $iksk)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            // 'value' => 'required|decimal:2',
+            'value' => 'required|decimal:2',
         ]);
 
         // Update the performance indicator
-        $performanceIndicator->name = $request->name;
-        // $performanceIndicator->value = $request->value;
-        $performanceIndicator->save();
+        $iksk->name = $request->name;
+        $iksk->value = $request->value;
+        $iksk->save();
 
         // Redirect with a success message
-        return redirect()->route('performance_indicator.index')->with('success', 'Sasaran Kegiatan berhasil diperbarui.');
+        return redirect()->route('iksk.index')->with('success', 'Indikator kinerja berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PerformanceIndicator $performanceIndicator)
+    public function destroy(IKSK $iksk)
     {
         // Delete the ProgramTarget instance
-        $performanceIndicator->delete();
+        $iksk->delete();
 
         // Redirect back with a success message
-        return redirect()->back()->with('success', 'Sasaran Kegiatan berhasil dihapus.');
+        return redirect()->back()->with('success', 'Indikator kinerja berhasil dihapus.');
     }
 
     // download pdf
@@ -118,22 +121,5 @@ class PerformanceIndicatorController extends Controller
         $filename = "Performance-Indicators-Report-{$timestamp}.xlsx";
 
         return Excel::download(new PerformanceIndicatorExport, $filename);
-    }
-
-
-    public function getPerformanceIndicator(Request $request)
-    {
-        $search = $request->input('search', '');
-        $limit = $request->input('limit', 10); // Default to 10 if not provided
-
-        $query = PerformanceIndicator::query();
-
-        if (!empty($search)) {
-            $query->where('name', 'LIKE', "%{$search}%");
-        }
-
-        $programTargets = $query->limit($limit)->get(['id', 'name']);
-
-        return response()->json($programTargets);
     }
 }

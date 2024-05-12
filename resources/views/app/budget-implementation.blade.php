@@ -182,7 +182,7 @@
                                 `<option ${trSelected.children[0].textContent == code.id ? 'selected':''} value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
                             ).join('');
                             editInputContainer2.innerHTML =
-                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
+                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id"  class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
 
 
                         } else if (trSelected.classList.contains('account-row')) {
@@ -322,10 +322,10 @@
                                 `<option value="${code.id}" data-account-name="${code.name}">${code.name}</option>`
                             ).join('');
                             createInputContainer2.innerHTML =
-                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id" required class="form-control" style=""><option value="">Pilih Indikator PERKIN</option>${options}</select>`;
+                                `<select name="performance_indicator_id" style="width: 100% !important" id="performance_indicator_id"  class="form-control" style=""><option value="">Pilih Indikator</option>${options}</select>`;
                             $('#performance_indicator_id').select2({
                                 dropdownParent: $('#createModal'),
-                                placeholder: 'Pilih SASARAN PROGRAM',
+                                placeholder: 'Pilih Indikator',
                                 theme: 'bootstrap-5'
                             });
                         }

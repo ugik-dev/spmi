@@ -72,7 +72,7 @@
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
-                            Input Indikator Kinerja Utama
+                            Input Sasaran Program
                         </button>
                         <div class="download">
                             <a href="{{ route('download.iku.excel') }}" class="btn btn-success">Excel</a>
@@ -85,7 +85,7 @@
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Misi</th>
-                                    <th scope="col">SASARAN PROGRAM</th>
+                                    <th scope="col">Sasaran Program</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -93,7 +93,7 @@
                                 @foreach ($ikus as $iku)
                                     <tr>
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
-                                        <td>{{ $iku->mission->description }}</td>
+                                        <td>{{ $iku->mission?->description }}</td>
                                         <td>{{ $iku->description }}</td>
                                         <td class="text-center">
                                             <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
@@ -137,8 +137,8 @@
                         <div class="mb-4 row align-items-center">
                             <div class="col-sm-12">
                                 <select class="form-select @error('misi') is-invalid @enderror" id="selectTypeRole"
-                                    name="misi" required>
-                                    <option selected disabled value="">Pilih Misi...</option>
+                                    name="misi">
+                                    <option selected value="">Pilih Misi...</option>
                                     @foreach ($missions as $mission)
                                         <option value="{{ $mission->id }}"
                                             {{ old('misi') == $mission->id ? 'selected' : '' }}>

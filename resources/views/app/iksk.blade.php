@@ -92,12 +92,11 @@
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
-                            Input Sasaran Kegiatan
+                            Input Indikator Kinerja Sasaran Kegiatan
                         </button>
                         <div class="download">
-                            <a href="{{ route('download.performance-indicator.excel') }}"
-                                class="btn btn-success">Excel</a>
-                            <a href="{{ route('download.performance-indicator.pdf') }}" class="btn btn-danger">PDF</a>
+                            <a href="{{ route('download.iksk.excel') }}" class="btn btn-success">Excel</a>
+                            <a href="{{ route('download.iksk.pdf') }}" class="btn btn-danger">PDF</a>
                         </div>
                     </div>
 
@@ -106,39 +105,39 @@
                             <thead>
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
-                                    <th scope="col">IKSP</th>
                                     <th scope="col">Sasaran Kegiatan</th>
-                                    {{-- <th scope="col">Target</th> --}}
+                                    <th scope="col">IKSK</th>
+                                    <th scope="col">Target</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($programTargetsHasPerformanceIndicators as $programTarget)
-                                    @foreach ($programTarget->performanceIndicators as $index => $performanceIndicator)
+                                @foreach ($perforceHasIksk as $performanceIksk)
+                                    @foreach ($performanceIksk->iksks as $index => $iksk)
                                         <tr>
                                             @if ($index == 0)
-                                                <td rowspan="{{ count($programTarget->performanceIndicators) }}">
+                                                <td rowspan="{{ count($performanceIksk->iksks) }}">
                                                     {{ $loop->parent->iteration }}</td>
-                                                <td rowspan="{{ count($programTarget->performanceIndicators) }}">
-                                                    {{ $programTarget->name }}</td>
+                                                <td rowspan="{{ count($performanceIksk->iksks) }}">
+                                                    {{ $performanceIksk->name }}</td>
                                             @endif
-                                            <td>{{ $performanceIndicator->name }}</td>
-                                            {{-- <td>{{ number_format((float) $performanceIndicator->value, 2, '.') }}</td> --}}
+                                            {{-- @dd($iksk); --}}
+                                            <td>{{ $iksk->name }}</td>
+                                            <td>{{ number_format((float) $iksk->value, 2, '.') }}</td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-sm btn-primary"
-                                                    onclick="openEditModal({{ $performanceIndicator->id }}, '{{ $performanceIndicator->name }}')">
+                                                    onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}')">
                                                     <i class="text-white" data-feather="edit-2"></i>
                                                 </button>
 
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm"
-                                                    role="button"
-                                                    onclick="confirmDelete({{ $performanceIndicator->id }});">
+                                                    role="button" onclick="confirmDelete({{ $iksk->id }});">
                                                     <i class="text-white" data-feather="trash-2"></i>
                                                 </a>
                                                 <!-- Hidden form for delete request -->
-                                                <form id="delete-form-{{ $performanceIndicator->id }}"
-                                                    action="{{ route('performance_indicator.delete', $performanceIndicator->id) }}"
-                                                    method="POST" style="display: none;">
+                                                <form id="delete-form-{{ $iksk->id }}"
+                                                    action="{{ route('iksk.delete', $iksk->id) }}" method="POST"
+                                                    style="display: none;">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
@@ -148,7 +147,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $programTargetsHasPerformanceIndicators->links() }}
+                        {{ $perforceHasIksk->links() }}
                         <!-- Pagination -->
                     </div>
 
@@ -163,7 +162,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Input Sasaran Kegiatan
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Input Indikator Kinerja Sasaran Kegiatan
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -177,30 +176,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('performance_indicator.store') }}" method="POST">
+                    <form action="{{ route('iksk.store') }}" method="POST">
                         @csrf
 
                         <div class="form-group">
-                            <label for="program_target">IKSP</label>
-                            <select id="program_target" name="program_target_id" class="form-control select2">
-                                <option value="">Pilih IKSP</option>
+                            <label for="performance_indicator">Sasaran Kegiatan</label>
+                            <select id="performance_indicator" name="performance_indicator_id"
+                                class="form-control select2">
+                                <option value="">Pilih Sasaran Kegiatan</option>
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
 
                         <div class="form-group d-flex align-items-center my-2">
-                            <button type="button" id="add-performance_indicator"
-                                class="btn btn-sm btn-primary py-0 px-2">
+                            <button type="button" id="add-iksk" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
-                            <label for="performance_indicator" class="ms-2 py-0 mb-0">Sasaran Kegiatan</label>
+                            <label for="iksk" class="ms-2 py-0 mb-0">Indikator Kinerja Sasaran Kegiatan</label>
                         </div>
 
-                        <div id="performance_indicator-inputs" class="mt-2">
+                        <div id="iksk-inputs" class="mt-2">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
-                                <input type="text" name="performance_indicator[]" class="form-control">
-                                <button type="button" class="btn btn-danger remove-performance_indicator">
+                                <input type="text" name="iksk[]" class="form-control">
+                                <button type="button" class="btn btn-danger remove-iksk">
                                     <i data-feather="trash"></i>
                                 </button>
                             </div>
@@ -223,7 +222,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalTitle">Edit Sasaran Kegiatan</h5>
+                    <h5 class="modal-title" id="editModalTitle">Edit Indikator Kinerja Sasaran Kegiatan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -231,15 +230,15 @@
                         @csrf
                         @method('PATCH')
                         <div class="form-group">
-                            <label>Sasaran Kegiatan</label>
+                            <label>Indikator Kinerja Sasaran Kegiatan</label>
                             <input type="text" id="performance_indicator_name" name="name"
                                 class="form-control" required>
                         </div>
-                        {{-- <div class="form-group mt-3">
+                        <div class="form-group mt-3">
                             <label>Target</label>
                             <input type="text" id="performance_indicator_value" name="value"
                                 class="form-control" required>
-                        </div> --}}
+                        </div>
                         <!-- Add other fields as needed -->
                         <button type="submit" class="btn btn-primary mt-3">Update</button>
                     </form>
@@ -257,12 +256,13 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
-            function openEditModal(id, name) {
+            function openEditModal(id, name, value) {
                 // Populate the form fields
                 document.getElementById('performance_indicator_name').value = name;
+                document.getElementById('performance_indicator_value').value = value;
 
                 // Update the form action URL
-                document.getElementById('edit-form').action = '/admin/perkin/sasaran-kegiatan/' + id + '/update';
+                document.getElementById('edit-form').action = '/admin/perkin/iksk/' + id + '/update';
 
                 // Show the modal
                 new bootstrap.Modal(document.getElementById('editModal')).show();
@@ -289,19 +289,19 @@
             }
 
             function updateNumbering() {
-                const missionInputs = document.querySelectorAll('#performance_indicator-inputs .input-group');
+                const missionInputs = document.querySelectorAll('#iksk-inputs .input-group');
                 missionInputs.forEach((input, index) => {
                     input.querySelector('.input-group-text').textContent = `${index + 1}.`;
                 });
             }
             document.addEventListener('DOMContentLoaded', function() {
-                const missionContainer = document.getElementById('performance_indicator-inputs');
+                const missionContainer = document.getElementById('iksk-inputs');
 
-                document.getElementById('add-performance_indicator').addEventListener('click', function() {
+                document.getElementById('add-iksk').addEventListener('click', function() {
                     const newInput = `<div class="input-group mb-2">
                         <span class="input-group-text"></span>
-                        <input type="text" name="performance_indicator[]" class="form-control">
-                        <button type="button" class="btn btn-danger remove-performance_indicator">
+                        <input type="text" name="iksk[]" class="form-control">
+                        <button type="button" class="btn btn-danger remove-iksk">
                             <i data-feather="trash"></i>
                         </button>
                       </div>`;
@@ -311,21 +311,21 @@
                 });
 
                 missionContainer.addEventListener('click', function(event) {
-                    if (event.target.classList.contains('remove-performance_indicator')) {
+                    if (event.target.classList.contains('remove-iksk')) {
                         event.target.closest('.input-group').remove();
                         updateNumbering();
                     }
                 });
             });
             $('#exampleModalCenter').on('shown.bs.modal', function() {
-                $('#program_target').select2({
+                $('#performance_indicator').select2({
                     dropdownParent: $('#exampleModalCenter'),
-                    placeholder: 'Pilih IKSP',
+                    placeholder: 'Pilih Sasaran Kegiatan',
                     theme: 'bootstrap-5',
                     ajax: {
                         transport: function(params, success, failure) {
                             // Using Axios to fetch the data
-                            axios.get(`{{ route('program_targets.index') }}`, {
+                            axios.get(`{{ route('performance_indicators.index') }}`, {
                                     params: {
                                         search: params.data.term,
                                         limit: 10
@@ -353,7 +353,7 @@
                 });
 
             }).on('hidden.bs.modal', function() {
-                $('#program_target').select2('destroy');
+                $('#performance_indicator').select2('destroy');
             });
         </script>
     </x-slot>

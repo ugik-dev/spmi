@@ -10,6 +10,7 @@ use App\Http\Controllers\BudgetImplementationController;
 use App\Http\Controllers\DetailedFAReportController;
 use App\Http\Controllers\DipaController;
 use App\Http\Controllers\ExpenditureUnitController;
+use App\Http\Controllers\IkskController;
 use App\Http\Controllers\InstitutionalBudgetController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\PaymentReceiptController;
@@ -78,16 +79,22 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('hapus-iku', [RenstraController::class, 'deleteIku'])->name('iku.delete');
     });
     Route::prefix('perkin')->group(function () {
-        Route::get('sasaran-program', [ProgramTargetController::class, 'index'])->name('program_target.index');
-        Route::post('sasaran-program', [ProgramTargetController::class, 'store'])->name('program_target.store');
-        Route::delete('sasaran-program/{programTarget}/hapus', [ProgramTargetController::class, 'destroy'])->name('program_target.delete');
-        Route::patch('sasaran-program/{programTarget}/update', [ProgramTargetController::class, 'update'])->name('program_target.update');
-        Route::get('indikator-kinerja', [PerformanceIndicatorController::class, 'index'])->name('performance_indicator.index');
-        Route::post('indikator-kinerja', [PerformanceIndicatorController::class, 'store'])->name('performance_indicator.store');
-        Route::delete('indikator-kinerja/{performanceIndicator}/hapus', [PerformanceIndicatorController::class, 'destroy'])->name('performance_indicator.delete');
-        Route::patch('indikator-kinerja/{performanceIndicator}/update', [PerformanceIndicatorController::class, 'update'])->name('performance_indicator.update');
+        Route::get('iksp', [ProgramTargetController::class, 'index'])->name('program_target.index');
+        Route::post('iksp', [ProgramTargetController::class, 'store'])->name('program_target.store');
+        Route::delete('iksp/{programTarget}/hapus', [ProgramTargetController::class, 'destroy'])->name('program_target.delete');
+        Route::patch('iksp/{programTarget}/update', [ProgramTargetController::class, 'update'])->name('program_target.update');
+        Route::get('sasaran-kegiatan', [PerformanceIndicatorController::class, 'index'])->name('performance_indicator.index');
+        Route::post('sasaran-kegiatan', [PerformanceIndicatorController::class, 'store'])->name('performance_indicator.store');
+        Route::delete('sasaran-kegiatan/{performanceIndicator}/hapus', [PerformanceIndicatorController::class, 'destroy'])->name('performance_indicator.delete');
+        Route::patch('sasaran-kegiatan/{performanceIndicator}/update', [PerformanceIndicatorController::class, 'update'])->name('performance_indicator.update');
+        Route::get('iksk', [IkskController::class, 'index'])->name('iksk.index');
+        Route::post('iksk', [IkskController::class, 'store'])->name('iksk.store');
+        Route::delete('iksk/{iksk}/hapus', [IkskController::class, 'destroy'])->name('iksk.delete');
+        Route::patch('iksk/{iksk}/update', [IkskController::class, 'update'])->name('iksk.update');
         Route::get('/download-performance-indicators-pdf', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorPdf'])->name('download.performance-indicator.pdf');
         Route::get('/download-performance-indicators-excel', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorExcel'])->name('download.performance-indicator.excel');
+        Route::get('/download-iksk-pdf', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorPdf'])->name('download.iksk.pdf');
+        Route::get('/download-iksk-excel', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorExcel'])->name('download.iksk.excel');
     });
     Route::prefix('pengaturan')->group(function () {
         Route::get('unit-kerja', [WorkUnitController::class, 'index'])->name('work_unit.index');
