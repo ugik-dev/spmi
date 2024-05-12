@@ -118,7 +118,7 @@ class ActivityController extends Controller
                     'user_id' => Auth::user()->id,
                 ],
                 [
-                    'description' => $validator['catatan_description'],
+                    'description' => $validator['catatan_description'] ?? '',
 
                 ]
             );
