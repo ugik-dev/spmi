@@ -264,7 +264,7 @@
                         const createInputContainer = document.getElementById('create-input_container');
                         const createInputContainer2 = document.getElementById('create-input_sigle_container');
 
-
+                        console.log(btnShowModalId);
                         if (btnShowModalId === 'add-account_code_btn') {
                             createInputContainer2.innerHTML = '';
                             let options = accountCodes.map(code =>
