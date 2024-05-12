@@ -151,10 +151,10 @@ table.dataTable {
             padding-top: 0;
             padding-bottom: 0;
             padding-left: 0;
-            padding: 10px 21px 10px 21px;
+            padding: 10px; //edited
             color: #515365;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 10px;
             letter-spacing: 1px;
             // white-space: nowrap;
         }
@@ -185,10 +185,10 @@ table.dataTable {
             }
 
             >td {
-                font-size: 14px;
+                font-size: 10px;
                 border: none;
                 padding: 0;
-                padding: 10px 21px 10px 21px;
+                padding: 10px; //edited
                 color: #515365;
                 letter-spacing: 1px;
                 // white-space: nowrap;
