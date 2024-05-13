@@ -258,24 +258,29 @@ class DipaByBIExport implements FromCollection, WithHeadings, WithStyles,  WithC
                             // $sheet->mergeCells('B' . $i . ':C' . $i);
                             $sheet->mergeCells('B' . $i . ':J' . $i);
                             $j = $j + 1;
+                            $i++;
                             // $dataPush = [
                             //     $budgetImplementations->first()->activity->code, '',
                             //     $budgetImplementations->first()->activity->name, '', '', '', '', '', '', '',
                             //     $budgetImplementations->first()->activity_total_sum
                             // ];
                         }
-
+                        $j = $i;
                         foreach ($budgetImplementations as $budgetImplementation) {
                             if ($budgetImplementation->accountCode) {
                                 // $sheet->mergeCells('D' . $j . ':D' . $j + count($budgetImplementation->details) - 1);
                                 // $sheet->mergeCells('E' . $j . ':E' . $j + count($budgetImplementation->details)  - 1);
                                 $sheet->mergeCells('E' . $j . ':J' . $j);
+                                $i++;
+                                $j++;
                             }
-                            $o = $j + 1;
+                            $o = $j;
                             foreach ($budgetImplementation->details as $detail) {
                                 if ($detail) {
                                     $sheet->mergeCells('H' . $o . ':I' . $o);
                                     $o++;
+                                    $i++;
+                                    $j++;
                                 }
                             }
                             $j = $j + count($budgetImplementation->details)  - 1;
@@ -319,11 +324,14 @@ class DipaByBIExport implements FromCollection, WithHeadings, WithStyles,  WithC
                 ];
                 $cellRange = 'A' . 7 . ':K' . $n - 1; // All headers
                 $event->sheet->getDelegate()->getStyle($cellRange)->applyFromArray($styleArray);
-                $event->sheet->getDelegate()->getStyle('G' . 5 . ':I' . $n - 1)->applyFromArray([
+                $centerStyle = [
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                     ],
-                ]);
+                ];
+                $event->sheet->getDelegate()->getStyle('G' . 5 . ':I' . $n - 1)->applyFromArray($centerStyle);
+                $event->sheet->getDelegate()->getStyle('A' . 7 . ':A' . $this->total_row)->applyFromArray($centerStyle);
+                $event->sheet->getDelegate()->getStyle('D' . 7 . ':D' . $this->total_row)->applyFromArray($centerStyle);
 
                 $styleArray = [
                     'borders' => [
