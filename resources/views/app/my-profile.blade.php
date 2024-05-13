@@ -86,11 +86,11 @@
                                         <label for="floatingRole{{ $index }}">Role Pengguna</label>
                                     </div>
                                 @endforeach
-                                <div class="form-floating mb-3">
+                                {{-- <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingId" placeholder="Id"
                                         value="{{ $user->identity_number }}" readonly>
                                     <label for="floatingId">ID Pengguna</label>
-                                </div>
+                                </div> --}}
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingEmail" placeholder="Email"
                                         value="{{ $user->email }}" readonly>
@@ -98,11 +98,11 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
+                                {{-- <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingField" placeholder="Field"
                                         value="{{ $user->work_unit_id }}" readonly>
                                     <label for="floatingField">Unit Kerja</label>
-                                </div>
+                                </div> --}}
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingBirthdate"
                                         placeholder="Birth Date" value="{{ $user->dob }}" readonly>
@@ -190,17 +190,17 @@
                                         <label for="floatingRole{{ $index }}">Role Pengguna</label>
                                     </div>
                                 @endforeach
-                                <div class="form-floating mb-3">
+                                {{-- <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingId"
                                         name="identity_number" placeholder="Id"
                                         value="{{ $user->identity_number }}">
                                     <label for="floatingId">ID Pengguna</label>
-                                </div>
-                                <div class="form-floating mb-3">
+                                </div> --}}
+                                {{-- <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingEmail" name="email"
                                         placeholder="Email" value="{{ $user->email }}" readonly>
                                     <label for="floatingEmail">Email</label>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-6">
                                 {{-- <div class="form-floating mb-3">
@@ -209,14 +209,14 @@
                                     <label for="floatingField">Unit Kerja</label>
                                 </div> --}}
                                 <div class="form-floating mb-3">
-                                    <select class="form-control" id="floatingField" name="work_unit_id">
+                                    {{-- <select class="form-control" id="floatingField" name="work_unit_id">
                                         <option value="">Pilih Unit Kerja...</option>
                                         @foreach ($workUnits as $unit)
                                             <option value="{{ $unit->id }}"
                                                 {{ $user->work_unit_id == $unit->id ? 'selected' : '' }}>
                                                 {{ $unit->name }}</option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
                                     <label for="floatingField">Unit Kerja</label>
                                 </div>
                                 <div class="form-floating mb-3">

@@ -105,10 +105,10 @@ class BudgetImplementationController extends Controller
     {
         $currentDateTime = Carbon::now(); // Get the current date and time
 
-        $timelines = Timeline::active('revision')
+        $timeline = Timeline::active('revision')
             ->where('year', '=', $dipa->year)
             ->first();
-        if (empty($timelines)) {
+        if (empty($timeline)) {
             return view('errors.405', ['pageTitle' => "Error", 'message' => "Bukan Waktu untuk revisi"]);
         }
         $newDipa = Dipa::where('year', $dipa->year)->where('work_unit_id', '=', $dipa->work_unit_id)->latest('revision')->first();
@@ -123,7 +123,7 @@ class BudgetImplementationController extends Controller
         $accountCodes = AccountCode::all();
         $indikatorPerkin = IKSK::all();
         $expenditureUnits = ExpenditureUnit::all();
-        return view('app.budget-implementation', compact('title', 'btnExport', 'copy_of', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
+        return view('app.budget-implementation', compact('title', 'timeline', 'btnExport', 'copy_of', 'dipa', 'groupedBI', 'accountCodes', 'expenditureUnits', 'totalSum', 'unitBudget', 'indikatorPerkin'));
     }
     public function form()
     {

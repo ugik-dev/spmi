@@ -130,10 +130,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::resource('timeline', TimelineController::class)->names([
             'index' => 'timeline.index',
             'store' => 'timeline.store',
-            // 'store_update' => 'timeline.store_update',
             'destroy' => 'timeline.destroy',
         ]);
         Route::post('timeline/store_update', [TimelineController::class, 'store_update'])->name('timeline.store_update');
+        Route::get('timeline/rekap/{timeline}', [TimelineController::class, 'rekap'])->name('timeline.rekap');
 
         // PPK Routes
         Route::resource('ppk', PPKController::class);

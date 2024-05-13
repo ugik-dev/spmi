@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Timeline;
+use App\Models\WorkUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,6 +14,18 @@ class TimelineController extends Controller
         $title = 'Time Line';
         $timelines = Timeline::all();
         return view('app.timeline', compact('title', 'timelines'));
+    }
+
+    public function rekap(Timeline $timeline)
+    {
+        $units = WorkUnit::select('work_units.*', 'dipas.id as dipa_id', 'dipas.total', 'dipas.status as status_dipa')
+            ->leftJoin('dipas', 'dipas.work_unit_id', 'work_units.id')
+            ->leftJoin('timelines', 'timelines.id', 'dipas.timeline_id')->get();
+        // dd($units);
+        // $dipas = Dipa::accessibility()->where('status', '=', 'release')->get();
+        $title = 'Rekap Time Line';
+        // $timelines = Timeline::all();
+        return view('app.timeline-rekap', compact('title', 'units'));
     }
 
     public function create()

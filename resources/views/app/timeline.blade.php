@@ -147,6 +147,10 @@
                                                 </path>
                                             </svg>
                                         </button>
+                                        <a href="{{ route('timeline.rekap', $receipt->id) }}"
+                                            class="btn btn-sm btn-primary">
+                                            Rekapitulasi
+                                        </a>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
                                             onclick="confirmDelete({{ $receipt->id }});">
                                             <i class="text-white" data-feather="trash-2"></i>
