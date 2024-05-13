@@ -340,7 +340,7 @@ class DipaController extends Controller
             if (
                 in_array($dipa->status, ['wait-spi', 'reject-spi']) &&
                 // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                Auth::user()->hasRole(['KEPALA SPI'])
+                Auth::user()->hasRole(['SPI'])
             ) {
             } else {
                 return response()->json(['error' => true,  'message' => 'Anda tidak berhak melalukan aksi ini'], 500);
