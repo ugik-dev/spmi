@@ -259,6 +259,7 @@ class DipaByBIExport implements FromCollection, WithHeadings, WithStyles,  WithC
                             $sheet->mergeCells('B' . $i . ':J' . $i);
                             $j = $j + 1;
                             $i++;
+                            $isActivityDisplayed = true;
                             // $dataPush = [
                             //     $budgetImplementations->first()->activity->code, '',
                             //     $budgetImplementations->first()->activity->name, '', '', '', '', '', '', '',
