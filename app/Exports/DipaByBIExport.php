@@ -56,8 +56,10 @@ class DipaByBIExport implements FromCollection, WithHeadings, WithStyles,  WithC
                         $budgetImplementations->first()->activity->name, '', '', '', '', '', '', '', '',
                         $budgetImplementations->first()->activity_total_sum
                     ];
+
                     $exportData->push($dataPush);
                     $this->total_row++;
+                    $isActivityDisplayed = true;
                 }
 
                 foreach ($budgetImplementations as $budgetImplementation) {
@@ -256,10 +258,10 @@ class DipaByBIExport implements FromCollection, WithHeadings, WithStyles,  WithC
                         if (!$isActivityDisplayed) {
                             // $sheet->mergeCells('D' . $i . ':D' . $i + count($budgetImplementation->details) - 1);
                             // $sheet->mergeCells('B' . $i . ':C' . $i);
+                            $isActivityDisplayed = true;
                             $sheet->mergeCells('B' . $i . ':J' . $i);
                             $j = $j + 1;
                             $i++;
-                            $isActivityDisplayed = true;
                             // $dataPush = [
                             //     $budgetImplementations->first()->activity->code, '',
                             //     $budgetImplementations->first()->activity->name, '', '', '', '', '', '', '',
