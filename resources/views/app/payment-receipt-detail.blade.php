@@ -450,19 +450,19 @@
                                                     </a>
                                                 </td>
                                             </tr>
-                                            {{-- @if ($receipt->perjadin == 'Y') --}}
-                                            <tr>
-                                                <td>
-                                                    {{ $receipt->perjadin == 'Y' ? 'Rampung' : 'Daftar Terima' }}
-                                                </td>
-                                                <td class="text-center">
-                                                    <a target="_blank"
-                                                        href="{{ route('payment-receipt.print-rampung', $receipt) }}">
-                                                        <span class="badge badge-light-success">Download</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            {{-- @endif --}}
+                                            @if ($receipt->perjadin == 'Y')
+                                                <tr>
+                                                    <td>
+                                                        {{ $receipt->perjadin == 'Y' ? 'Rampung' : 'Daftar Terima' }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a target="_blank"
+                                                            href="{{ route('payment-receipt.print-rampung', $receipt) }}">
+                                                            <span class="badge badge-light-success">Download</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                             @if ($receipt->ppk->employee->head_id == Auth::user()->employee?->id)
                                                 <tr>
                                                     <td>
