@@ -486,6 +486,10 @@
                                                             href="{{ url('storage/berkas_receipt/' . $receipt->berkas) }}">
                                                             <span class="badge badge-light-success">Download</span>
                                                         </a>
+                                                        <a target="_blank"
+                                                            href="{{ route('receipt.show-file', $receipt->id) }}">
+                                                            <span class="badge badge-light-success">Download</span>
+                                                        </a>
                                                     @else
                                                         <span class="badge badge-light-danger">Tidak ada berkas</span>
                                                     @endif

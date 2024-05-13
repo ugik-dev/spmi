@@ -32,6 +32,7 @@ use App\Http\Controllers\VerificatorController;
 use App\Http\Controllers\WithdrawalPlanController;
 use App\Http\Controllers\WorkUnitController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReceiptController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
@@ -238,7 +239,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             'update' => 'payment-receipt.update',
             'destroy' => 'payment-receipt.destroy',
         ]);
-
+        Route::get('rekam-kuitansi/berkas/{receipt}', [ReceiptController::class, 'showFile'])
+            ->name('receipt.show-file');
         Route::get('rekam-kuitansi/print-kwitansi/{receipt}', [PaymentReceiptController::class, 'print_kwitansi'])->name('payment-receipt.print-kwitansi');
         Route::get('rekam-kuitansi/print-rampung/{receipt}', [PaymentReceiptController::class, 'print_rampung'])->name('payment-receipt.print-rampung');
         Route::get('rekam-kuitansi/print-tiket/{receipt}/{verif?}', [PaymentReceiptController::class, 'print_ticket'])->name('payment-receipt.print-ticket');

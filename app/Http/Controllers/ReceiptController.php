@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Receipt;
 use Illuminate\Http\Request;
+use App\Supports\Disk;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 class ReceiptController extends Controller
 {
@@ -61,5 +64,18 @@ class ReceiptController extends Controller
     public function destroy(Receipt $receipt)
     {
         //
+    }
+
+    public function showFile(Receipt $receipt)
+    {
+        // $this->authorize('view', $activityRecap); // Optional: check if user is authorized to view
+
+        $path = $receipt->berkas;
+        $filePath = Storage::disk(Disk::BerkasAttachment)->path($path);
+        $fileMimeType = mime_content_type($filePath);
+
+        return Response::file($filePath, [
+            'Content-Type' => $fileMimeType,
+        ]);
     }
 }
