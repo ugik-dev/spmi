@@ -55,7 +55,7 @@ class ReceiptActionController extends Controller
                 if ($receipt->perjadin == 'Y') {
                     return response()->json(['error' => true, 'message' => 'Jumlah pada daftar rampung tidak sama dengan jumlah pencairan tau belum terisi !!'], 400);
                 } else {
-                    return response()->json(['error' => true, 'message' => 'Jumlah pada daftar terima tidak sama dengan jumlah pencairan tau belum terisi !!'], 400);
+                    // return response()->json(['error' => true, 'message' => 'Jumlah pada daftar terima tidak sama dengan jumlah pencairan tau belum terisi !!'], 400);
                 }
             }
 
