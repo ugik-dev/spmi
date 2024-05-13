@@ -49,7 +49,7 @@
                 @endif
                 @if (in_array($dipa->status, ['wait-spi', 'reject-spi']) &&
                         // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                        Auth::user()->hasRole(['KEPALA SPI']))
+                        Auth::user()->hasRole(['SPI']))
                     <div class="float-end p-2">
                         <x-custom.dipa.spi-modal :dipa="$dipa" />
                     </div>
