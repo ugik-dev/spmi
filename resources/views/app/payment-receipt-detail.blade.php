@@ -152,7 +152,7 @@
                                     <x-custom.payment-receipt.verification-modal :receipt="$receipt" />
                                 </div>
                             @endif
-                            @if ($receipt->status == 'accept' && $receipt->ppk->head_id == Auth::user()->employee?->id)
+                            @if ($receipt->status == 'accept' && $receipt->ppk->employee->head_id == Auth::user()->employee?->id)
                                 <div class="float-end p-2">
                                     <x-custom.payment-receipt.app-money-modal :receipt="$receipt" />
                                 </div>
