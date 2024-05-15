@@ -262,7 +262,12 @@ $imageSrc = 'logo.png';
                 <td width="40%">Pejabat Pembuat Komitmen
                 </td>
                 <td width="20%"></td>
-                <td width="40%">Yang Menerima
+                <td width="40%">
+                    @if ($receipt->type == 'treasurer')
+                        Bendahara
+                    @else
+                        Yang Menerima
+                    @endif
                 </td>
             </tr>
             <tr>
@@ -273,7 +278,12 @@ $imageSrc = 'logo.png';
                 <td>{{ $receipt->ppk->name }}
                 </td>
                 <td></td>
-                <td> {{ $pengikut->user->name }}
+                <td>
+                    @if ($receipt->type == 'treasurer')
+                        {{ $receipt->ppk->employee->name }}
+                    @else
+                        {{ $pengikut->user->name }}
+                    @endif
                 </td>
             </tr>
             <tr>
@@ -282,8 +292,56 @@ $imageSrc = 'logo.png';
                 </td>
                 <td></td>
                 {{-- @dd($pengikut) --}}
-                <td>{{ strtoupper($pengikut->user->employee->identity_type) }}.
-                    {{ $pengikut->user->employee->id }}
+                <td>
+                    @if ($receipt->type == 'treasurer')
+                        {{ strtoupper($receipt->treasurer->employee->identity_type) }}.
+                        {{ $receipt->treasurer->employee->id }}
+                    @else
+                        {{ strtoupper($receipt->user->employee->identity_type) }}.
+                        {{ $pengikut->user->employee->id }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td width="40%">
+                    {{-- Pejabat Pembuat Komitmen --}}
+                </td>
+                <td width="20%"></td>
+                <td width="40%">
+                    @if ($receipt->type == 'treasurer')
+                        Yang Menerima
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td height="100px">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{-- {{ $receipt->ppk->name }} --}}
+                </td>
+                <td></td>
+                <td>
+                    @if ($receipt->type == 'treasurer')
+                        {{ $pengikut->user->name }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                </td>
+                <td></td>
+                {{-- @dd($pengikut) --}}
+                <td>
+                    @if ($receipt->type == 'treasurer')
+                        {{ strtoupper($pengikut->user->employee->identity_type) }}.
+                        {{ $pengikut->user->employee->id }}
+                    @endif
                 </td>
             </tr>
         </table>
