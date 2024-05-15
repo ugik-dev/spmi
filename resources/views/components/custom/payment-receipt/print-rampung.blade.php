@@ -280,7 +280,7 @@ $imageSrc = 'logo.png';
                 <td></td>
                 <td>
                     @if ($receipt->type == 'treasurer')
-                        {{ $receipt->ppk->employee->name }}
+                        {{ $receipt->treasurer->employee->name }}
                     @else
                         {{ $pengikut->user->name }}
                     @endif
@@ -303,7 +303,9 @@ $imageSrc = 'logo.png';
                 </td>
             </tr>
             <tr>
-                <td></td>
+                <td>
+                    <br><br>
+                </td>
             </tr>
             <tr>
                 <td width="40%">
