@@ -56,7 +56,8 @@
                     <td style="width: 40%">An. Kuasa Pengguna Anggaran</td>
                     <td style="width: 10%"></td>
                     <td style="width: 50%">Bangka,
-                        {{ \Carbon\Carbon::parse($receipt->activity_date)->translatedFormat('j F Y') }}
+                        {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }}
+                        {{-- {{ \Carbon\Carbon::parse($receipt->activity_date)->translatedFormat('j F Y') }} --}}
                     </td>
                 </tr>
                 <tr>
@@ -107,7 +108,8 @@
                     <td>{{ $receipt->pelaksana->name }}</td>
                 </tr>
                 <tr>
-                    <td>{{ $receipt->provider_organization ?? '' }}</td>
+                    <td>{{ $receipt->provider_organization ?? $penerima['sub'] }}
+                    </td>
                     <td>{{ strtoupper($receipt->pelaksana->employee->identity_type) }}.
                         {{ strtoupper($receipt->pelaksana->employee->id) }}</td>
                 </tr>
