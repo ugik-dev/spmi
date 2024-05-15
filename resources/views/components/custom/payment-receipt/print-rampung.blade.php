@@ -183,7 +183,7 @@ $imageSrc = 'logo.png';
             <tr>
                 <td>Tanggal</td>
                 <td>:</td>
-                <td>{{ \Carbon\Carbon::now()->translatedFormat('j F Y') }}
+                <td>{{ \Carbon\Carbon::parse($receipt->activity_date)->translatedFormat('j F Y') }}
                 </td>
             </tr>
             <tr>
