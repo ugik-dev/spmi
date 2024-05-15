@@ -36,7 +36,7 @@
 
         .receipt-footer {
             text-align: center;
-            font-size: 10px;
+            font-size: 7px;
         }
 
         .fullwidth {

@@ -54,8 +54,8 @@
             <table class="text-top fullwidth">
                 <tr>
                     <td style="width: 40%">An. Kuasa Pengguna Anggaran</td>
-                    <td style="width: 30%"></td>
-                    <td style="width: 30%">Bangka,
+                    <td style="width: 10%"></td>
+                    <td style="width: 50%">Bangka,
                         {{ \Carbon\Carbon::parse($receipt->activity_date)->translatedFormat('j F Y') }}
                     </td>
                 </tr>
