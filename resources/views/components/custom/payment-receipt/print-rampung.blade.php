@@ -263,6 +263,7 @@ $imageSrc = 'logo.png';
                 </td>
                 <td width="20%"></td>
                 <td width="40%">
+                    Bangka, {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }} <br>
                     @if ($receipt->type == 'treasurer')
                         Bendahara
                     @else
@@ -293,7 +294,7 @@ $imageSrc = 'logo.png';
                 <td></td>
                 {{-- @dd($pengikut) --}}
                 <td>
-                    Bangka, {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }} <br>
+
                     @if ($receipt->type == 'treasurer')
                         {{ strtoupper($receipt->treasurer->employee->identity_type) }}.
                         {{ $receipt->treasurer->employee->id }}
@@ -305,7 +306,12 @@ $imageSrc = 'logo.png';
             </tr>
             <tr>
                 <td>
-                    <br><br>
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br>
                 </td>
             </tr>
             <tr>
