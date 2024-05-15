@@ -280,7 +280,7 @@ $imageSrc = 'logo.png';
                 <td></td>
                 <td>
                     @if ($receipt->type == 'treasurer')
-                        {{ $receipt->treasurer->employee->name }}
+                        {{ $receipt->treasurer->name }}
                     @else
                         {{ $pengikut->user->name }}
                     @endif
@@ -293,6 +293,7 @@ $imageSrc = 'logo.png';
                 <td></td>
                 {{-- @dd($pengikut) --}}
                 <td>
+                    Bangka, {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }} <br>
                     @if ($receipt->type == 'treasurer')
                         {{ strtoupper($receipt->treasurer->employee->identity_type) }}.
                         {{ $receipt->treasurer->employee->id }}
