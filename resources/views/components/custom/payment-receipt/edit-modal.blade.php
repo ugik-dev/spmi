@@ -116,16 +116,32 @@
                         </div>
                     </div>
                     <div class="mb-4 row">
+                        <label for="selectActivityCodeEdit" class="col-sm-2 col-form-label">Kode Kegiatan</label>
+                        <div class="col-sm-8">
+                            <select class="form-select" id="selectActivityCodeEdit">
+                                <option selected disabled value="">Pilih Kode Kegiatan...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-4 row">
+                        <label for="selectAccountCodeEdit" class="col-sm-2 col-form-label">Kode Akun</label>
+                        <div class="col-sm-8">
+                            <select class="form-select" id="selectAccountCodeEdit" name="bi_id">
+                                <option selected disabled value="">Pilih Kode Akun...</option>
+                            </select>
+                        </div>
+                    </div>
+                    {{-- <div class="mb-4 row">
                         <label for="selectApprove" class="col-sm-2 col-form-label">Detail COA</label>
                         <div class="col-sm-8">
-                            <input hidden type="number" class="form-control" name="detail" id="selectApproveId">
-                            <input readonly disabled type="text" class="form-control" id="selectApproveName">
+                            <input hidden type="number" class="form-control" name="detail" id="selectBiIdEdit">
+                            <input readonly disabled type="text" class="form-control" id="selectBiNameEdit">
                         </div>
                         <div class="col-sm-2">
                             <button id="editCOABtn" type="button" data-bs-target="#COAModal" data-bs-toggle="modal"
                                 class="btn btn-primary btn-lg">...</button>
                         </div>
-                    </div>
+                    </div> --}}
                     <button id="submitFormedit" class="btn btn-warning text-center align-items-center mt-2 py-auto"
                         type="submit">
                         <span class="icon-name">Edit</span>

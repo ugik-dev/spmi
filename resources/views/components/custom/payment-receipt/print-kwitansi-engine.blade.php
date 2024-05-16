@@ -93,8 +93,9 @@
                 $penerima['name'] = $p->user->name;
                 $penerima['sub'] = strtoupper($p->user->employee->identity_type) . '. ' . $p->user->employee->id;
                 $penerima['total'] = 0;
-                if (!empty($p->datas)) {
-                    foreach (json_decode($p->datas) as $key => $value) {
+                // dd($p->items);
+                if (!empty($p->items)) {
+                    foreach ($p->items as $key => $value) {
                         $penerima['total'] = (int) $penerima['total'] + (int) $value->amount;
                     }
                 }

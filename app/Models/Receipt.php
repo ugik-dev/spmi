@@ -53,6 +53,10 @@ class Receipt extends Model
     {
         return $this->belongsTo(BudgetImplementationDetail::class, 'budget_implementation_detail_id', 'id');
     }
+    public function bi(): BelongsTo
+    {
+        return $this->belongsTo(BudgetImplementation::class, 'bi_id', 'id');
+    }
 
     public function verification(): HasMany
     {
@@ -67,7 +71,10 @@ class Receipt extends Model
     {
         return $this->hasMany(ReceiptData::class, 'receipt_id', 'id')->with('user');
     }
-
+    public function items(): HasMany
+    {
+        return $this->hasMany(ReceiptItem::class, 'receipt_id', 'id');
+    }
     public function scopeAccessibility($query, $approval = false, $findId = false, $throw = false)
     {
 

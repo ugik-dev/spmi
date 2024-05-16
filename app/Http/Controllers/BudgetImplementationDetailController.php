@@ -90,9 +90,14 @@ class BudgetImplementationDetailController extends Controller
     public function getActivity(Request $request, $year)
     {
         try {
-            $dipa = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->where('status', 'release')->where('year', $year)
+            $dipa = Dipa::with('activity.bis.accountCode')->where('work_unit_id', Auth::user()->employee->work_unit_id)->where('status', 'release')->where('year', $year)
                 ->first();
-            return response()->json($dipa->activity);
+            // echo "ss";
+            // dd($dipa);
+            if (empty($dipa->activity)) {
+                return response()->json([]);
+            } else
+                return response()->json($dipa->activity);
         } catch (\Exception $e) {
             \Log::error($e);
 

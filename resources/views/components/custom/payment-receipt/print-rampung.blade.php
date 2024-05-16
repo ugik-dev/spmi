@@ -211,8 +211,8 @@ $imageSrc = 'logo.png';
                 $total = 0;
                 $row_p = 1;
             @endphp
-            @if (!empty($pengikut->datas))
-                @foreach (json_decode($pengikut->datas) as $p_data)
+            @if (!empty($pengikut->items))
+                @foreach ($pengikut->items as $p_data)
                     <tr>
                         <td>
                             {{ $row_p }}
@@ -225,7 +225,7 @@ $imageSrc = 'logo.png';
                             {{ $p_data->desc }}
                         </td>
                         <td class="text-right" style="text-align: right">
-                            Rp. {{ number_format((int) $p_data->amount, 0, ',', '.') }}
+                            Rp. {{ number_format($p_data->amount, 0, ',', '.') }}
                         </td>
                         @php $total = $total+ (int) $p_data->amount @endphp
                     </tr>
@@ -292,15 +292,14 @@ $imageSrc = 'logo.png';
                     {{ $receipt->ppk->employee->id }}
                 </td>
                 <td></td>
-                {{-- @dd($pengikut) --}}
+                {{-- @dd($pengikut->user->employee) --}}
                 <td>
-
                     @if ($receipt->type == 'treasurer')
-                        {{ strtoupper($receipt->treasurer->employee->identity_type) }}.
-                        {{ $receipt->treasurer->employee->id }}
+                        {{ strtoupper($receipt->treasurer->employee?->identity_type) }}.
+                        {{ $receipt->treasurer->employee?->id }}
                     @else
-                        {{ strtoupper($receipt->user->employee->identity_type) }}.
-                        {{ $pengikut->user->employee->id }}
+                        {{ strtoupper($pengikut->user->employee?->identity_type) }}.
+                        {{ $pengikut->user->employee?->id }}
                     @endif
                 </td>
             </tr>

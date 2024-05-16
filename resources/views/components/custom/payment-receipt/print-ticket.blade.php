@@ -259,15 +259,14 @@ $imageSrc = 'logo.png';
                 <br>
                 {{ Auth::user()->name }}<br>
                 {{ strtoupper(Auth::user()->employee->identity_type ?? '') . '. ' . Auth::user()->employee?->id ?? '' }}
-
             </td>
             <td class="text-top">
                 NAMA KEGIATAN DI POK : <br>
-                {{ $receipt->detail->budgetImplementation->activity->name ?? '-' }}<br><br>
-                <br>KODE KEGIATAN / MAk :
+                {{ $receipt->bi->activity->name ?? '-' }}<br><br>
+                <br>KODE KEGIATAN / MAK :
                 <br>
-                {{ $receipt->detail->budgetImplementation->activity->code ?? '-' }} /
-
+                {{ $receipt->bi->activity->code ?? '-' }} /
+                {{ $receipt->bi->accountCode->code ?? '-' }}
             </td>
         </tr>
         <tr>

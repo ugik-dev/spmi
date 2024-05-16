@@ -30,7 +30,10 @@ class Activity extends Model
     {
         return $this->hasMany(BudgetImplementation::class)->with(['accountCode', 'details2']);
     }
-
+    public function bis()
+    {
+        return $this->hasMany(BudgetImplementation::class);
+    }
     public function performanceIndicator()
     {
         return $this->belongsTo(PerformanceIndicator::class);

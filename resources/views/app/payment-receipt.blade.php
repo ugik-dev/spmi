@@ -325,17 +325,51 @@
                             </div>
                         </div>
                         <div class="mb-4 row">
+                            <label for="selectActivityCode" class="col-sm-2 col-form-label">Kode Kegiatan</label>
+                            <div class="col-sm-8">
+                                <select class="form-select" id="selectActivityCode">
+                                    <option selected disabled value="">Pilih Kode Kegiatan...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="selectAccountCode" class="col-sm-2 col-form-label">Kode Akun</label>
+                            <div class="col-sm-8">
+                                <select class="form-select" id="selectAccountCode" name="bi_id">
+                                    <option selected disabled value="">Pilih Kode Akun...</option>
+                                </select>
+                            </div>
+                        </div>
+                        {{-- <div class="mb-4 row">
                             <label for="selectApprove" class="col-sm-2 col-form-label">Detail COA</label>
                             <div class="col-sm-8">
                                 <input hidden type="number" class="form-control" name="detail"
                                     id="selectApproveId">
                                 <input readonly disabled type="text" class="form-control" id="selectApproveName">
+                                <input hidden type="number" class="form-control" name="bi_id" id="selectBiId">
+                                <input readonly disabled type="text" class="form-control" id="selectBiName">
+                            </div>
+                            <div class="mb-4 row">
+                                <label for="selectActivityCode" class="col-sm-2 col-form-label">Kode Kegiatan</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select" id="selectActivityCode">
+                                        <option selected disabled value="">Pilih Kode Kegiatan...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-4 row">
+                                <label for="selectAccountCode" class="col-sm-2 col-form-label">Kode Akun</label>
+                                <div class="col-sm-8">
+                                    <select class="form-select" id="selectAccountCode">
+                                        <option selected disabled value="">Pilih Kode Akun...</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="col-sm-2">
                                 <button id="COABtn" type="button" data-bs-target="#COAModal"
                                     data-bs-toggle="modal" class="btn btn-primary btn-lg">...</button>
                             </div>
-                        </div>
+                        </div> --}}
                         <button id="submitFormCreate" disabled
                             class="btn btn-primary text-center align-items-center mt-2 py-auto" type="submit">
                             <span class="icon-name">Simpan</span>
@@ -346,7 +380,7 @@
         </div>
     </div>
     <!-- COA Modal -->
-    <div class="modal fade" id="COAModal" tabindex="-1" role="dialog" aria-labelledby="COAModalTitle"
+    {{-- <div class="modal fade" id="COAModal" tabindex="-1" role="dialog" aria-labelledby="COAModalTitle"
         aria-hidden="true" data-bs-focus="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -411,7 +445,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- Edit Modal -->
     <x-custom.payment-receipt.edit-modal />
 
@@ -441,6 +475,8 @@
                 theadTh.forEach(th => th.classList.add('bg-primary'));
                 const editModalEl = document.getElementById('editModal');
                 let receiptEditData;
+                let activityCodesData;
+                let curYear;
 
                 $('#receipt-table').DataTable({
                     "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
@@ -508,20 +544,9 @@
                 // On Shown Create Modal
                 $('#createModal').on('shown.bs.modal', function(modalEvent) {
                     const inputAmountEl = document.getElementById("inputAmount");
-                    // flatpickr($("#form-create").find('#basicFlatpickr'), {
-                    //     defaultDate: new Date(),
-                    //     static: true,
-                    // });
-                    // Restrict keyboard input
                     $('#inputAmount').on('keydown', window.allowOnlyNumericInput);
                     // Handle paste events
                     $('#inputAmount').on('paste', window.handlePaste);
-
-                    // $('#inputAmount').on('keyup', function() {
-                    //     console.log('up')
-                    //     $(this).val(format_number($(this).val()))
-                    // })
-
                     $('#selectPerjadinReceipt').on('change', function() {
                         console.log($(this).val())
                         if ($(this).val() == 'Y') {
@@ -548,7 +573,6 @@
                             $('#pengikutWrapper').css('display', "none");
                         }
                     }).trigger('change')
-
                     handleSelectTypeReceipt($('#selectTypeReceipt'))
                     $('#createSelectPPK').select2({
                         dropdownParent: $("#form-create").find('.ppkWrapper'),
@@ -617,9 +641,7 @@
                             delay: 250,
                             cache: true
                         }
-                    }).on('change', function() {
-
-                    });
+                    }).on('change', function() {});
                     // $('#createSelectPelaksana')
 
                     $('#createSelectPengikut').select2({
@@ -711,6 +733,7 @@
                     $("#selectTypeReceipt").on('change', function(selectEvent) {
                         if (selectEvent.currentTarget.value === 'direct') {
                             $("#createSelectTreasurer").val(null)
+                            // $("#createSelectTreasurer").prop('disabled', true)
                         }
                         if (selectEvent.currentTarget.value === '' || selectEvent.currentTarget
                             .value ===
@@ -720,10 +743,69 @@
                             $("#submitFormCreate").prop('disabled', false);
                         }
                     })
+
+                    $('#activityDate').on('change', async function(e) {
+                        const selectActivityCode = document.getElementById(
+                            'selectActivityCode');
+                        // window.populateSelectWithOptions(selectActivityCode, [],
+                        //     'Pilih Kode Kegiatan');
+                        // if (isEdit)
+                        // curDate = new Date($('#editModal').find('#inputDateEdit').val());
+                        // else
+                        curDate = new Date($('#createModal').find('#activityDate').val());
+                        var year = curDate.getFullYear();
+                        console.log(curYear, year)
+                        if (curYear != year) {
+                            activityCodesData = await getActivity(year);
+                            curYear = year
+                            console.log(activityCodesData);
+                            const activityCodesOptions = activityCodesData.map(activityCode =>
+                                ({
+                                    value: activityCode.id,
+                                    text: activityCode.code + ' :: ' + activityCode.name
+                                }));
+                            window.populateSelectWithOptions(selectActivityCode,
+                                activityCodesOptions,
+                                'Pilih Kode Kegiatan');
+                        }
+                        // Convert accountCodesData to options array
+
+
+                        $('#selectActivityCode').on('change', async function(selectEvent) {
+                            const selectAccountCode = document.getElementById(
+                                'selectAccountCode');
+                            const selectActivityCode = document.getElementById(
+                                'selectActivityCode');
+                            console.log(activityCodesData[selectActivityCode
+                                .selectedIndex - 1])
+                            const accountCodesData = activityCodesData[
+                                selectActivityCode
+                                .selectedIndex - 1].bis;
+                            console.log(accountCodesData);
+                            // Convert accountCodesData to options array
+                            const accountCodesOptions = accountCodesData.map(
+                                accountCode => ({
+                                    value: accountCode.id,
+                                    text: accountCode.account_code.code +
+                                        ' :: ' +
+                                        accountCode.account_code.name
+                                }));
+
+                            window.populateSelectWithOptions(selectAccountCode,
+                                accountCodesOptions,
+                                'Pilih Kode Akun');
+                        });
+                        // $('#selectActivityCode').val(receipt.bi?.activity_id)
+                        // $('#selectActivityCodeEdit').trigger('change');
+                        // $('#selectAccountCode').val(receipt.bi_id);
+
+                    })
+                    $('#inputDateEdit').trigger('change');
+
                 }).on('hidden.bs.modal', function() {
                     $('#createSelectPPK').select2('destroy');
                     $('#createSelectTreasurer').select2('destroy');
-                    flatpickr($("#form-create").find('#basicFlatpickr')).destroy();
+                    // flatpickr($("#form-create").find('#basicFlatpickr')).destroy();
                 });
 
                 // On Shown Edit Modal
@@ -741,8 +823,9 @@
                     formEdit.find('#inputActivityImplementer').val(receipt.activity_implementer);
                     formEdit.find('#inputSupplierName').val(receipt.provider);
                     formEdit.find('#inputSupplierOrganizationName').val(receipt.provider_organization);
-                    formEdit.find('#selectApproveId').val(receipt.budget_implementation_detail_id);
-                    formEdit.find('#selectApproveName').val(receipt.detail?.name);
+                    // formEdit.find('#selectApproveId').val(receipt.budget_implementation_detail_id);
+
+                    // formEdit.find('#selectApproveName').val(receipt.detail?.name);
                     formEdit.find('#selectPerjadinReceiptEdit').val(receipt.perjadin);
                     formEdit.find('#inputSpdNumberEdit').val(receipt.spd_number);
                     formEdit.find('#inputSpdTujuanEdit').val(receipt.spd_tujuan);
@@ -881,9 +964,12 @@
                     });
 
                     // create the option and append to Select2
-                    var option = new Option(`${receipt.ppk.id} `, receipt.ppk.id,
-                        true,
-                        true);
+                    var option = new Option(
+                        receipt.ppk.name, // Displayed text
+                        receipt.ppk.id, // Value attribute
+                        true, // Default selected
+                        true // Selected
+                    );
                     $('#editSelectPPK').append(option).trigger('change');
 
                     $('#editSelectTreasurer').select2({
@@ -925,9 +1011,9 @@
 
                     // create the option and append to Select2
                     var selectedTreasurerOption = new Option(
+                        receipt.treasurer?.name ?? '',
                         `${receipt.treasurer?.id ?? ''} `,
-                        receipt
-                        .treasurer?.id ?? null, true, true);
+                        true, true);
                     $('#editSelectTreasurer').append(selectedTreasurerOption).trigger('change');
 
                     $('#editSelectPelaksana').select2({
@@ -977,11 +1063,11 @@
                         true);
                     $('#editSelectPelaksana').append(option).trigger('change');
 
-                    console.log(receipt.pengikut)
+                    // console.log(receipt.pengikut)
                     $('#createSelectPengikutEdit').html('');
                     Object.keys(receipt.pengikut).forEach(function(properti) {
-                        console.log(properti + ': ' + receipt.pengikut[properti].id);
-                        console.log(properti + ': ' + receipt.pengikut[properti].user.name);
+                        // console.log(properti + ': ' + receipt.pengikut[properti].id);
+                        // console.log(properti + ': ' + receipt.pengikut[properti].user.name);
                         if (receipt.pengikut[properti].user.id != receipt.activity_implementer) {
 
                             var option = new Option(`${receipt.pengikut[properti].user.name} `,
@@ -994,6 +1080,64 @@
 
                         }
                     });
+                    $('#inputDateEdit').on('change', async function(e) {
+                        const selectActivityCode = document.getElementById(
+                            'selectActivityCodeEdit');
+                        // window.populateSelectWithOptions(selectActivityCode, [],
+                        //     'Pilih Kode Kegiatan');
+                        // if (isEdit)
+                        curDate = new Date($('#editModal').find('#inputDateEdit').val());
+                        // else
+                        //     curDate = new Date($('#createModal').find('#activityDate').val());
+                        var year = curDate.getFullYear();
+                        console.log(curYear, year)
+                        if (curYear != year) {
+                            activityCodesData = await getActivity(year);
+                            curYear = year
+                            console.log(activityCodesData);
+                            const activityCodesOptions = activityCodesData.map(activityCode =>
+                                ({
+                                    value: activityCode.id,
+                                    text: activityCode.code + ' :: ' + activityCode.name
+                                }));
+                            window.populateSelectWithOptions(selectActivityCode,
+                                activityCodesOptions,
+                                'Pilih Kode Kegiatan');
+                        }
+                        // Convert accountCodesData to options array
+
+
+                        $('#selectActivityCodeEdit').on('change', async function(selectEvent) {
+                            const selectAccountCode = document.getElementById(
+                                'selectAccountCodeEdit');
+                            const selectActivityCode = document.getElementById(
+                                'selectActivityCodeEdit');
+                            console.log(activityCodesData[selectActivityCode
+                                .selectedIndex - 1])
+                            const accountCodesData = activityCodesData[
+                                selectActivityCode
+                                .selectedIndex - 1].bis;
+                            console.log(accountCodesData);
+                            // Convert accountCodesData to options array
+                            const accountCodesOptions = accountCodesData.map(
+                                accountCode => ({
+                                    value: accountCode.id,
+                                    text: accountCode.account_code.code +
+                                        ' :: ' +
+                                        accountCode.account_code.name
+                                }));
+
+                            window.populateSelectWithOptions(selectAccountCode,
+                                accountCodesOptions,
+                                'Pilih Kode Akun');
+                        });
+                        $('#selectActivityCodeEdit').val(receipt.bi?.activity_id)
+                        $('#selectActivityCodeEdit').trigger('change');
+                        $('#selectAccountCodeEdit').val(receipt.bi_id);
+
+                    })
+                    $('#inputDateEdit').trigger('change');
+
 
                 }).on('hidden.bs.modal', function() {
                     const formEdit = $("#form-edit");
@@ -1021,8 +1165,8 @@
                     else
                         curDate = new Date($('#createModal').find('#activityDate').val());
                     var year = curDate.getFullYear();
-                    const activityCodesData = await getActivity(year);
-
+                    activityCodesData = await getActivity(year);
+                    console.log(activityCodesData);
                     // Convert accountCodesData to options array
                     const activityCodesOptions = activityCodesData.map(activityCode => ({
                         value: activityCode.id,
@@ -1037,17 +1181,36 @@
                     $('#selectActivityCode').on('change', async function(selectEvent) {
                         $('input,#selectBudgetDetail', '.modal.show .modal-body').val(null);
                         // Get Elements
-                        const selectAccountCode = document.getElementById('selectAccountCode');
+                        // if (isEdit) {
+                        // console.log('ss')selectActivityCode
+                        const selectAccountCode = document.getElementById(
+                            'selectAccountCode');
+                        const selectActivityCode = document.getElementById(
+                            'selectActivityCode');
+                        AcId = selectActivityCode.value;
+                        console.log(AcId)
+                        if (AcId) {
+                            AcName = selectActivityCode.options[
+                                selectActivityCode
+                                .selectedIndex].textContent;
+                        }
+
+                        console.log(AcId, AcName, selectActivityCode
+                            .selectedIndex)
+                        console.log(activityCodesData[selectActivityCode
+                            .selectedIndex - 1])
+                        // }
+
 
                         // Data Source
-                        const accountCodesData = await getAccountCodesByActivityID(
-                            selectEvent
-                            .currentTarget.value);
-
+                        const accountCodesData = activityCodesData[selectActivityCode
+                            .selectedIndex - 1].bis;
+                        console.log(accountCodesData);
                         // Convert accountCodesData to options array
                         const accountCodesOptions = accountCodesData.map(accountCode => ({
                             value: accountCode.id,
-                            text: accountCode.name
+                            text: accountCode.account_code.code + ' :: ' +
+                                accountCode.account_code.name
                         }));
 
                         // Populate select options
@@ -1058,83 +1221,96 @@
                         // selectEvent
                         // .currentTarget.value = 3;
                     });
-                    await $('#selectAccountCode').on('change', async function(selectEvent) {
-                        $('input', '.modal.show .modal-body').val(formatAsIDRCurrency(0.00));
-                        // Get Elements
-                        const selectBudgetDetail = document.getElementById(
-                            'selectBudgetDetail');
+                    // await $('#selectAccountCode').on('change', async function(selectEvent) {
+                    //     $('input', '.modal.show .modal-body').val(formatAsIDRCurrency(0.00));
+                    //     // Get Elements
+                    //     const selectBudgetDetail = document.getElementById(
+                    //         'selectBudgetDetail');
 
-                        // Get Select Activity Value
-                        const selectActivityID = document.getElementById('selectActivityCode')
-                            .value;
+                    //     // Get Select Activity Value
+                    //     const selectActivityID = document.getElementById('selectActivityCode')
+                    //         .value;
 
-                        // Data Source
-                        const budgetImplementationDetailsData =
-                            await getBudgetImplementationDetailsByActivityIDAndAccountCodeID(
-                                selectActivityID, selectEvent
-                                .currentTarget.value);
+                    //     // Data Source
+                    //     const budgetImplementationDetailsData =
+                    //         await getBudgetImplementationDetailsByActivityIDAndAccountCodeID(
+                    //             selectActivityID, selectEvent
+                    //             .currentTarget.value);
 
-                        // Convert budgetImplementationDetailsData to options array
-                        const budgetImplementationDetailsOptions =
-                            budgetImplementationDetailsData
-                            .map(
-                                budgetImplementation => ({
-                                    value: budgetImplementation.id,
-                                    text: budgetImplementation.name
-                                }));
+                    //     // Convert budgetImplementationDetailsData to options array
+                    //     const budgetImplementationDetailsOptions =
+                    //         budgetImplementationDetailsData
+                    //         .map(
+                    //             budgetImplementation => ({
+                    //                 value: budgetImplementation.id,
+                    //                 text: budgetImplementation.name
+                    //             }));
 
-                        // Populate select options
-                        window.populateSelectWithOptions(selectBudgetDetail,
-                            budgetImplementationDetailsOptions, 'Pilih Detail');
+                    //     // Populate select options
+                    //     window.populateSelectWithOptions(selectBudgetDetail,
+                    //         budgetImplementationDetailsOptions, 'Pilih Detail');
 
-                    });
-                    $('#selectBudgetDetail').on('change', async function(selectEvent) {
-                        const detailData = await getDetail(selectEvent.currentTarget.value);
-                        $("#totalBudget").val(formatAsIDRCurrency(detailData.total));
-                        const detailTotalAmount = await getReceiptAmountByDetailId(detailData
-                            .id);
-                        const remainingBudget = detailData.total - detailTotalAmount;
-                        $("#remainingBudget").val(formatAsIDRCurrency(remainingBudget));
-                    });
+                    // });
+                    // $('#selectBudgetDetail').on('change', async function(selectEvent) {
+                    //     const detailData = await getDetail(selectEvent.currentTarget.value);
+                    //     $("#totalBudget").val(formatAsIDRCurrency(detailData.total));
+                    //     const detailTotalAmount = await getReceiptAmountByDetailId(detailData
+                    //         .id);
+                    //     const remainingBudget = detailData.total - detailTotalAmount;
+                    //     $("#remainingBudget").val(formatAsIDRCurrency(remainingBudget));
+                    // });
                     if (isEdit) {
                         $(".modal.show #cancelCOA").attr('data-bs-target', '#editModal');
                         $(".modal.show #saveCOA").attr('data-bs-target', '#editModal');
-                        const {
-                            budget_implementation: {
-                                activity,
-                                account_code
-                            }
-                        } = await getDetail(receiptEditData.budget_implementation_detail_id);
-                        await $('#selectActivityCode').val(activity.id).change();
-                        setTimeout(() => {
-                            console.log(account_code, 'account_code')
-                            $('#selectAccountCode').val(account_code.id).change();
-                            setTimeout(() => {
-                                $('#selectBudgetDetail').val(receiptEditData
-                                    .budget_implementation_detail_id).change();
-                            }, 1350);
-                        }, 1350);
+                        // const {
+                        //     budget_implementation: {
+                        //         activity,
+                        //         account_code
+                        //     }
+                        // } =
+                        // await getDetail(receiptEditData.budget_implementation_detail_id);
+                        // await $('#selectActivityCode').val(activity.id).change();
+                        // setTimeout(() => {
+                        //     console.log(account_code, 'account_code')
+                        //     $('#selectAccountCode').val(account_code.id).change();
+                        //     // setTimeout(() => {
+                        //     //     $('#selectBudgetDetail').val(receiptEditData
+                        //     //         .budget_implementation_detail_id).change();
+                        //     // }, 1350);
+                        // }, 1350);
 
                     } else {
                         $(".modal.show #cancelCOA").attr('data-bs-target', '#createModal');
                         $(".modal.show #saveCOA").attr('data-bs-target', '#createModal');
                     }
                     $("#saveCOA").on('click', function() {
-                        const selectApproveNameEl = document.getElementById("selectApproveName");
-                        const selectApproveIdEl = document.getElementById("selectApproveId");
+                        const selectApproveNameEl = document.getElementById("selectBiName");
+                        const selectApproveIdEl = document.getElementById("selectBiId");
                         // Get the select element
-                        const selectDetail = document.getElementById('selectBudgetDetail');
+                        const selectAccountCode = document.getElementById('selectAccountCode');
                         if (isEdit) {
-                            receiptEditData.budget_implementation_detail_id = selectDetail.value;
-                            if (receiptEditData.detail) {
-                                receiptEditData.detail.name = selectDetail.options[selectDetail
+                            const selectApproveNameEl = document.getElementById("selectBiNameEdit");
+                            const selectApproveIdEl = document.getElementById("selectBiIdEdit");
+                            console.log('ss')
+                            console.log(selectAccountCode
+                                .value)
+                            receiptEditData.bi_id = selectAccountCode
+                                .value;
+                            if (receiptEditData.bi_id) {
+                                receiptEditData.bi.name = selectAccountCode.options[
+                                    selectAccountCode
                                     .selectedIndex].textContent;
                             }
+                            console.log(receiptEditData);
                         }
 
-                        selectApproveIdEl.value = selectDetail.value;
-                        selectApproveNameEl.value = selectDetail.options[selectDetail
-                            .selectedIndex].textContent;
+                        // selectApproveIdEl.value = selectAccountCode.value;
+                        // selectApproveNameEl.value = selectAccountCode.options[selectAccountCode
+                        //     .selectedIndex].textContent;
+                        selectApproveIdEl.value = selectAccountCode.value;
+                        selectApproveNameEl.value =
+                            selectAccountCode.options[selectAccountCode
+                                .selectedIndex].textContent;
                     });
 
                 });
