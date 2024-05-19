@@ -127,11 +127,12 @@
                     <td style="height: 90px"></td>
                 </tr>
                 <tr>
-                    <td>{{ $receipt->pelaksana->name }}</td>
+                    <td>{{ $receipt->type == 'direct' ? $penerima['name'] : $receipt->treasurer->name }}
+                    </td>
                 </tr>
                 <tr>
-                    <td>{{ strtoupper($receipt->pelaksana->employee->identity_type) }}.
-                        {{ strtoupper($receipt->pelaksana->employee->id) }}</td>
+                    <td>{{ $receipt->type == 'direct' ? $penerima['sub'] ?? '' : strtoupper($receipt->treasurer->employee->identity_type) . '. ' . $receipt->treasurer->employee->id }}
+                    </td>
                 </tr>
             </table>
         @endif
