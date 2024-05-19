@@ -24,7 +24,7 @@ class ReceiptItem extends Model
                 ->first();
             $details[$key]->pagu =   $detail->bi->total ?? 0;
             $details[$key]->digunakan =  ($digunakan->digunakan ?? 0);
-            $details[$key]->sisa = (int) ($detail->bi->total - ($digunakan->digunakan ?? 0));
+            $details[$key]->sisa = (int) (($detail->bi->total ?? 0) - ($digunakan->digunakan ?? 0));
         }
         // dd($details);
         return $details;
