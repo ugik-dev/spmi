@@ -135,10 +135,22 @@ class ReceiptActionController extends Controller
                                     'amount' => $tmp['amount'],
                                 ]
                             );
-
                             $id_detail[] = $tmp_id->id;
-                            $total = $total + $tmp['amount'];
+                        } else {
+                            $update = ReceiptItem::find($request['id_' . $p->id][$k_x]);
+                            $tmp_id =  ReceiptItem::find($request['id_' . $p->id][$k_x])->update(
+                                [
+                                    'bi_detail' => $tmp['bi_detail'],
+                                    'receipt_id' => $receipt->id,
+                                    'rd_id' => $p->id,
+                                    'rinc' => $tmp['rinc'],
+                                    'desc' => $tmp['desc'],
+                                    'amount' => $tmp['amount'],
+                                ]
+                            );
+                            $id_detail[] = $update->id;
                         }
+                        $total = $total + $tmp['amount'];
                     }
 
                     ReceiptData::find($p->id)->update(['amount' => $total]);

@@ -51,10 +51,10 @@
                 };
             }
             console.log('dsds');
-            console.log(data.rinc)
+            console.log(data)
             html = `         <div class="input-group mb-2" id="rampung_row_${id}_${count_row[id]['row']}">
                                 <span class="input-group-text">${count_row[id]['row']}.</span>
-                                    <input type="text" value="${data.rinc??''}" name="id_${id}[]">
+                                    <input type="hidden" value="${data.id??''}" name="id_${id}[]">
                                     <input type="text" placeholder="Perincian" value="${data.rinc??''}" name="rinc_${id}[]"
                                     class="form-control">
                                     <input type="text"  placeholder="Keterangan" value="${data.desc??''}" name="desc_${id}[]"
