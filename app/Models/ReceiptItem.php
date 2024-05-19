@@ -22,7 +22,7 @@ class ReceiptItem extends Model
                 ->where('bi_detail', '=', $detail->bi_detail)
                 ->groupBy('bi_detail')
                 ->first();
-            $details[$key]->pagu =  $detail->bi->total;
+            $details[$key]->pagu =   $detail->bi->total ?? 0;
             $details[$key]->digunakan =  ($digunakan->digunakan ?? 0);
             $details[$key]->sisa = (int) ($detail->bi->total - ($digunakan->digunakan ?? 0));
         }
