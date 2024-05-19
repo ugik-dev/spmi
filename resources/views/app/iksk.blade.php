@@ -129,8 +129,8 @@
                                                 @elseif ($iksk->type == 'persen')
                                                     {{ (int) $iksk->value }}%
                                                 @elseif ($iksk->type == 'range')
-                                                    {{ (int) $iksk->value }} -
-                                                    {{ (int) $iksk->value_end }}
+                                                    {{ number_format((float) $iksk->value, 2, '.') }} -
+                                                    {{ number_format((float) $iksk->value_end, 2, '.') }}
                                                 @endif
                                             </td>
                                             <td class="text-center">
