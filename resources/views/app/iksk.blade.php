@@ -123,10 +123,19 @@
                                             @endif
                                             {{-- @dd($iksk); --}}
                                             <td>{{ $iksk->name }}</td>
-                                            <td>{{ number_format((float) $iksk->value, 2, '.') }}</td>
+                                            <td>
+                                                @if ($iksk->type == 'decimal')
+                                                    {{ number_format((float) $iksk->value, 2, '.') }}
+                                                @elseif ($iksk->type == 'persen')
+                                                    {{ (int) $iksk->value }}%
+                                                @elseif ($iksk->type == 'range')
+                                                    {{ (int) $iksk->value }} -
+                                                    {{ (int) $iksk->value_end }}
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-sm btn-primary"
-                                                    onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}')">
+                                                    onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}','{{ $iksk->type }}','{{ $iksk->value_end }}')">
                                                     <i class="text-white" data-feather="edit-2"></i>
                                                 </button>
 
@@ -235,10 +244,25 @@
                                 class="form-control" required>
                         </div>
                         <div class="form-group mt-3">
+                            <label>Tipe</label>
+                            <select type="text" name="type_value" id="type_value" class="form-control" required>
+                                <option value="decimal">Desimal</option>
+                                <option value="persen">Persentase (%)</option>
+                                <option value="range">Range / Rentan</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3">
                             <label>Target</label>
                             <input type="text" id="performance_indicator_value" name="value"
                                 class="form-control" required>
                         </div>
+                        <div class="form-group mt-3">
+                            <label>Sampai</label>
+                            <input type="text" id="performance_indicator_value_end" name="value_end"
+                                class="form-control">
+                        </div>
+
                         <!-- Add other fields as needed -->
                         <button type="submit" class="btn btn-primary mt-3">Update</button>
                     </form>
@@ -256,11 +280,12 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
-            function openEditModal(id, name, value) {
+            function openEditModal(id, name, value, type, value_end) {
                 // Populate the form fields
                 document.getElementById('performance_indicator_name').value = name;
                 document.getElementById('performance_indicator_value').value = value;
-
+                document.getElementById('type_value').value = type;
+                document.getElementById('performance_indicator_value_end').value = value_end;
                 // Update the form action URL
                 document.getElementById('edit-form').action = '/admin/perkin/iksk/' + id + '/update';
 

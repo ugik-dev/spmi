@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('receipt_items', function (Blueprint $table) {
-            // $table->dropUnique(['rd_id', 'receipt_id', 'bi_detail']); // Hapus indeks unik yang berisi kolom year
+        Schema::table('iksks', function (Blueprint $table) {
+            $table->decimal('value_end', 7, 4)->nullable();
+            $table->enum('type', [
+                'decimal', 'range', 'persen'
+            ])->default('decimal');
         });
     }
 
@@ -21,8 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('receipt_items', function (Blueprint $table) {
-            // $table->unique(['rd_id', 'receipt_id', 'bi_detail']); // 
+        Schema::table('iksks', function (Blueprint $table) {
+            //
         });
     }
 };
