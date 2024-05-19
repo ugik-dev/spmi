@@ -91,13 +91,14 @@
                 <tr>
                     <td style="width: 50%">
                         {{-- Penerima Uang --}}
+                        Barang/pekerjaan telah diterima/diselesaikan dengan baik dan lengkap
                     </td>
-                    <td style="width: 50%">Barang/pekerjaan telah diterima/diselesaikan dengan baik dan lengkap
+                    <td style="width: 50%">
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
                     <td>Pejabat yang bertanggung jawab,</td>
+                    <td></td>
 
                 </tr>
                 <tr>
@@ -105,16 +106,17 @@
                     <td style="height: 90px"></td>
                 </tr>
                 <tr>
+                    <td>{{ $receipt->pelaksana->name }}</td>
                     <td>
                         {{-- {{ $penerima['name'] }} --}}
                     </td>
-                    <td>{{ $receipt->pelaksana->name }}</td>
                 </tr>
                 <tr>
-                    <td>{{ $receipt->provider_organization ?? $penerima['sub'] }}
-                    </td>
                     <td>{{ strtoupper($receipt->pelaksana->employee->identity_type) }}.
                         {{ strtoupper($receipt->pelaksana->employee->id) }}</td>
+                    <td>
+                        {{-- {{ $receipt->provider_organization ?? $penerima['sub'] }} --}}
+                    </td>
                 </tr>
             </table>
         @else
