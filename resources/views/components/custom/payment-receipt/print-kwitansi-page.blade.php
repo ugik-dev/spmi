@@ -89,7 +89,8 @@
         @if ($receipt->type == 'treasurer')
             <table class="text-top fullwidth">
                 <tr>
-                    <td style="width: 50%">Penerima Uang
+                    <td style="width: 50%">
+                        {{-- Penerima Uang --}}
                     </td>
                     <td style="width: 50%">Barang/pekerjaan telah diterima/diselesaikan dengan baik dan lengkap
                     </td>
@@ -104,7 +105,9 @@
                     <td style="height: 90px"></td>
                 </tr>
                 <tr>
-                    <td>{{ $penerima['name'] }}</td>
+                    <td>
+                        {{-- {{ $penerima['name'] }} --}}
+                    </td>
                     <td>{{ $receipt->pelaksana->name }}</td>
                 </tr>
                 <tr>
