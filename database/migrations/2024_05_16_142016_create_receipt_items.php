@@ -39,7 +39,7 @@ return new class extends Migration
             $table->bigInteger('amount')->default(0);
             $table->string('rinc')->nullable();
             $table->string('desc')->nullable();
-            $table->unique(['rd_id', 'receipt_id', 'bi_detail']);
+            // $table->unique(['rd_id', 'receipt_id', 'bi_detail']);
             $table->timestamps();
         });
     }

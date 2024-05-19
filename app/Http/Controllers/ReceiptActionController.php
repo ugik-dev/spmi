@@ -99,6 +99,7 @@ class ReceiptActionController extends Controller
                 return response()->json(['error' => true,  'message' => 'Anda tidak memiliki hak pada tahap ini'], 400);
             }
             $receipt->load('pengikut');
+            // dd($request);
             foreach ($receipt->pengikut as $p) {
                 $total = 0;
                 if (!empty($request['amount_' . $p->id])) {
@@ -111,22 +112,35 @@ class ReceiptActionController extends Controller
                             'amount' => preg_replace('/[^0-9]/', '', $request['amount_' . $p->id][$k_x]),
                         ];
                         // $data[$p->id][] = $tmp;
-                        $tmp_id =  ReceiptItem::updateOrCreate(
-                            [
-                                'bi_detail' => $tmp['bi_detail'],
-                                'receipt_id' => $receipt->id,
-                                'rd_id' => $p->id,
-                            ],
-                            [
-                                'rinc' => $tmp['rinc'],
-                                'desc' => $tmp['desc'],
-                                'amount' => $tmp['amount'],
-                            ]
-                        );
+                        // $tmp_id =  ReceiptItem::updateOrCreate(
+                        //     [
+                        //         'bi_detail' => $tmp['bi_detail'],
+                        //         'receipt_id' => $receipt->id,
+                        //         'rd_id' => $p->id,
+                        //     ],
+                        //     [
+                        //         'rinc' => $tmp['rinc'],
+                        //         'desc' => $tmp['desc'],
+                        //         'amount' => $tmp['amount'],
+                        //     ]
+                        // );
+                        if (empty($request['id_' . $p->id][$k_x])) {
+                            $tmp_id =  ReceiptItem::create(
+                                [
+                                    'bi_detail' => $tmp['bi_detail'],
+                                    'receipt_id' => $receipt->id,
+                                    'rd_id' => $p->id,
+                                    'rinc' => $tmp['rinc'],
+                                    'desc' => $tmp['desc'],
+                                    'amount' => $tmp['amount'],
+                                ]
+                            );
 
-                        $id_detail[] = $tmp_id->id;
-                        $total = $total + $tmp['amount'];
+                            $id_detail[] = $tmp_id->id;
+                            $total = $total + $tmp['amount'];
+                        }
                     }
+
                     ReceiptData::find($p->id)->update(['amount' => $total]);
                     ReceiptItem::where('receipt_id', '=', $receipt->id)->where('rd_id', '=', $p->id)
                         ->whereNotIn('id', $id_detail)->delete();

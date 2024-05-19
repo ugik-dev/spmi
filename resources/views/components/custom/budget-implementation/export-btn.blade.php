@@ -6,14 +6,14 @@
             <polyline points="6 9 12 15 18 9"></polyline>
         </svg></button>
     <div class="dropdown-menu" aria-labelledby="btndefault">
-        <a href="{{ route('dipa.fpdf', $dipaId) }}" class="dropdown-item" role="button">
+        {{-- <a href="{{ route('dipa.fpdf', $dipaId) }}" class="dropdown-item" role="button">
             PDF
-        </a>
+        </a> --}}
         <a href="{{ route('dipa.cetak', $dipaId) }}" target="_blank" class="dropdown-item" role="button">
             Excel Dipa
         </a>
-        <a href="{{ route('dipa.cetak-mapping', $dipaId) }}" target="_blank" class="dropdown-item" role="button">
+        {{-- <a href="{{ route('dipa.cetak-mapping', $dipaId) }}" target="_blank" class="dropdown-item" role="button">
             Excel Full Mapping
-        </a>
+        </a> --}}
     </div>
 </div>
