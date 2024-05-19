@@ -77,7 +77,6 @@ class IkskController extends Controller
             'name' => 'required|string|max:255',
             'value' => 'required|decimal:2',
         ]);
-
         // Update the performance indicator
         $iksk->name = $request->name;
         $iksk->value = $request->value;
