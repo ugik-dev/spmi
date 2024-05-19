@@ -451,7 +451,7 @@
                                                         </td>
                                                         @php
                                                             $total = $total + (int) $detail->amount_total;
-                                                            $total_pagu = $total_pagu + (int) $detail->bi->total;
+                                                            $total_pagu = $total_pagu + (int) ($detail->bi->total ?? 0);
                                                             $sisa_pagu = $sisa_pagu + (int) $detail->sisa;
                                                         @endphp
                                                     </tr>
