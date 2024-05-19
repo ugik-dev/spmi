@@ -432,11 +432,11 @@
                                                             <p>{{ $row_p }}</p>
                                                         </td>
                                                         <td>
-                                                            <p>{{ $detail->bi->name }}</p>
+                                                            <p>{{ $detail->bi->name ?? '' }}</p>
                                                         </td>
                                                         <td class="text-right" style="text-align: right">
                                                             <p class="text-right">
-                                                                {{ number_format((int) $detail->bi->total, 0, ',', '.') }}
+                                                                {{ number_format((int) $detail->bi->total ?? 0, 0, ',', '.') }}
                                                             </p>
                                                         </td>
                                                         <td class="text-right" style="text-align: right">
@@ -616,7 +616,7 @@
                                                             <p>{{ $row_p }}</p>
                                                         </td>
                                                         <td>
-                                                            <p>{{ $p_data->bi->name }}</p>
+                                                            <p>{{ $p_data->bi->name ?? '' }}</p>
                                                         </td>
                                                         <td>
                                                             <p>{{ $p_data->rinc }}</p>
