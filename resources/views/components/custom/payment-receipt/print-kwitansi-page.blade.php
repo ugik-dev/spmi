@@ -53,11 +53,17 @@
         <div class="section fullwidth">
             <table class="text-top fullwidth">
                 <tr>
-                    <td style="width: 40%">An. Kuasa Pengguna Anggaran</td>
-                    <td style="width: 10%"></td>
-                    <td style="width: 50%">Bangka,
+                    @php
+                        if ($receipt->type == 'direct') {
+                            $width = [40, 10, 50];
+                        } else {
+                            $width = [50, 10, 40];
+                        }
+                    @endphp
+                    <td style="width: {{ $width[0] }}%">An. Kuasa Pengguna Anggaran</td>
+                    <td style="width: {{ $width[1] }}%"></td>
+                    <td style="width: {{ $width[2] }}%">Bangka,
                         {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }}
-                        {{-- {{ \Carbon\Carbon::parse($receipt->activity_date)->translatedFormat('j F Y') }} --}}
                     </td>
                 </tr>
                 <tr>
