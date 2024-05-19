@@ -436,7 +436,7 @@
                                                         </td>
                                                         <td class="text-right" style="text-align: right">
                                                             <p class="text-right">
-                                                                {{ number_format((int) $detail->bi->total ?? 0, 0, ',', '.') }}
+                                                                {{ number_format((int) ($detail->bi->total ?? 0), 0, ',', '.') }}
                                                             </p>
                                                         </td>
                                                         <td class="text-right" style="text-align: right">
