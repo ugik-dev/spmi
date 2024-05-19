@@ -61,7 +61,7 @@
                                     class="form-control">
                                     <input type="text" placeholder="Jumlah" value="${data.amount??''}" name="amount_${id}[]"
                                         class="form-control amount_rampung">
-                                    <select  class="form-control bi_detail_id" name="bi_detail_${id}[]">
+                                    <select required  class="form-control bi_detail_id" name="bi_detail_${id}[]">
                                         <option value="">Pilik Detail Akun </option>
                                         @if (!empty($receipt->bi->details))
                                             @foreach ($receipt->bi->details as $detail)
