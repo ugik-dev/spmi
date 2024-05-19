@@ -631,7 +631,7 @@
                                                         </td>
                                                         <td>
                                                             <p class="text-right" style="text-align: right">
-                                                                {{ number_format($p_data->bi->total) }}</p>
+                                                                {{ number_format($p_data->bi->total ?? 0) }}</p>
                                                         </td>
                                                         @php $total = $total+ (int) $p_data->amount @endphp
                                                     </tr>
