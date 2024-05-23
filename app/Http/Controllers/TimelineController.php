@@ -40,7 +40,7 @@ class TimelineController extends Controller
     {
 
         $validatedData = $request->validate([
-            'category' => 'required|in:creat,revision',
+            'category' => 'required|in:creat,revision,pra-creat',
             'metode' => 'required|in:ppk,kpa',
             'year' => 'required|date_format:Y',
             'start' => 'required|date_format:Y-m-d\TH:i',
@@ -88,7 +88,7 @@ class TimelineController extends Controller
     public function store_update(Request $request)
     {
         $validatedData = $this->validate($request, [
-            'category' => 'required|in:creat,revision',
+            'category' => 'required|in:creat,revision,pra-creat',
             'metode' => 'required|in:ppk,kpa',
             'year' => 'required|date_format:Y',
             'start' => 'required|date_format:Y-m-d\TH:i',

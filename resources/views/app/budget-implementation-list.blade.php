@@ -78,6 +78,14 @@
                                     id="countdown_timeline_{{ $timeline->id }}"></span>
                             </a>
                         @endforeach
+
+                        @foreach ($timelinesPra as $timelinePra)
+                            <a href="{{ route('budget_implementation.create', $timelinePra->id) }}"
+                                class="btn btn-primary btn-md w-20">
+                                Buat Usulan Definitif ({{ $timelinePra->year }}) <span
+                                    id="countdown_timeline_{{ $timelinePra->id }}"></span>
+                            </a>
+                        @endforeach
                         {{-- @endif --}}
                     </div>
                     <div class="table-responsive mt-4">
@@ -100,7 +108,8 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $dipa->created_at }}</td>
                                         <td>{{ $dipa->year }}</td>
-                                        <td>{{ $dipa->revision }}</td>
+                                        <td>{{ $dipa->timeline->category == 'pra-creat' ? 'Definitif' : $dipa->revision }}
+                                        </td>
                                         <td>{{ number_format($dipa->total) }}</td>
                                         <td>{{ statusDipa($dipa->status) }}</td>
                                         <td class="text-center">
@@ -135,7 +144,8 @@
                                                     }
                                                     $cur_year = $dipa->year;
                                                 @endphp
-                                                @if ($revision && $dipa->status == 'release')
+
+                                                @if ($revision && $dipa->status == 'release' && $dipa->timeline->category != 'pra-creat')
                                                     <a href="{{ route('dipa.create-revisi', $dipa->id) }}"
                                                         class="btn btn-primary btn-sm" role="button">
                                                         Buat Revisi
@@ -246,12 +256,32 @@
                     } else {
                         displayTime = seconds + " detik";
                     }
-
-                    // Tampilkan waktu yang dihitung dalam elemen dengan ID "countdown"
                     document.getElementById("countdown_timeline_{{ $timeline->id }}").innerHTML =
-                        //  "Sisa Waktu: " + days +
-                        //     " hari, " + hours + " jam, " +
-                        //     minutes + " menit, " + seconds + " detik";
+                        "Sisa Waktu: " + displayTime;
+                @endforeach
+
+                @foreach ($timelinesPra as $timelinePra)
+                    var now = new Date(); // Ambil waktu saat ini
+                    var end = new Date("{{ $timelinePra->end }}"); // Konversi waktu akhir dari PHP ke JavaScript
+                    var timeDiff = end.getTime() - now.getTime(); // Hitung selisih waktu dalam milidetik
+                    var days = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Hitung hari
+                    var hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // Hitung jam
+                    var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60)); // Hitung menit
+                    var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000); // Hitung detik
+
+                    var displayTime = ''; // String untuk menampilkan sisa waktu
+
+                    // Menambahkan keterangan waktu yang tersisa sesuai dengan kondisi
+                    if (days > 0) {
+                        displayTime = days + " hari dan " + hours + " jam";
+                    } else if (hours > 0) {
+                        displayTime = hours + " jam dan " + minutes + " menit";
+                    } else if (minutes > 0) {
+                        displayTime = minutes + " menit dan " + seconds + " detik";
+                    } else {
+                        displayTime = seconds + " detik";
+                    }
+                    document.getElementById("countdown_timeline_{{ $timelinePra->id }}").innerHTML =
                         "Sisa Waktu: " + displayTime;
                 @endforeach
             }

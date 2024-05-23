@@ -26,7 +26,10 @@ class Timeline extends Model
             ->where('end', '>=', $currentDateTime);
 
         if ($category) {
-            $query = $query->where('category', '=', $category);
+            if (is_array($category))
+                $query = $query->whereIn('category', $category);
+            else
+                $query = $query->where('category', '=', $category);
         }
 
         if ($id) {
