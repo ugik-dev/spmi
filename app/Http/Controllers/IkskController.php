@@ -14,18 +14,13 @@ use Carbon\Carbon;
 
 class IkskController extends Controller
 {
-
-
-
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $perforceHasIksk = PerformanceIndicator::has('iksks')->with('iksks')->paginate();
         $title = 'IKSK';
-        // dd($iksks);
+        $perforceHasIksk = PerformanceIndicator::with('iksks')->get();
         return view('app.iksk', compact('title', 'perforceHasIksk'));
     }
 

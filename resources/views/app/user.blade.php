@@ -29,9 +29,27 @@
                 border-right: 0;
             }
 
-            td,
+            /* td,
             th {
                 border-radius: 0px !important;
+            } */
+
+            .table {
+                thead tr th {
+                    font-size: 10px !important;
+                }
+
+                /* Tambahkan CSS khusus untuk border radius */
+
+
+                tbody tr td {
+                    font-size: 10px !important;
+                }
+
+                tbody .btn-sm {
+                    height: 25.6px;
+                    width: 56.6px;
+                }
             }
 
             a.text-danger {
@@ -42,11 +60,11 @@
                 color: #dc3545;
             }
 
-            .icon-trash {
+            /* .icon-trash {
                 width: 30px;
                 height: 30px;
                 color: #dc3545;
-            }
+            } */
 
             .select2-container--open {
                 z-index: 999999 !important;
@@ -73,7 +91,7 @@
                         </button>
                     </div>
                     <table id="user-table" class="table table-bordered">
-                        <thead class="bg-light text-center">
+                        <thead class="bg-primary text-center">
                             <tr>
                                 <th scope="col" style="width:40px;">No.</th>
                                 <th scope="col">User Role</th>
@@ -101,12 +119,13 @@
                                     <td>{{ $user->employee->workUnit->name ?? '-' }}</td>
                                     <td>{{ $user->email ?? '-' }}
                                         ({{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }})</td>
-                                    <td class="d-flex justify-content-around" style="width:275px;">
+                                    <td class="text-start">
                                         {{-- <button type="button" class="btn btn-sm btn-info"
                                             data-bs-target="#changePasswordModal" data-bs-toggle="modal">
                                             <i data-feather="key"></i>
                                         </button> --}}
-                                        <button type="button" class="btn btn-primary btn-sm mx-1"
+                                        <button type="button"
+                                            class="btn btn-primary btn-sm d-flex align-items-center my-1"
                                             data-bs-target="#editModal" data-bs-toggle="modal"
                                             data-user="{{ $user }}"
                                             data-update-url="{{ route('user.update', $user) }}">
@@ -118,7 +137,8 @@
                                             </svg>
                                         </button>
 
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1" role="button"
+                                        <a href="javascript:void(0);"
+                                            class="btn btn-danger btn-sm d-flex align-items-center my-1" role="button"
                                             onclick="confirmDelete({{ $user->id }});">
                                             <i class="text-white" data-feather="trash-2"></i>
                                         </a>
@@ -131,9 +151,10 @@
                                         </form>
 
                                         <a href="javascript:void(0);"
-                                            class="btn btn-success btn-sm mx-1 d-flex align-items-center" role="button"
+                                            class="btn btn-success btn-sm d-flex align-items-center my-1"
+                                            style="font-size:4px" role="button"
                                             onclick="resendMail({{ $user->id }});">
-                                            Resent e-Mail
+                                            <i class="text-white" data-feather="send"></i>
                                         </a>
                                         <!-- Hidden form for delete request -->
                                         <form id="resend-form-{{ $user->id }}"
@@ -247,7 +268,8 @@
                     //     } // Contoh: Menetapkan lebar untuk kolom 'User Role'
                     //     // Tambahkan pengaturan lebar lebih lanjut untuk kolom lain jika diperlukan
                     // ],
-                    "scrollY": '350px',
+                    "scrollX": true,
+                    "scrollY": '368px',
                     "scrollCollapse": true,
                     " paging": false,
                     "stripeClasses": [],

@@ -90,7 +90,7 @@
 
                     <div class="container p-3">
                         <table id="zero-config" class="table table-bordered table-hover">
-                            <thead class="bg-light">
+                            <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Sasaran Program</th>
@@ -104,14 +104,14 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $programTarget->iku?->description }}</td>
                                         <td>{{ $programTarget->name }}</td>
-                                        <td class="text-center ">
-                                            <button type="button" class="btn btn-sm btn-primary"
+                                        <td class="d-flex justify-content-center text-start">
+                                            <button type="button" class="btn btn-sm btn-primary mx-1"
                                                 onclick="openEditModal({{ $programTarget->id }}, '{{ $programTarget->name }}','{{ $programTarget->renstra_indicator_id }}','{{ $programTarget->iku?->description }}')">
                                                 <i class="text-white" data-feather="edit-2"></i>
                                             </button>
 
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete({{ $programTarget->id }});">
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                role="button" onclick="confirmDelete({{ $programTarget->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
                                             </a>
                                             <!-- Hidden form for delete request -->

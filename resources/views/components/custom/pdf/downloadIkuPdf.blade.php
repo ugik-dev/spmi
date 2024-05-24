@@ -3,6 +3,7 @@
 
 <head>
     <title>Indikator Kinerja Utama</title>
+
     <style>
         table {
             width: 100%;
@@ -13,11 +14,15 @@
         td {
             border: 1px solid black;
             padding: 8px;
+        }
+
+        td {
             text-align: left;
         }
 
         th {
             background-color: #f2f2f2;
+            text-align: center;
         }
     </style>
 </head>
@@ -25,7 +30,7 @@
 <body>
     <h2>Indikator Kinerja Utama</h2>
     <table>
-        <thead>
+        <thead class="text-center">
             <tr>
                 <th>No</th>
                 <th>Misi</th>

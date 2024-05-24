@@ -92,7 +92,7 @@
 
                     <div class="table-responsive px-4">
                         <table id="zero-config" class="table table-bordered">
-                            <thead>
+                            <thead class="text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Nama</th>

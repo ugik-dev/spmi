@@ -151,12 +151,24 @@ table.dataTable {
             padding-top: 0;
             padding-bottom: 0;
             padding-left: 0;
-            padding: 10px; //edited
+            padding: 6px; //edited
             color: #515365;
             font-weight: 600;
-            font-size: 10px;
+            font-size: 14px;
             letter-spacing: 1px;
             // white-space: nowrap;
+            background-color: #4361ee !important;
+            color: white;
+        }
+
+        thead tr th:first-child {
+            border-top-left-radius: 4px !important;
+            /* Sesuaikan nilai radius sesuai kebutuhan Anda */
+        }
+
+        thead tr th:last-child {
+            border-top-right-radius: 4px !important;
+            /* Sesuaikan nilai radius sesuai kebutuhan Anda */
         }
 
         tbody>tr {
@@ -185,10 +197,10 @@ table.dataTable {
             }
 
             >td {
-                font-size: 10px;
+                font-size: 14px;
                 border: none;
                 padding: 0;
-                padding: 10px; //edited
+                padding: 6px; //edited
                 color: #515365;
                 letter-spacing: 1px;
                 // white-space: nowrap;

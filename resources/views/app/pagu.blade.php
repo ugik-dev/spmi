@@ -102,68 +102,96 @@
 
     <div class="row layout-top-spacing">
         <div class="col-lg-12 layout-spacing">
-            <x-custom.statbox>
-                <x-custom.alerts />
-                <div class="table-responsive my-4 p-2">
-                    <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1">
-                        <div class="d-flex flex-wrap gap-1 my-2">
-                            <button class="btn btn-primary shadow-sm" id="addBtn">Tambah Tahun
-                            </button>
-                        </div>
+            <div class="statbox widget box box-shadow">
+                <div class="widget-content widget-content-area" style="min-height:50vh;">
+                    <div class="p-3 container">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close text-white" data-bs-dismiss="alert"
+                                    aria-label="Close"><i data-feather="x-circle"></i></button>
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close text-white" data-bs-dismiss="alert"
+                                    aria-label="Close"><i data-feather="x-circle"></i></button>
+                            </div>
+                        @endif
                     </div>
-                    <table id="receipt-table" class="table table-bordered">
-                        <thead>
-                            <tr class="text-center">
-                                <th scope="col">Tahun</th>
-                                <th scope="col">Pagu Lembaga </th>
-                                <th scope="col">Pagu Unit </th>
-                                <th scope="col">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pagus as $index => $receipt)
-                                <tr>
-                                    <td>{{ $receipt->year }}</td>
-                                    <td>Rp {{ number_format($receipt->nominal) }}</td>
-                                    <td><a href="{{ route('unit_budget.index', $receipt->year) }}"
-                                            class="btn btn-info btn-sm" role="button">
-                                            Lihat
-                                        </a></td>
-                                    <td class="text-center">
-                                        {{-- <a class="btn-group btn btn-sm btn-primary temporary-edit"
-                                            href="{{ route('payment-receipt.detail', $receipt) }}">
-                                            <i data-feather="eye"></i>
-                                        </a> --}}
 
-                                        <button type="button" class="btn btn-sm btn-primary contentEdit"
-                                            data-index="{{ $index }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="feather feather-edit-2">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                            onclick="confirmDelete({{ $receipt->id }});">
-                                            <i class="text-white" data-feather="trash-2"></i>
-                                        </a>
+                    <div class="text-center d-flex justify-content-between align-items-center px-4">
+                        <button class="btn btn-primary shadow-sm" id="addBtn">Tambah Tahun
+                        </button>
+                    </div>
 
-
-                                        <!-- Hidden form for delete request -->
-                                        <form id="delete-form-{{ $receipt->id }}"
-                                            action="{{ route('timeline.destroy', $receipt->id) }}" method="POST"
-                                            style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    </td>
+                    <div class="table-responsive px-4">
+                        <table id="receipt-table" class="table table-bordered">
+                            <thead>
+                                <tr class="text-center">
+                                    <th scope="col">Tahun</th>
+                                    <th scope="col">Pagu Lembaga </th>
+                                    <th scope="col">Pagu Unit </th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($pagus as $index => $receipt)
+                                    <tr>
+                                        <td>{{ $receipt->year }}</td>
+                                        <td>Rp {{ number_format($receipt->nominal) }}</td>
+                                        <td><a href="{{ route('unit_budget.index', $receipt->year) }}"
+                                                class="btn btn-info btn-sm" role="button">
+                                                Lihat
+                                            </a></td>
+                                        <td class="text-center">
+                                            {{-- <a class="btn-group btn btn-sm btn-primary temporary-edit"
+                                                href="{{ route('payment-receipt.detail', $receipt) }}">
+                                                <i data-feather="eye"></i>
+                                            </a> --}}
+
+                                            <button type="button" class="btn btn-sm btn-primary contentEdit"
+                                                data-index="{{ $index }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-edit-2">
+                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
+                                                onclick="confirmDelete({{ $receipt->id }});">
+                                                <i class="text-white" data-feather="trash-2"></i>
+                                            </a>
+
+
+                                            <!-- Hidden form for delete request -->
+                                            <form id="delete-form-{{ $receipt->id }}"
+                                                action="{{ route('timeline.destroy', $receipt->id) }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </x-custom.statbox>
+            </div>
         </div>
     </div>
     <!-- Create Modal -->

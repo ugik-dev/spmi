@@ -15,11 +15,13 @@
         <link rel="stylesheet" href="{{ asset('plugins/sweetalerts2/sweetalerts2.css') }}">
         @vite(['resources/scss/light/plugins/sweetalerts2/custom-sweetalert.scss'])
         @vite(['resources/scss/dark/plugins/sweetalerts2/custom-sweetalert.scss'])
+        <link rel="stylesheet" href="{{ asset('plugins/table/datatable/datatables.css') }}">
+        @vite(['resources/scss/light/plugins/table/datatable/dt-global_style.scss'])
+        @vite(['resources/scss/dark/plugins/table/datatable/dt-global_style.scss'])
         <!-- Select2 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-
 
         <style>
             td,
@@ -60,8 +62,8 @@
     <div class="row layout-top-spacing">
         <div class="col-lg-12 layout-spacing">
             <div class="statbox widget box box-shadow">
-                <div class="widget-content widget-content-area">
-                    <div class="p-2 container">
+                <div class="widget-content widget-content-area" style="min-height:50vh;">
+                    <div class="p-3 container">
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -88,7 +90,7 @@
                         @endif
                     </div>
 
-                    <div class="text-start" style="display: flex; justify-content: space-between;">
+                    <div class="text-center d-flex justify-content-between align-items-center px-4">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
@@ -100,9 +102,9 @@
                         </div>
                     </div>
 
-                    <div class="table-responsive mt-4">
-                        <table class="table table-bordered">
-                            <thead>
+                    <div class="table-responsive px-4">
+                        <table id="iksk-table" class="table table-bordered">
+                            <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Sasaran Kegiatan</th>
@@ -112,25 +114,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($perforceHasIksk as $performanceIksk)
-                                    @foreach ($performanceIksk->iksks as $index => $iksk)
+                                @forelse ($perforceHasIksk as $index => $performanceIksk)
+                                    @foreach ($performanceIksk->iksks as $iksk)
                                         <tr>
-                                            @if ($index == 0)
-                                                <td rowspan="{{ count($performanceIksk->iksks) }}">
-                                                    {{ $loop->parent->iteration }}</td>
-                                                <td rowspan="{{ count($performanceIksk->iksks) }}">
-                                                    {{ $performanceIksk->name }}</td>
-                                            @endif
-                                            {{-- @dd($iksk); --}}
+                                            <td>{{ $loop->parent->iteration }}</td>
+                                            <td>{{ $performanceIksk->name }}</td>
                                             <td>{{ $iksk->name }}</td>
                                             <td>{{ number_format((float) $iksk->value, 2, '.') }}</td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-primary"
+                                            <td class="d-flex justify-content-center text-start">
+                                                <button type="button" class="btn btn-sm btn-primary mx-1"
                                                     onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}')">
                                                     <i class="text-white" data-feather="edit-2"></i>
                                                 </button>
 
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
                                                     role="button" onclick="confirmDelete({{ $iksk->id }});">
                                                     <i class="text-white" data-feather="trash-2"></i>
                                                 </a>
@@ -144,10 +141,14 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">Data IKSK masih kosong..</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
-                        {{ $perforceHasIksk->links() }}
+                        {{-- {{ $perforceHasIksk->links() }} --}}
                         <!-- Pagination -->
                     </div>
 
@@ -252,10 +253,19 @@
         <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
         <script src="{{ asset('plugins/editors/quill/quill.js') }}"></script>
         <script src="{{ asset('plugins/sweetalerts2/sweetalerts2.min.js') }}"></script>
+        <script src="{{ asset('plugins/table/datatable/datatables.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/jszip.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
         <!-- Select2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
+            window.addEventListener('load', function() {
+                feather.replace();
+            })
+
             function openEditModal(id, name, value) {
                 // Populate the form fields
                 document.getElementById('performance_indicator_name').value = name;
@@ -268,9 +278,6 @@
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             }
 
-            window.addEventListener('load', function() {
-                feather.replace();
-            })
 
             function confirmDelete(id) {
                 Swal.fire({
@@ -294,17 +301,40 @@
                     input.querySelector('.input-group-text').textContent = `${index + 1}.`;
                 });
             }
+
             document.addEventListener('DOMContentLoaded', function() {
+                $('#iksk-table').DataTable({
+                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'f>>>" +
+                        "<'table-responsive'tr>" +
+                        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "oLanguage": {
+                        "oPaginate": {
+                            "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                            "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "drawCallback": function(settings) {
+                        feather.replace();
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 10
+                });
+
                 const missionContainer = document.getElementById('iksk-inputs');
 
                 document.getElementById('add-iksk').addEventListener('click', function() {
                     const newInput = `<div class="input-group mb-2">
-                        <span class="input-group-text"></span>
-                        <input type="text" name="iksk[]" class="form-control">
-                        <button type="button" class="btn btn-danger remove-iksk">
-                            <i data-feather="trash"></i>
-                        </button>
-                      </div>`;
+                            <span class="input-group-text"></span>
+                            <input type="text" name="iksk[]" class="form-control">
+                            <button type="button" class="btn btn-danger remove-iksk">
+                                <i data-feather="trash"></i>
+                            </button>
+                        </div>`;
                     missionContainer.insertAdjacentHTML('beforeend', newInput);
                     feather.replace();
                     updateNumbering();
@@ -317,6 +347,7 @@
                     }
                 });
             });
+
             $('#exampleModalCenter').on('shown.bs.modal', function() {
                 $('#performance_indicator').select2({
                     dropdownParent: $('#exampleModalCenter'),

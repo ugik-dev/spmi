@@ -17,7 +17,7 @@ class PerformanceIndicatorController extends Controller
      */
     public function index()
     {
-        $programTargetsHasPerformanceIndicators = ProgramTarget::has('performanceIndicators')->with('performanceIndicators')->paginate();
+        $programTargetsHasPerformanceIndicators = ProgramTarget::has('performanceIndicators')->with('performanceIndicators')->paginate(10);
         $title = 'Sasaran Program';
 
         return view('app.performance-indicator', compact('title', 'programTargetsHasPerformanceIndicators'));

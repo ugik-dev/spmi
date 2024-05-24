@@ -136,26 +136,7 @@
                             <a href="{{ route('download.mission.pdf') }}" class="btn btn-danger">PDF</a>
                         </div>
                     </div>
-                    {{-- <div class="d-flex justify-content-between mb-4">
-                        <!-- Results per Page dengan Bootstrap Flexbox -->
-                        <div class="d-flex align-items-center">
-                            <label for="resultsPerPage" class="me-2">Result:</label>
-                            <select class="form-select" id="resultsPerPage" onchange="applyResultsPerPage()">
-                                <option value="7">7</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                            </select>
-                        </div>
 
-                        <!-- Search -->
-                        <div class="ms-auto">
-                            <input type="text" class="form-control" id="searchField" placeholder="Cari Misi"
-                                onkeyup="applySearch()">
-                        </div>
-                    </div> --}}
-
-                    {{-- <h1 style="margin-top:10vh;" class="text-center fw-bold">{{ $renstra->mission }}</h1> --}}
                     <div class="table-responsive px-4">
                         <table id="zero-config" class="table table-bordered">
                             <thead class="bg-light text-center">

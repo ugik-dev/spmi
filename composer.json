@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "barryvdh/laravel-dompdf": "^2.1",
+        "barryvdh/laravel-dompdf": "^2.2",
         "beyondcode/laravel-websockets": "^1.14",
         "fpdf/fpdf": "^1.86",
         "guzzlehttp/guzzle": "^7.2",
