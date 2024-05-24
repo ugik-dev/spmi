@@ -108,7 +108,7 @@ class DipaReportFa implements FromCollection, WithHeadings, WithStyles,  WithCus
                                 if (!empty($res[$for_i])) {
                                     $tmp_push[] = $res[$for_i]->amount;
                                     $collectionData[$keyS2S][$for_i + 6] += $res[$for_i]->amount;
-                                    // $collectionData[$keyS1S][$for_i + 6] += $res[$for_i]->amount;
+                                    $collectionData[$keyS1S][$for_i + 6] += $res[$for_i]->amount;
                                     $realisasi += $res[$for_i]->amount;
                                 } else  $tmp_push[] = '';
                                 // dd($exportData[$keyS2S][7]);
