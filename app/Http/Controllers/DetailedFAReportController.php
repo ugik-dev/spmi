@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\DipaByBIExport;
+use App\Exports\DipaReportFa;
 use App\Models\BudgetImplementation;
 use App\Models\Dipa;
 use App\Models\PaguUnit;
@@ -26,6 +26,6 @@ class DetailedFAReportController extends Controller
         $filename = "FA-DETAIL-Dipa-{$dipa->year}-Revisi-{$dipa->revision}-{$timestamp}.xlsx";
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         // dd($groupedBI);
-        return Excel::download(new DipaByBIExport($groupedBI, $dipa,   $paguUnit), $filename);
+        return Excel::download(new DipaReportFa($groupedBI, $dipa,   $paguUnit), $filename);
     }
 }
