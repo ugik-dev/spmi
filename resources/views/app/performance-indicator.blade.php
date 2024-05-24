@@ -48,6 +48,14 @@
             .select2-container--open {
                 z-index: 999999 !important;
             }
+
+            .table-responsive>nav>div>div>span {
+                display: none
+            }
+
+            .table-responsive>nav>div>div>p {
+                margin-top: 15px
+            }
         </style>
         <!--  END CUSTOM STYLE FILE  -->
     </x-slot>
