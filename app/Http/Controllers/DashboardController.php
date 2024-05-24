@@ -36,7 +36,7 @@ class DashboardController extends Controller
             $chartPagu['pagu'][] = $workUnit->paguUnit->first()->nominal;
             $chartPagu['realisasi'][] =  $workUnit->paguUnit->first()->nominal;
         }
-        // dd($chartPagu);
+        // dd($waitinglist);
         return view('app.dashboard', compact('title', 'chartPagu', 'timelines', 'waitinglist', 'unitBudget', 'timelinesActive'));
     }
 }
