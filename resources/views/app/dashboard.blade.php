@@ -23,35 +23,36 @@
     <div class="row layout-top-spacing">
 
         <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-            <x-widgets._w-six title="Statistics" />
+            <x-dashboard._w-active-timeline title="Timeline Sekarang" :timelinesActive="$timelinesActive" />
         </div>
 
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-            <x-widgets._w-card-four title="Expenses" />
+            <x-dashboard._w-waitinglist title="Waiting" :waitinglist="$waitinglist" />
         </div>
 
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-            <x-widgets._w-card-five title="Total Balance" balance="$41,741.42" percentage="+ 13.6%" button="View Report"
-                link="javascript:void(0);" />
+            <x-dashboard._w-pagu title="Pagu Unit" :unitBudget="$unitBudget" link="javascript:void(0);" />
         </div>
 
-        <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-            <x-widgets._w-chart-three title="Unique Visitors" />
-        </div>
+        @if (!empty($chartPagu['pagu']) && Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN']))
+            <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <x-dashboard._w-chart :chartPagu="$chartPagu" title="Unique Visitors" />
+            </div>
+        @endif
 
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-            <x-widgets._w-activity-five title="Activity Log" />
+            <x-dashboard._w-timelines title="Time Line" :timelines="$timelines" />
         </div>
 
-        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+        {{-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <x-widgets._w-four title="Visitors by Browser" />
-        </div>
+        </div> --}}
 
-        <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
+        {{-- <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
             <x-widgets._w-hybrid-one title="Followers" chart-id="hybrid_followers" />
-        </div>
+        </div> --}}
 
-        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+        {{-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <x-widgets._w-five title="Figma Design" />
         </div>
 
@@ -61,7 +62,7 @@
 
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <x-widgets._w-card-two title="Dev Summit - New York" />
-        </div>
+        </div> --}}
 
     </div>
 

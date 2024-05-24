@@ -7,6 +7,7 @@ use App\Http\Controllers\ActivityRecapController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetItemController;
 use App\Http\Controllers\BudgetImplementationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailedFAReportController;
 use App\Http\Controllers\DipaController;
 use App\Http\Controllers\ExpenditureUnitController;
@@ -48,9 +49,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 })->middleware(['auth'])->name('verification.verify');
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('dasbor', function () {
-        return view('app.dashboard', ['title' => 'Dasbor']);
-    })->name('admin.dashboard');
+    Route::get('dasbor', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // Mendefinisikan route resource dengan penyesuaian nama
     Route::resource('profile', MyProfileController::class)->names([
