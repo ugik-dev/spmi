@@ -88,7 +88,7 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $dipa->created_at }}</td>
                                         <td>{{ $dipa->year }}</td>
-                                        <td>{{ $dipa->timeline->category == 'pra-creat' ? 'Definitif' : $dipa->revision }}
+                                        <td>{{ $dipa->timeline->category == 'pra-creat' ? 'Indikatif' : $dipa->revision }}
                                         <td>{{ number_format($dipa->total) }}</td>
                                         <td>{{ statusDipa($dipa->status) }}</td>
                                         <td>{{ $dipa->unit->name }}</td>

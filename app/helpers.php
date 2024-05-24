@@ -15,7 +15,7 @@ if (!function_exists('categoryTimeline')) {
         } else if ($data == 'revision') {
             return "Revisi";
         } else if ($data == 'pra-creat') {
-            return "Definitif";
+            return "Indikatif";
         } else
             return $data;
     }

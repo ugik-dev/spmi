@@ -190,7 +190,7 @@
                             <div class="col-sm-8">
                                 <select name="category" class="form-select" id="category" required>
                                     <option selected disabled value="">...</option>
-                                    <option value="pra-creat">Definitif Dipa</option>
+                                    <option value="pra-creat">Indikatif Dipa</option>
                                     <option value="creat">Pembuatan Dipa</option>
                                     <option value="revision">Revisi</option>
                                 </select>
