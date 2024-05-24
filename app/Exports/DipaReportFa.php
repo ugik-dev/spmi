@@ -123,6 +123,7 @@ class DipaReportFa implements FromCollection, WithHeadings, WithStyles,  WithCus
 
                             $dataPush =  $tmp_push;
                             $collectionData[] =   $dataPush;
+                            $arr_key++;
 
                             // $exportData->push($dataPush);
                             $this->total_row++;
