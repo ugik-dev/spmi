@@ -267,5 +267,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
     Route::prefix('cetak-laporan')->group(function () {
         Route::get('laporan-fa-detail', [DetailedFAReportController::class, 'index'])->name('detailed-FA-report.index');
+        Route::get('laporan-fa-detail-excel/{dipa}', [DetailedFAReportController::class, 'excel'])->name('detailed-FA-report.excel');
     });
 });

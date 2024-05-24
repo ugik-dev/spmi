@@ -46,26 +46,6 @@ class PDFController extends Controller
     }
     public function dipa(Dipa $dipa)
     {
-        // $groupedBIs = RenstraMission::with('indicator')->get();
-
-
-        // $groupedBIs = RenstraMission::with(['indicatorDipa' => function ($query) {
-        //     $query->with(['sasaranDipa' => function ($query) {
-        //         $query->with(['performanceIndicators' => function ($query) {
-        //             $query->whereHas('dipa', function ($query) {
-        //                 $query->where('dipa_id', 2);
-        //             });
-        //         }]);
-        //     }]);
-        // }])
-        //     ->whereHas('indicatorDipa.sasaranDipa.performanceIndicators.dipa', function ($query) {
-        //         $query->where('dipa_id', 2);
-        //     })
-        //     ->get();
-
-        // echo json_encode(RenstraMission::getWithDipa());
-        // die();
-        // dd($groupedBIs);
         $groupedBI = BudgetImplementation::getGroupedDataWithTotalsRpd($dipa->id, true);
         $pdf = new Fpdf('L', 'mm', 'A4');
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
