@@ -8,6 +8,7 @@ use App\Models\Dipa;
 use App\Supports\Disk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,11 +24,13 @@ class ActivityRecapController extends Controller
         }
         $title = 'Rekap Kegiatan dan Upload Data Dukung';
         $timelines = [];
+        $timelinesPra = [];
+
         // Load ActivityRecap data with each Activity
         $activities = Activity::with('activityRecap')->sortedByCode()->get();
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
         $btnRekap = true;
-        return view('app.budget-implementation-list', compact('title', 'timelines', 'dipas', 'btnRekap'));
+        return view('app.budget-implementation-list', compact('title', 'timelines', 'timelinesPra', 'dipas', 'btnRekap'));
 
         // return view('app.activity-recap', compact('title', 'activities'));
     }

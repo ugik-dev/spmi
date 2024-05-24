@@ -31,9 +31,10 @@ class WithdrawalPlanController extends Controller
         $title = 'Daftar DIPA';
         $totalSum = 0;
         $timelines = [];
+        $timelinesPra = [];
         $dipas = Dipa::where('work_unit_id', Auth::user()->employee->work_unit_id)->get();
         $btnRPD = true;
-        return view('app.budget-implementation-list', compact('title', 'dipas', 'timelines', 'btnRPD'));
+        return view('app.budget-implementation-list', compact('title', 'dipas', 'timelines', 'timelinesPra', 'btnRPD'));
     }
     /**
      * Show the form for creating a new resource.
