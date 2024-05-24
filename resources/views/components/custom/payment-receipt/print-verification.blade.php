@@ -267,12 +267,11 @@ $imageSrc = 'logo.png';
             </td>
             <td class="text-top">
                 NAMA KEGIATAN DI POK : <br>
-                {{ $receipt->detail->budgetImplementation->activity->name ?? '-' }}<br><br>
+                {{ $receipt->bi->activity->name ?? '-' }}<br><br>
                 <br>KODE KEGIATAN / MAK :
                 <br>
-                {{ $receipt->detail->budgetImplementation->activity->code ?? '-' }} /
-                {{ $receipt->detail->budgetImplementation->accountCode->code ?? '-' }}
-
+                {{ $receipt->bi->activity->code ?? '-' }} /
+                {{ $receipt->bi->accountCode->code ?? '-' }}
             </td>
         </tr>
         <tr>

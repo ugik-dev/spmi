@@ -16,4 +16,9 @@ class ReceiptData extends Model
     {
         return $this->belongsTo(User::class)->with('employee');
     }
+
+    public function items()
+    {
+        return $this->hasMany(ReceiptItem::class, 'rd_id', 'id');
+    }
 }

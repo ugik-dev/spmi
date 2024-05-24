@@ -17,10 +17,10 @@ class IKSK extends Model
         return $this->value * 100 . '%';
     }
 
-    public function setValueAttribute($value)
-    {
-        $this->attributes['value'] = $value / 100;
-    }
+    // public function setValueAttribute($value)
+    // {
+    //     $this->attributes['value'] = $value / 100;
+    // }
 
     public function scopeAboveValue($query, $minValue)
     {

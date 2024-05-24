@@ -70,12 +70,15 @@ class IkskController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'value' => 'required|decimal:2',
+            'value' => 'required',
+            // 'type_value' => 'required',
+            // 'value_end' => 'somtime',
         ]);
-
         // Update the performance indicator
         $iksk->name = $request->name;
         $iksk->value = $request->value;
+        $iksk->type = $request->type_value;
+        $iksk->value_end = $request->value_end;
         $iksk->save();
 
         // Redirect with a success message

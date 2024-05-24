@@ -9,6 +9,7 @@ use App\Models\PaymentVerification;
 use App\Models\PPK;
 use App\Models\Receipt;
 use App\Models\ReceiptData;
+use App\Models\ReceiptItem;
 use App\Models\ReceiptLog;
 use App\Models\Role;
 use App\Models\Treasurer;
@@ -35,7 +36,7 @@ class PaymentReceiptController extends Controller
         $treasurersRole = Role::where('name', 'BENDAHARA')->first();
         $treasurers = $treasurersRole->users()->get()->toArray();
         $activities = Activity::all();
-        $receipts = Receipt::with(['ppk', 'treasurer', 'detail', 'pengikut', 'pelaksana']);
+        $receipts = Receipt::with(['ppk', 'treasurer', 'detail', 'pengikut', 'pelaksana', 'bi']);
         if (!(Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN']))) {
             $receipts =  $receipts->where('user_entry', '=', Auth::user()->id);
         } else {
@@ -51,7 +52,7 @@ class PaymentReceiptController extends Controller
         // $ppks = PPK::all();
         // $treasurers = Treasurer::all();
         $activities = Activity::all();
-        $receipts = Receipt::with(['ppk', 'treasurer', 'detail', 'pelaksana', 'pengikut'])->accessibility()->get();
+        $receipts = Receipt::with(['ppk', 'treasurer', 'detail', 'pelaksana', 'pengikut', 'bi'])->accessibility()->get();
         // dd($receipts);
         // ->join('users', 'receipts.ppk_id', 'users.id')
         return view('app.payment-receipt-list', compact('title',  'activities', 'receipts'));
@@ -59,14 +60,16 @@ class PaymentReceiptController extends Controller
 
     public function detail(Receipt $receipt)
     {
-        $receipt = Receipt::with(['ppk', 'treasurer', 'detail', 'verification', 'logs', 'pelaksana'])->where('receipts.id', '=', $receipt->id)->accessibility()->firstOrFail();
+        $receipt = Receipt::with(['ppk', 'treasurer', 'detail', 'verification', 'logs', 'pelaksana', 'bi'])->where('receipts.id', '=', $receipt->id)->accessibility()->firstOrFail();
         $receipt->verification->load('user');
         $receipt->logs->load('user');
         $receipt->ppk->load('employee_staff');
-        $receipt->detail->load('expenditureUnit', 'budgetImplementation');
-        $receipt->detail->budgetImplementation->load('activity', 'accountCode');
+        $detailsBy = ReceiptItem::groupByDetail($receipt->id);
+        // dd($detailsBy);
+        // $receipt->detail->load('expenditureUnit', 'budgetImplementation');
+        // $receipt->detail->budgetImplementation->load('activity', 'accountCode');
         $title = 'Detail Kuitansi';
-        return view('app.payment-receipt-detail', compact('title', 'receipt'));
+        return view('app.payment-receipt-detail', compact('title', 'receipt', 'detailsBy'));
     }
 
     public function store(Request $request)
@@ -88,14 +91,16 @@ class PaymentReceiptController extends Controller
             'treasurer' => 'required_if:type,treasurer,integer',
             'spd_number' => 'required_if:perjadin,Y,string',
             'spd_tujuan' => 'required_if:perjadin,Y,string',
-            'detail' => 'required|exists:budget_implementation_details,id',
+            // 'detail' => 'required|exists:budget_implementation_details,id',
+            'bi_id' => 'required',
+
         ]);
 
-        $detail = BudgetImplementationDetail::select('total')->find($request->detail);
-        $sum = Receipt::where('budget_implementation_detail_id', '=', $request->detail)->sum('amount');
-        $sisa = $detail->total - $sum;
-        if ($sisa - $cleanedAmount < 0)
-            return back()->with('error', 'Maaf Sisa pagu tidak cukup, sisa pagu yaitu Rp. ' . number_format($sisa, 0, ',', '.'));
+        // $detail = BudgetImplementationDetail::select('total')->find($request->detail);
+        // $sum = Receipt::where('budget_implementation_detail_id', '=', $request->detail)->sum('amount');
+        // $sisa = $detail->total - $sum;
+        // if ($sisa - $cleanedAmount < 0)
+        //     return back()->with('error', 'Maaf Sisa pagu tidak cukup, sisa pagu yaitu Rp. ' . number_format($sisa, 0, ',', '.'));
 
         $validatedData['amount'] = $cleanedAmount;
         try {
@@ -113,7 +118,7 @@ class PaymentReceiptController extends Controller
             $receipt->provider = $validatedData['provider'];
             $receipt->ppk_id = $validatedData['ppk'];
             $receipt->treasurer_id = $validatedData['type'] === 'direct' ? null : $validatedData['treasurer'];
-            $receipt->budget_implementation_detail_id = $validatedData['detail'];
+            $receipt->bi_id = $validatedData['bi_id'];
             $receipt->user_entry = Auth::user()->id;
             $receipt->save();
 
@@ -175,7 +180,8 @@ class PaymentReceiptController extends Controller
                 'spd_tujuan' => 'required_if:perjadin,Y,string',
                 'ppk' => 'required|integer',
                 'treasurer' => 'required_if:type,treasurer,integer',
-                'detail' => 'required|exists:budget_implementation_details,id',
+                // 'detail' => 'required|exists:budget_implementation_details,id',
+                'bi_id' => 'required',
             ]);
             $validatedData['amount'] = $cleanedAmount;
             $receipt->type = $validatedData['type'];
@@ -191,7 +197,8 @@ class PaymentReceiptController extends Controller
             $receipt->provider_organization = $validatedData['provider_organization'];
             $receipt->ppk_id = $validatedData['ppk'];
             $receipt->treasurer_id = $validatedData['type'] === 'direct' ? null : $validatedData['treasurer'];
-            $receipt->budget_implementation_detail_id = $validatedData['detail'];
+            // $receipt->budget_implementation_detail_id = $validatedData['detail'];
+            $receipt->bi_id = $validatedData['bi_id'];
             $receipt->user_entry = Auth::user()->id;
             $receipt->save();
 
@@ -270,8 +277,8 @@ class PaymentReceiptController extends Controller
     {
         try {
             $receipt = $receipt->with(['ppk', 'treasurer', 'detail', 'pelaksana'])->findOrFail($receipt->id);
-            $receipt->detail->load('expenditureUnit', 'budgetImplementation');
-            $receipt->detail->budgetImplementation->load('activity', 'accountCode');
+            // $receipt->detail->load('expenditureUnit', 'budgetImplementation');
+            // $receipt->detail->budgetImplementation->load('activity', 'accountCode');
             $dompdf = new PDF();
             // return view('components.custom.payment-receipt.print-rampung', compact('receipt'));
             $pdf = PDF::loadView('components.custom.payment-receipt.print-rampung', compact('receipt'));
@@ -290,8 +297,8 @@ class PaymentReceiptController extends Controller
             // $receipt->ppk->load('user');
             // dd($receipt);
             $verif->load('user');
-            $receipt->detail->load('expenditureUnit', 'budgetImplementation');
-            $receipt->detail->budgetImplementation->load('activity', 'accountCode');
+            // $receipt->detail->load('expenditureUnit', 'budgetImplementation');
+            // $receipt->detail->budgetImplementation->load('activity', 'accountCode');
             $dompdf = new PDF();
             if ($verif->id) {
                 $verifData = $verif;

@@ -7,6 +7,20 @@ if (!function_exists('newRowDipa')) {
         return "</tr><tr>";
     }
 }
+if (!function_exists('categoryTimeline')) {
+    function categoryTimeline($data)
+    {
+        if ($data == 'creat') {
+            return "Pembuatan Usulan";
+        } else if ($data == 'revision') {
+            return "Revisi";
+        } else if ($data == 'pra-creat') {
+            return "Definitif";
+        } else
+            return $data;
+    }
+}
+
 if (!function_exists('statusDipa')) {
     function statusDipa($data)
     {

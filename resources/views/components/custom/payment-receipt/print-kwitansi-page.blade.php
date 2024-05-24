@@ -53,10 +53,17 @@
         <div class="section fullwidth">
             <table class="text-top fullwidth">
                 <tr>
-                    <td style="width: 40%px">An. Kuasa Pengguna Anggaran</td>
-                    <td style="width: 20%"></td>
-                    <td style="width: 40%">Bangka,
-                        {{ \Carbon\Carbon::parse($receipt->activity_date)->translatedFormat('j F Y') }}
+                    @php
+                        if ($receipt->type == 'direct') {
+                            $width = [40, 10, 50];
+                        } else {
+                            $width = [50, 10, 40];
+                        }
+                    @endphp
+                    <td style="width: {{ $width[0] }}%">An. Kuasa Pengguna Anggaran</td>
+                    <td style="width: {{ $width[1] }}%"></td>
+                    <td style="width: {{ $width[2] }}%">Bangka,
+                        {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }}
                     </td>
                 </tr>
                 <tr>
@@ -88,14 +95,16 @@
         @if ($receipt->type == 'treasurer')
             <table class="text-top fullwidth">
                 <tr>
-                    <td style="width: 50%">Penerima Uang
+                    <td style="width: 50%">
+                        {{-- Penerima Uang --}}
+                        Barang/pekerjaan telah diterima/diselesaikan dengan baik dan lengkap
                     </td>
-                    <td style="width: 50%">Barang/pekerjaan telah diterima/diselesaikan dengan baik dan lengkap
+                    <td style="width: 50%">
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
                     <td>Pejabat yang bertanggung jawab,</td>
+                    <td></td>
 
                 </tr>
                 <tr>
@@ -103,13 +112,17 @@
                     <td style="height: 90px"></td>
                 </tr>
                 <tr>
-                    <td>{{ $penerima['name'] }}</td>
                     <td>{{ $receipt->pelaksana->name }}</td>
+                    <td>
+                        {{-- {{ $penerima['name'] }} --}}
+                    </td>
                 </tr>
                 <tr>
-                    <td>{{ $receipt->provider_organization ?? '' }}</td>
                     <td>{{ strtoupper($receipt->pelaksana->employee->identity_type) }}.
                         {{ strtoupper($receipt->pelaksana->employee->id) }}</td>
+                    <td>
+                        {{-- {{ $receipt->provider_organization ?? $penerima['sub'] }} --}}
+                    </td>
                 </tr>
             </table>
         @else
@@ -125,11 +138,12 @@
                     <td style="height: 90px"></td>
                 </tr>
                 <tr>
-                    <td>{{ $receipt->pelaksana->name }}</td>
+                    <td>{{ $receipt->type == 'direct' ? $penerima['name'] : $receipt->treasurer->name }}
+                    </td>
                 </tr>
                 <tr>
-                    <td>{{ strtoupper($receipt->pelaksana->employee->identity_type) }}.
-                        {{ strtoupper($receipt->pelaksana->employee->id) }}</td>
+                    <td>{{ $receipt->type == 'direct' ? $penerima['sub'] ?? '' : strtoupper($receipt->treasurer->employee->identity_type) . '. ' . $receipt->treasurer->employee->id }}
+                    </td>
                 </tr>
             </table>
         @endif

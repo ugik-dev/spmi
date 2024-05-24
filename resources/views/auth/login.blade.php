@@ -60,8 +60,8 @@
                                         <p>Silahkan masukkan email dan password anda untuk masuk ke sistem</p>
                                     </div>
                                     <div class="col-md-12">
-                                        <label class="form-label">Email</label>
-                                        <input name="email" type="email" class="form-control"
+                                        <label class="form-label">NIP / NIK / Email</label>
+                                        <input name="email" type="text" class="form-control"
                                             id="validationCustom01" value="{{ old('email') }}" required>
                                         @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>

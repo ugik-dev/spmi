@@ -152,7 +152,7 @@
                                     <x-custom.payment-receipt.verification-modal :receipt="$receipt" />
                                 </div>
                             @endif
-                            @if ($receipt->status == 'accept' && $receipt->ppk->head_id == Auth::user()->employee?->id)
+                            @if ($receipt->status == 'accept' && $receipt->ppk->employee->head_id == Auth::user()->employee?->id)
                                 <div class="float-end p-2">
                                     <x-custom.payment-receipt.app-money-modal :receipt="$receipt" />
                                 </div>
@@ -214,22 +214,21 @@
                                     COA
                                 </button>
                             </li>
-                            @if ($receipt->perjadin == 'Y')
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="pills-profile-icon-tab" data-bs-toggle="pill"
-                                        data-bs-target="#rampung" type="button" role="tab"
-                                        aria-controls="pills-profile-icon" aria-selected="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-user">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                        {{ $receipt->perjadin == 'Y' ? 'Rampung' : 'Daftar Terima' }}
-                                    </button>
-                                </li>
-                            @endif
+                            {{-- @if ($receipt->perjadin == 'Y') --}}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-profile-icon-tab" data-bs-toggle="pill"
+                                    data-bs-target="#rampung" type="button" role="tab"
+                                    aria-controls="pills-profile-icon" aria-selected="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    {{ $receipt->perjadin == 'Y' ? 'Rampung' : 'Detail' }}
+                                </button>
+                            </li>
+                            {{-- @endif --}}
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-contact-icon-tab" data-bs-toggle="pill"
                                     data-bs-target="#pills-document" type="button" role="tab"
@@ -393,8 +392,8 @@
                                             Kode Kegiatan </label>
                                         <div class="col-sm-8">
                                             <p class="form-control">
-                                                {{ $receipt->detail->budgetImplementation->activity->code ?? '-' }} |
-                                                {{ $receipt->detail->budgetImplementation->activity->name ?? '-' }}
+                                                {{ $receipt->bi->activity->code ?? '-' }} |
+                                                {{ $receipt->bi->activity->name ?? '-' }}
                                             </p>
                                         </div>
                                     </div>
@@ -403,29 +402,77 @@
                                             Kode Akun </label>
                                         <div class="col-sm-8">
                                             <p class="form-control">
-                                                {{ $receipt->detail->budgetImplementation->accountCode->code ?? '-' }}
-                                                |
-                                                {{ $receipt->detail->budgetImplementation->accountCode->name ?? '-' }}
+                                                {{ $receipt->bi->accountCode->code ?? '-' }} |
+                                                {{ $receipt->bi->accountCode->name ?? '-' }}
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="mb-4 row">
-                                        <label for="inputDisbursementDescription" class="col-sm-2 col-form-label">
+
+                                    <div class="mb-4">
+                                        <label for="" class="col-sm-2 col-form-label">
                                             Detail </label>
-                                        <div class="col-sm-8">
-                                            <p class="form-control">
-                                                {{ $receipt->detail->name ?? '-' }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mb-4 row">
-                                        <label for="inputDisbursementDescription" class="col-sm-2 col-form-label">
-                                            Jumlah Pagu </label>
-                                        <div class="col-sm-8">
-                                            <p class="form-control">
-                                                Rp. {{ number_format($receipt->detail->total, 2, '.', ',') }}
-                                            </p>
-                                        </div>
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr class="text-center">
+                                                    <td scope="col" style="width: 20px"><b>No</b></td>
+                                                    <td scope="col"><b>Detail</b></td>
+                                                    <td scope="col"><b>Pagu</b></td>
+                                                    <td scope="col"><b>Jumlah Detail</b></td>
+                                                    <td scope="col"><b>Sisa Pagu</b></td>
+                                                </tr>
+                                                @php
+                                                    $total = 0;
+                                                    $total_pagu = 0;
+                                                    $sisa_pagu = 0;
+                                                    $row_p = 1;
+                                                @endphp
+                                                @foreach ($detailsBy as $detail)
+                                                    <tr>
+                                                        <td>
+                                                            <p>{{ $row_p }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>{{ $detail->bi->name ?? '' }}</p>
+                                                        </td>
+                                                        <td class="text-right" style="text-align: right">
+                                                            <p class="text-right">
+                                                                {{ number_format((int) ($detail->bi->total ?? 0), 0, ',', '.') }}
+                                                            </p>
+                                                        </td>
+                                                        <td class="text-right" style="text-align: right">
+                                                            <p class="text-right">
+                                                                {{ number_format((int) $detail->amount_total, 0, ',', '.') }}
+                                                            </p>
+                                                        </td>
+                                                        <td class="text-right" style="text-align: right">
+                                                            <p class="text-right">
+                                                                {{ number_format((int) $detail->sisa, 0, ',', '.') }}
+                                                            </p>
+                                                        </td>
+                                                        @php
+                                                            $total = $total + (int) $detail->amount_total;
+                                                            $total_pagu = $total_pagu + (int) ($detail->bi->total ?? 0);
+                                                            $sisa_pagu = $sisa_pagu + (int) $detail->sisa;
+                                                        @endphp
+                                                    </tr>
+                                                    <?php $row_p++; ?>
+                                                @endforeach
+                                                <tr>
+                                                    <td scope="text-center" colspan="2">
+                                                        Total
+                                                    </td>
+                                                    <td scope="text-center" style="text-align: right">
+                                                        {{ number_format((int) $total_pagu, 0, ',', '.') }}
+                                                    </td>
+                                                    <td scope="text-center" style="text-align: right">
+                                                        {{ number_format((int) $total, 0, ',', '.') }}
+                                                    </td>
+                                                    <td scope="text-center" style="text-align: right">
+                                                        {{ number_format((int) $sisa_pagu, 0, ',', '.') }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -483,10 +530,6 @@
                                                 <td class="text-center">
                                                     @if ($receipt->berkas)
                                                         <a target="_blank"
-                                                            href="{{ url('storage/berkas_receipt/' . $receipt->berkas) }}">
-                                                            <span class="badge badge-light-success">Download</span>
-                                                        </a>
-                                                        <a target="_blank"
                                                             href="{{ route('receipt.show-file', $receipt->id) }}">
                                                             <span class="badge badge-light-success">Download</span>
                                                         </a>
@@ -537,19 +580,21 @@
                                     <tbody>
                                         <tr class="text-center">
                                             <td scope="col" style="width: 20px"><b>No</b></td>
+                                            <td scope="col"><b>Detail</b></td>
                                             <td scope="col"><b>Perincian</b></td>
                                             <td scope="col"><b>Keterangan</b></td>
                                             <td scope="col"><b>Rupiah</b></td>
+                                            <td scope="col"><b>Pagu</b></td>
                                         </tr>
                                         @php $grand_total  = 0; @endphp
                                         @foreach ($receipt->pengikut as $pengikut)
                                             <tr class="tbl-break-sub-total">
-                                                <td scope="text-center" colspan="4">
+                                                <td scope="text-center" colspan="6">
 
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td scope="text-center" colspan="4">
+                                                <td scope="text-center" colspan="6">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                         height="24" viewBox="0 0 24 24" fill="none"
                                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -564,11 +609,14 @@
                                             $row_p = 1;
                                             $total = 0;
                                             ?>
-                                            @if (!empty($pengikut->datas))
-                                                @foreach (json_decode($pengikut->datas) as $p_data)
+                                            @if (!empty($pengikut->items))
+                                                @foreach ($pengikut->items as $p_data)
                                                     <tr>
                                                         <td>
                                                             <p>{{ $row_p }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>{{ $p_data->bi->name ?? '' }}</p>
                                                         </td>
                                                         <td>
                                                             <p>{{ $p_data->rinc }}</p>
@@ -581,36 +629,39 @@
                                                                 {{ number_format((int) $p_data->amount, 0, ',', '.') }}
                                                             </p>
                                                         </td>
+                                                        <td>
+                                                            <p class="text-right" style="text-align: right">
+                                                                {{ number_format($p_data->bi->total ?? 0) }}</p>
+                                                        </td>
                                                         @php $total = $total+ (int) $p_data->amount @endphp
                                                     </tr>
                                                     <?php $row_p++; ?>
                                                 @endforeach
                                             @endif
                                             <tr>
-                                                <td scope="text-center" colspan="3">
+                                                <td scope="text-center" colspan="4">
                                                     Sub Total
                                                 </td>
                                                 <td scope="text-center" style="text-align: right">
                                                     {{ number_format((int) $total, 0, ',', '.') }}
-
                                                 </td>
+                                                <td></td>
                                             </tr>
 
                                             @php $grand_total = $grand_total + $total @endphp
                                         @endforeach
                                         <tr style="background-color: #4361ee">
-                                            <td scope="text-center " colspan="4">
-
+                                            <td scope="text-center " colspan="6">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td scope="text-center" colspan="3">
+                                            <td scope="text-center" colspan="4">
                                                 Total
                                             </td>
                                             <td scope="text-center" style="text-align: right">
                                                 {{ number_format((int) $grand_total, 0, ',', '.') }}
-
                                             </td>
+                                            <td></td>
                                         </tr>
                                     </tbody>
                                 </table>

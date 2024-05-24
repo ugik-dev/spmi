@@ -44,9 +44,6 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    // dd($request->fulfill());
-    // return redirect()->route('login')->with('success', 'Verification link sent!');
-    // return view('auth.verify-email');
     return redirect('/login')->with('success', 'Data email berhasil diverifikasi.');
 })->middleware(['auth'])->name('verification.verify');
 

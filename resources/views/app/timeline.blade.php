@@ -126,7 +126,7 @@
                         <tbody>
                             @foreach ($timelines as $index => $receipt)
                                 <tr>
-                                    <td>{{ strtoupper($receipt->category) }}</td>
+                                    <td>{{ strtoupper(categoryTimeline($receipt->category)) }}</td>
                                     <td>{!! $receipt->metode !!}</td>
                                     <td>{{ $receipt->year }}</td>
                                     <td>{{ $receipt->start }}</td>
@@ -190,6 +190,7 @@
                             <div class="col-sm-8">
                                 <select name="category" class="form-select" id="category" required>
                                     <option selected disabled value="">...</option>
+                                    <option value="pra-creat">Definitif Dipa</option>
                                     <option value="creat">Pembuatan Dipa</option>
                                     <option value="revision">Revisi</option>
                                 </select>
