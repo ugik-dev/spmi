@@ -29,6 +29,7 @@ class Receipt extends Model
         'ppk_id',
         'treasurer_id',
         'budget_implementation_detail_id',
+        'work_unit_id'
     ];
 
     public function ppk(): BelongsTo

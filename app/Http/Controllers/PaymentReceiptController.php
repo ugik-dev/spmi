@@ -120,6 +120,7 @@ class PaymentReceiptController extends Controller
             $receipt->treasurer_id = $validatedData['type'] === 'direct' ? null : $validatedData['treasurer'];
             $receipt->bi_id = $validatedData['bi_id'];
             $receipt->user_entry = Auth::user()->id;
+            $receipt->work_unit_id = Auth::user()->employee->work_unit_id;
             $receipt->save();
 
             $following = new ReceiptData();
@@ -200,6 +201,7 @@ class PaymentReceiptController extends Controller
             // $receipt->budget_implementation_detail_id = $validatedData['detail'];
             $receipt->bi_id = $validatedData['bi_id'];
             $receipt->user_entry = Auth::user()->id;
+            $receipt->work_unit_id = Auth::user()->employee->work_unit_id;
             $receipt->save();
 
             if (!empty($validatedData['activity_followings'])) {

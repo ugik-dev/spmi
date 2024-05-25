@@ -245,11 +245,11 @@
                         },
                         {
                             name: "Realisasi / Serapan",
-                            data: @json($chartPagu['pagu']),
+                            data: @json($chartPagu['realisasi']),
                         },
                     ],
                     xaxis: {
-                        categories: @json($chartPagu['name']),
+                        categories: @json($chartPagu['code']),
                     },
                     fill: {
                         type: "gradient",
