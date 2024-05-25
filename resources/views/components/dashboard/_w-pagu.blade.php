@@ -9,7 +9,7 @@
 --}}
 
 
-<div class="widget widget-card-five">
+<div class="widget widget-card-five mb-2">
     <div class="widget-content">
         <div class="account-box">
 
@@ -21,11 +21,11 @@
                 </div>
 
                 <div class="balance-info">
-                    <h6>{{ $title }}</h6>
+                    <h6>{{ $title . ' [' . $unitBudget->workUnit->name . '] [' . $year . ']' }}</h6>
                     <p>Rp {{ number_format($unitBudget->pagu) }}</p>
                 </div>
             </div>
-
+            {{-- 
             <div class="card-bottom-section">
                 <div><span
                         class="badge badge-light-success">{{ number_format(($unitBudget->pagu_ins / $unitBudget->pagu) * 100) }}
@@ -36,8 +36,7 @@
                             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                             <polyline points="17 6 23 6 23 12"></polyline>
                         </svg></span></div>
-                {{-- <a href="{{ $link }}">{{ $button }}</a> --}}
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

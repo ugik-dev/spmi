@@ -13,7 +13,10 @@ class PaguUnit extends Model
         'work_unit_id',
         'nominal',
     ];
-
+    public function workUnit()
+    {
+        return $this->belongsTo(WorkUnit::class);
+    }
     public function scopeUnitYear($query, $year, $work_unit)
     {
         return    $query->select(

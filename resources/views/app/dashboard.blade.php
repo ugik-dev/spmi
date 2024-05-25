@@ -22,27 +22,25 @@
 
     <div class="row layout-top-spacing">
 
-        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+        <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <x-dashboard._w-active-timeline title="Timeline Sekarang" :timelinesActive="$timelinesActive" />
-        </div>
-
-        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+            <x-dashboard._w-pagu title="Pagu Unit" :year="$year" :unitBudget="$unitBudget" link="javascript:void(0);" />
             <x-dashboard._w-waitinglist title="Waiting" :waitinglist="$waitinglist" />
         </div>
-
-        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-            <x-dashboard._w-pagu title="Pagu Unit" :unitBudget="$unitBudget" link="javascript:void(0);" />
+        {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
         </div>
-
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+        </div> --}}
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+            <x-dashboard._w-timelines title="Time Line" :timelines="$timelines" />
+        </div>
         @if (!empty($chartPagu['pagu']) && Auth::user()->hasRole(['SUPER ADMIN PERENCANAAN']))
-            <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-                <x-dashboard._w-chart :chartPagu="$chartPagu" title="Unique Visitors" />
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <x-dashboard._w-chart :chartPagu="$chartPagu" :year="$year" title="Unique Visitors " />
             </div>
         @endif
 
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-            <x-dashboard._w-timelines title="Time Line" :timelines="$timelines" />
-        </div>
+
 
         {{-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <x-widgets._w-four title="Visitors by Browser" />

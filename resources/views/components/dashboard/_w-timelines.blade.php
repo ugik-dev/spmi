@@ -11,10 +11,10 @@
 
 <div class="widget widget-activity-five">
 
-    {{-- <div class="widget-heading">
-        <h5 class="">{{ $title }}</h5>
+    <div class="widget-heading">
+        <h5 class="">Timeline</h5>
 
-        <div class="task-action">
+        {{-- <div class="task-action">
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#" role="button" id="activitylog" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
@@ -32,8 +32,8 @@
                     <a class="dropdown-item" href="javascript:void(0);">Mark as Read</a>
                 </div>
             </div>
-        </div>
-    </div> --}}
+        </div> --}}
+    </div>
 
     <div class="widget-content">
 
@@ -44,12 +44,22 @@
                 @foreach ($timelines as $timeline)
                     <div class="item-timeline timeline-new">
                         <div class="t-dot">
-                            <div class="t-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            <div class="t-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg></div>
+                                </svg> --}}
+                            </div>
                         </div>
                         <div class="t-content">
                             @php

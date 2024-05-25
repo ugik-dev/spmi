@@ -12,7 +12,7 @@
 <div class="widget widget-chart-three">
     <div class="widget-heading">
         <div class="">
-            <h5 class="">Chart Pagu dan Realisasi</h5>
+            <h5 class="">Chart Pagu dan Realisasi {{ $year }}</h5>
         </div>
 
         <div class="dropdown ">
@@ -28,9 +28,8 @@
             </a>
 
             <div class="dropdown-menu left" aria-labelledby="uniqueVisitors">
-                <a class="dropdown-item" href="javascript:void(0);">View</a>
-                <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                <a class="dropdown-item" href="javascript:void(0);">Download</a>
+                <a class="dropdown-item" href="?year=2024">2024</a>
+                <a class="dropdown-item" href="?year=2025">2025</a>
             </div>
         </div>
     </div>

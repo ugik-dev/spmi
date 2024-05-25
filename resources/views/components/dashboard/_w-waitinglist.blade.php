@@ -29,9 +29,8 @@
                     </a>
 
                     <div class="dropdown-menu left" aria-labelledby="expenses" style="will-change: transform;">
-                        <a class="dropdown-item" href="javascript:void(0);">This Week</a>
-                        <a class="dropdown-item" href="javascript:void(0);">Last Week</a>
-                        <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
+                        <a class="dropdown-item" href="?year=2024">2024</a>
+                        <a class="dropdown-item" href="?year=2025">2025</a>
                     </div>
                 </div>
             </div>

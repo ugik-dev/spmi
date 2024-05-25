@@ -49,7 +49,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 })->middleware(['auth'])->name('verification.verify');
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('dasbor', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // Mendefinisikan route resource dengan penyesuaian nama
     Route::resource('profile', MyProfileController::class)->names([

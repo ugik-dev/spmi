@@ -9,7 +9,7 @@
 --}}
 
 
-<div class="widget widget-card-four">
+<div class="widget widget-card-four mb-2">
     <div class="widget-content">
         <div class="w-header">
             <div class="w-info">

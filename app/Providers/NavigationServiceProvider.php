@@ -12,7 +12,7 @@ class NavigationServiceProvider extends ServiceProvider
     {
         $this->app->resolving(Navigation::class, function (Navigation $navigation): Navigation {
             return $navigation
-                ->add('Dasbor', route('admin.dashboard'))
+                ->add('Dashboard', route('admin.dashboard'))
                 ->add('Penerimaan', route('reception.index'))
                 ->add(
                     'Perencanaan',
