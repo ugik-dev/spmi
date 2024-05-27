@@ -96,10 +96,6 @@
                             data-bs-target="#exampleModalCenter">
                             Input Indikator Kinerja Sasaran Kegiatan
                         </button>
-                        <div class="download">
-                            <a href="{{ route('download.iksk.excel') }}" class="btn btn-success">Excel</a>
-                            <a href="{{ route('download.iksk.pdf') }}" class="btn btn-danger">PDF</a>
-                        </div>
                     </div>
 
                     <div class="table-responsive px-4">
@@ -108,7 +104,7 @@
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Sasaran Kegiatan</th>
-                                    <th scope="col">IKSK</th>
+                                    <th scope="col">Indikator Kinerja Sasaran Kegiatan</th>
                                     <th scope="col">Target</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
@@ -130,7 +126,7 @@
                                                     {{ number_format((float) $iksk->value_end, 2, '.') }}
                                                 @endif
                                             </td>
-                                            <td class="text-center">
+                                            <td class="d-flex justify-content-center text-start">
                                                 <button type="button" class="btn btn-sm btn-primary"
                                                     onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}','{{ $iksk->type }}','{{ $iksk->value_end }}')">
                                                     <i class="text-white" data-feather="edit-2"></i>
@@ -325,9 +321,30 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 $('#iksk-table').DataTable({
-                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'f>>>" +
+                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "buttons": [{
+                            text: 'PDF',
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('download.iksk.pdf') }}";
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: 'Excel',
+                            className: 'btn btn-success', // Warna biru
+                            exportOptions: {
+                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                            },
+                            filename: function() {
+                                var d = new Date();
+                                var n = d.toISOString();
+                                return 'IKSK_Excel_' + n;
+                            },
+                        }
+                    ],
                     "oLanguage": {
                         "oPaginate": {
                             "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',

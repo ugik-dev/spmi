@@ -109,15 +109,36 @@
                         </div>
                     </div>
 
+                    <!-- Filter and Search Form -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <form id="filterForm" class="d-flex align-items-center px-4" method="GET"
+                            action="{{ route('performance_indicator.index') }}">
+                            <label for="perPage" class="me-2">Show</label>
+                            <select id="perPage" name="perPage" class="form-control me-2" style="width: auto;"
+                                onchange="this.form.submit()">
+                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
+                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
+                                <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                            </select>
+                            <label for="perPage" class="me-2">entries</label>
+                        </form>
+
+                        <form id="searchForm" class="d-flex align-items-center">
+                            <input type="text" id="searchInput" name="search" class="form-control"
+                                placeholder="Search..." value="{{ $search }}">
+                        </form>
+
+                    </div>
+
                     <div class="table-responsive mt-4">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class="text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">IKSP</th>
                                     <th scope="col">Sasaran Kegiatan</th>
                                     {{-- <th scope="col">Target</th> --}}
-                                    <th scope="col" class="text-center">Aksi</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -132,13 +153,13 @@
                                             @endif
                                             <td>{{ $performanceIndicator->name }}</td>
                                             {{-- <td>{{ number_format((float) $performanceIndicator->value, 2, '.') }}</td> --}}
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-primary"
+                                            <td class="d-flex justify-content-center text-start">
+                                                <button type="button" class="btn btn-sm btn-primary mx-1"
                                                     onclick="openEditModal({{ $performanceIndicator->id }}, '{{ $performanceIndicator->name }}')">
                                                     <i class="text-white" data-feather="edit-2"></i>
                                                 </button>
 
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
                                                     role="button"
                                                     onclick="confirmDelete({{ $performanceIndicator->id }});">
                                                     <i class="text-white" data-feather="trash-2"></i>
@@ -156,7 +177,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $programTargetsHasPerformanceIndicators->links() }}
+                        {{ $programTargetsHasPerformanceIndicators->appends(['perPage' => $perPage, 'search' => $search])->links() }}
                         <!-- Pagination -->
                     </div>
 
@@ -303,6 +324,7 @@
                 });
             }
             document.addEventListener('DOMContentLoaded', function() {
+
                 const missionContainer = document.getElementById('performance_indicator-inputs');
 
                 document.getElementById('add-performance_indicator').addEventListener('click', function() {
@@ -312,7 +334,7 @@
                         <button type="button" class="btn btn-danger remove-performance_indicator">
                             <i data-feather="trash"></i>
                         </button>
-                      </div>`;
+                        </div>`;
                     missionContainer.insertAdjacentHTML('beforeend', newInput);
                     feather.replace();
                     updateNumbering();
@@ -325,6 +347,7 @@
                     }
                 });
             });
+
             $('#exampleModalCenter').on('shown.bs.modal', function() {
                 $('#program_target').select2({
                     dropdownParent: $('#exampleModalCenter'),

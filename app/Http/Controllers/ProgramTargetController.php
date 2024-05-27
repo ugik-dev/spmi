@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ProgramTarget;
 use Illuminate\Http\Request;
+use PDF;
+use Carbon\Carbon;
 
 class ProgramTargetController extends Controller
 {
@@ -105,5 +107,15 @@ class ProgramTargetController extends Controller
         $programTargets = $query->limit($limit)->get(['id', 'name']);
 
         return response()->json($programTargets);
+    }
+
+    // export pdf iksp
+    public function downloadIkspPdf(){
+        $programTargets = ProgramTarget::with('iku')->get();
+
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadIkspPdf', ['programTargets' => $programTargets]);
+        return $pdf->download("IKSP_PDF_{$date}.pdf");
     }
 }

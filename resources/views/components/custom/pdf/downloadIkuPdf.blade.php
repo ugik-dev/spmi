@@ -10,6 +10,10 @@
             border-collapse: collapse;
         }
 
+        h2 {
+            text-align: center;
+        }
+
         th,
         td {
             border: 1px solid black;
@@ -28,13 +32,13 @@
 </head>
 
 <body>
-    <h2>Indikator Kinerja Utama</h2>
+    <h2>Sasaran Program</h2>
     <table>
         <thead class="text-center">
             <tr>
                 <th>No</th>
                 <th>Misi</th>
-                <th>SASARAN PROGRAM</th>
+                <th>Sasaran Program</th>
             </tr>
         </thead>
         <tbody>

@@ -131,10 +131,6 @@
                             data-bs-target="#exampleModalCenter">
                             Input Misi
                         </button>
-                        <div class="download">
-                            <a href="{{ route('download.mission.excel') }}" class="btn btn-success">Excel</a>
-                            <a href="{{ route('download.mission.pdf') }}" class="btn btn-danger">PDF</a>
-                        </div>
                     </div>
 
                     <div class="table-responsive px-4">
@@ -344,16 +340,37 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 $('#zero-config').DataTable({
-                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'f>>>" +
+                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "buttons": [{
+                            text: 'PDF',
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('download.mission.pdf') }}";
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: 'Excel',
+                            className: 'btn btn-success', // Warna biru
+                            exportOptions: {
+                                columns: [0, 1] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                            },
+                            filename: function() {
+                                var d = new Date();
+                                var n = d.toISOString();
+                                return 'Misi_Excel_' + n;
+                            },
+                        }
+                    ],
                     "oLanguage": {
                         "oPaginate": {
-                            "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                            "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                            "sPrevious": '<svg ...></svg>',
+                            "sNext": '<svg ...></svg>'
                         },
                         "sInfo": "Showing page _PAGE_ of _PAGES_",
-                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearch": '<svg ...></svg>',
                         "sSearchPlaceholder": "Search...",
                         "sLengthMenu": "Results :  _MENU_",
                     },
@@ -362,8 +379,9 @@
                     },
                     "stripeClasses": [],
                     "lengthMenu": [7, 10, 20, 50],
-                    "pageLength": 10
+                    "pageLength": 10,
                 });
+
 
                 const missionContainer = document.getElementById('mission-inputs');
 

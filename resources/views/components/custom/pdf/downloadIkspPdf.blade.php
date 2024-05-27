@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Indikator Kinerja Utama</title>
+    <title>Indikator Kinerja Sasaran Program</title>
 
     <style>
         table {
@@ -32,19 +32,21 @@
 </head>
 
 <body>
-    <h2>Misi</h2>
+    <h2>Indikator Kinerja Sasaran Program</h2>
     <table>
         <thead class="text-center">
             <tr>
                 <th>No</th>
-                <th>Misi</th>
+                <th>Sasaran Program</th>
+                <th>Indikator Kinerja Sasaran Program</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($missions as $index => $mission)
+            @foreach ($programTargets as $index => $programTarget)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ $mission->description }}</td>
+                    <td>{{ $programTarget->iku->description }}</td>
+                    <td>{{ $programTarget->name }}</td>
                 </tr>
             @endforeach
         </tbody>

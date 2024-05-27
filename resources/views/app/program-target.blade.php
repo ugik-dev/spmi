@@ -284,21 +284,10 @@
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
                     "buttons": [{
-                            extend: 'pdfHtml5',
                             text: 'PDF',
-                            className: 'btn btn-danger', // Warna biru
-                            exportOptions: {
-                                columns: [0, 1] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
-                            },
-                            filename: function() {
-                                var d = new Date();
-                                var n = d.toISOString();
-                                return 'PDF_Export_' + n;
-                            },
-                            customize: function(doc) {
-                                doc.styles.tableHeader.alignment = 'left'; // Contoh penyesuaian
-                                // Tambahkan kustomisasi pdfmake Anda di sini
-                                doc.content[1].table.widths = ['auto', '*'];
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('download.iksp.pdf') }}";
                             }
                         },
                         {
@@ -306,12 +295,12 @@
                             text: 'Excel',
                             className: 'btn btn-success', // Warna biru
                             exportOptions: {
-                                columns: [0, 1] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
                             },
                             filename: function() {
                                 var d = new Date();
                                 var n = d.toISOString();
-                                return 'Excel_Export_' + n;
+                                return 'IKSP_Excel_' + n;
                             },
                         }
                     ],

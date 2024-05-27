@@ -15,12 +15,23 @@ class PerformanceIndicatorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $programTargetsHasPerformanceIndicators = ProgramTarget::has('performanceIndicators')->with('performanceIndicators')->paginate(10);
+        $perPage = $request->input('perPage', 10);
+        $search = $request->input('search', '');
+
+        $query = ProgramTarget::has('performanceIndicators')->with('performanceIndicators');
+
+        if (!empty($search)) {
+            $query->whereHas('performanceIndicators', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
+        }
+
+        $programTargetsHasPerformanceIndicators = $query->paginate($perPage);
         $title = 'Sasaran Program';
 
-        return view('app.performance-indicator', compact('title', 'programTargetsHasPerformanceIndicators'));
+        return view('app.performance-indicator', compact('title', 'programTargetsHasPerformanceIndicators', 'perPage', 'search'));
     }
 
     /**
@@ -136,4 +147,19 @@ class PerformanceIndicatorController extends Controller
 
         return response()->json($programTargets);
     }
+
+    // fungsi search data
+    // public function search(Request $request)
+    // {
+    //     $search = $request->input('search', '');
+
+    //     $programTargetsHasPerformanceIndicators = ProgramTarget::with(['performanceIndicators' => function($query) use ($search) {
+    //         $query->where('name', 'LIKE', "%{$search}%");
+    //     }])->where('name', 'LIKE', "%{$search}%")->get();
+
+    //     return response()->json([
+    //         'data' => $programTargetsHasPerformanceIndicators
+    //     ]);
+    // }
+
 }

@@ -80,17 +80,18 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('iksp', [ProgramTargetController::class, 'store'])->name('program_target.store');
         Route::delete('iksp/{programTarget}/hapus', [ProgramTargetController::class, 'destroy'])->name('program_target.delete');
         Route::patch('iksp/{programTarget}/update', [ProgramTargetController::class, 'update'])->name('program_target.update');
+        Route::get('/download-iksp-pdf', [ProgramTargetController::class, 'downloadIkspPdf'])->name('download.iksp.pdf');
         Route::get('sasaran-kegiatan', [PerformanceIndicatorController::class, 'index'])->name('performance_indicator.index');
         Route::post('sasaran-kegiatan', [PerformanceIndicatorController::class, 'store'])->name('performance_indicator.store');
         Route::delete('sasaran-kegiatan/{performanceIndicator}/hapus', [PerformanceIndicatorController::class, 'destroy'])->name('performance_indicator.delete');
         Route::patch('sasaran-kegiatan/{performanceIndicator}/update', [PerformanceIndicatorController::class, 'update'])->name('performance_indicator.update');
+        Route::get('/download-performance-indicators-pdf', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorPdf'])->name('download.performance-indicator.pdf');
+        Route::get('/download-performance-indicators-excel', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorExcel'])->name('download.performance-indicator.excel');
         Route::get('iksk', [IkskController::class, 'index'])->name('iksk.index');
         Route::post('iksk', [IkskController::class, 'store'])->name('iksk.store');
         Route::delete('iksk/{iksk}/hapus', [IkskController::class, 'destroy'])->name('iksk.delete');
         Route::patch('iksk/{iksk}/update', [IkskController::class, 'update'])->name('iksk.update');
-        Route::get('/download-performance-indicators-pdf', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorPdf'])->name('download.performance-indicator.pdf');
-        Route::get('/download-performance-indicators-excel', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorExcel'])->name('download.performance-indicator.excel');
-        Route::get('/download-iksk-pdf', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorPdf'])->name('download.iksk.pdf');
+        Route::get('/download-iksk-pdf', [IkskController::class, 'downloadIkskPdf'])->name('download.iksk.pdf');
         Route::get('/download-iksk-excel', [PerformanceIndicatorController::class, 'downloadPerformanceIndicatorExcel'])->name('download.iksk.excel');
     });
     Route::prefix('pengaturan')->group(function () {

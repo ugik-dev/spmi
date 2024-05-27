@@ -80,15 +80,11 @@
                             data-bs-target="#exampleModalCenter">
                             Input Sasaran Program
                         </button>
-                        <div class="download">
-                            <a href="{{ route('download.iku.excel') }}" class="btn btn-success">Excel</a>
-                            <a href="{{ route('download.iku.pdf') }}" class="btn btn-danger">PDF</a>
-                        </div>
                     </div>
 
                     <div class="table-responsive px-4">
                         <table id="iku-table" class="table table-bordered table-hover">
-                            <thead class="bg-light">
+                            <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Misi</th>
@@ -124,7 +120,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Input SASARAN PROGRAM
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Input Sasaran Program
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -163,7 +159,7 @@
                             <button type="button" id="add-iku" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
-                            <label for="iku" class="ms-2 py-0 mb-0">SASARAN PROGRAM</label>
+                            <label for="iku" class="ms-2 py-0 mb-0">Sasaran Program</label>
                         </div>
 
                         <div id="iku-inputs" class="mt-2">
@@ -231,7 +227,7 @@
                         // Handle success (e.g., show a success message and remove the row from the table)
                         Swal.fire(
                             'Dihapus!',
-                            'SASARAN PROGRAM telah dihapus.',
+                            'Sasaran Program telah dihapus.',
                             'success'
                         ).then(() => {
                             window.location.reload(); // or use JavaScript to remove the row from the DOM
@@ -256,9 +252,30 @@
             }
             document.addEventListener('DOMContentLoaded', function() {
                 $('#iku-table').DataTable({
-                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'f>>>" +
+                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "buttons": [{
+                            text: 'PDF',
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('download.iku.pdf') }}";
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: 'Excel',
+                            className: 'btn btn-success', // Warna biru
+                            exportOptions: {
+                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                            },
+                            filename: function() {
+                                var d = new Date();
+                                var n = d.toISOString();
+                                return 'Sasaran_Program_Excel' + n;
+                            },
+                        }
+                    ],
                     "oLanguage": {
                         "oPaginate": {
                             "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',

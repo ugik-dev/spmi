@@ -9,7 +9,6 @@ use App\Exports\PerformanceIndicatorExport;
 use App\Models\IKSK;
 use App\Models\ProgramTarget;
 use PDF;
-use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 
 class IkskController extends Controller
@@ -98,26 +97,14 @@ class IkskController extends Controller
     }
 
     // download pdf
-    public function downloadPerformanceIndicatorPdf()
+    public function downloadIkskPdf()
     {
-        $programTargetsHasPerformanceIndicators = ProgramTarget::has('performanceIndicators')->with('performanceIndicators')->get();
+        $performanceIndicators = PerformanceIndicator::with('iksks')->get();
 
         // Mendapatkan tanggal dan waktu saat ini
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
-        $pdf = PDF::loadView('components.custom.pdf.downloadPerformanceIndicatorPdf', compact('programTargetsHasPerformanceIndicators'));
-        return $pdf->download("Performance-Indicators-Report-{$date}.pdf");
-    }
-
-    // download excel
-    public function downloadPerformanceIndicatorExcel()
-    {
-        // Mendapatkan tanggal dan waktu saat ini
-        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
-
-        // Membuat nama file dengan timestamp
-        $filename = "Performance-Indicators-Report-{$timestamp}.xlsx";
-
-        return Excel::download(new PerformanceIndicatorExport, $filename);
+        $pdf = PDF::loadView('components.custom.pdf.downloadIkskPdf', ['performanceIndicators' => $performanceIndicators]);
+        return $pdf->download("Indikator_Kinerja_Sasaran_Kegiatan_{$date}.pdf");
     }
 }

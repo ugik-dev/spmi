@@ -35,7 +35,6 @@
                 <th>No.</th>
                 <th>Sasaran Program</th>
                 <th>Indikator Kinerja</th>
-                <th>Target</th>
             </tr>
         </thead>
         <tbody>
@@ -49,7 +48,6 @@
                             </td>
                         @endif
                         <td>{{ $performanceIndicator->name }}</td>
-                        <td>{{ number_format((float) $performanceIndicator->value, 2, '.') }}</td>
                     </tr>
                 @endforeach
             @endforeach
