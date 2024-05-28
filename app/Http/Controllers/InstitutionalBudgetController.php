@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\InstitutionalBudget;
 use App\Models\PaguLembaga;
 use Illuminate\Http\Request;
+use PDF;
+use Carbon\Carbon;
 
 class InstitutionalBudgetController extends Controller
 {
@@ -69,4 +71,17 @@ class InstitutionalBudgetController extends Controller
     {
         //
     }
+
+    // fungsi export pdf
+    public function downloadPaguPdf()
+    {
+        $pagus = PaguLembaga::all();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadPaguPdf', ['pagus' => $pagus]);
+        return $pdf->download("Pagu_Lembaga_PDF_{$date}.pdf");
+    }
+
 }

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use PDF;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -178,5 +180,18 @@ class UserController extends Controller
         $ppks = $query->limit($limit)->get(['id', 'name', 'identity_number']);
 
         return response()->json($ppks);
+    }
+
+    // fungsi export pdf
+    public function downloadUserPdf()
+    {
+        $users = User::with('employee', 'roles', 'employee.workUnit')->get();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadUserPdf', ['users' => $users])
+                  ->setPaper('a4', 'landscape');
+        return $pdf->download("User_Data_{$date}.pdf");
     }
 }

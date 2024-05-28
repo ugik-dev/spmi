@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
+use PDF;
+use Carbon\Carbon;
 
 class WorkUnitController extends Controller
 {
@@ -71,5 +73,17 @@ class WorkUnitController extends Controller
         $workUnit->delete();
 
         return redirect()->back()->with('success', 'Unit kerja berhasil dihapus.');
+    }
+
+    // fungsi export pdf
+    public function downloadWorkUnitPdf()
+    {
+        $workUnits = WorkUnit::with(['ppkUnit', 'kepalaUnit'])->get();
+        
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadWorkUnitPdf', ['workUnits' => $workUnits]);
+        return $pdf->download("Unit_Kerja_PDF_{$date}.pdf");
     }
 }

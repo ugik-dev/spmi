@@ -110,14 +110,14 @@
                                         <td>{{ $workUnit->code ?? '-' }}</td>
                                         <td>{{ $workUnit->ppkUnit->name ?? '-' }}</td>
                                         <td>{{ $workUnit->kepalaUnit->name ?? '-' }}</td>
-                                        <td class="text-center ">
-                                            <button type="button" class="btn btn-sm btn-primary"
+                                        <td class="d-flex justify-content-center text-start">
+                                            <button type="button" class="btn btn-primary btn-sm mx-1"
                                                 onclick="openEditModal({{ $workUnit->id }}, '{{ $workUnit->name }}', '{{ $workUnit->code }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
                                                 <i class="text-white" data-feather="edit-2"></i>
                                             </button>
 
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete({{ $workUnit->id }});">
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                role="button" onclick="confirmDelete({{ $workUnit->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
                                             </a>
                                             <!-- Hidden form for delete request -->
@@ -324,21 +324,10 @@
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
                     "buttons": [{
-                            extend: 'pdfHtml5',
                             text: 'PDF',
-                            className: 'btn btn-danger', // Warna biru
-                            exportOptions: {
-                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
-                            },
-                            filename: function() {
-                                var d = new Date();
-                                var n = d.toISOString();
-                                return 'PDF_Export_' + n;
-                            },
-                            customize: function(doc) {
-                                doc.styles.tableHeader.alignment = 'left'; // Contoh penyesuaian
-                                // Tambahkan kustomisasi pdfmake Anda di sini
-                                doc.content[1].table.widths = ['auto', '*', '*'];
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('download.workunit.pdf') }}";
                             }
                         },
                         {

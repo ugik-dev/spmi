@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ExpenditureUnit;
 use Illuminate\Http\Request;
+use PDF;
+use Carbon\Carbon;
 
 class ExpenditureUnitController extends Controller
 {
@@ -71,4 +73,17 @@ class ExpenditureUnitController extends Controller
 
         return redirect()->back()->with('success', 'Satuan belanja berhasil dihapus.');
     }
+
+    // fungsi export pdf
+    public function downloadExpenditureUnitPdf()
+    {
+        $expenditureUnits = ExpenditureUnit::all();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadExpenditureUnitPdf', ['expenditureUnits' => $expenditureUnits]);
+        return $pdf->download("Satuan_Belanja_PDF_{$date}.pdf");
+    }
+
 }

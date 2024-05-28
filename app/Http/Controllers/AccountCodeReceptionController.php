@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountCodeReception;
 use Illuminate\Http\Request;
+use PDF;
+use Carbon\Carbon;
 
 class AccountCodeReceptionController extends Controller
 {
@@ -117,4 +119,16 @@ class AccountCodeReceptionController extends Controller
 
         return response()->json($accountCodeReception);
     }
+
+    public function downloadAccountCodeReceptionPdf()
+    {
+        $accountCodeReceptions = AccountCodeReception::all();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadAccountCodeReceptionPdf', ['accountCodeReceptions' => $accountCodeReceptions]);
+        return $pdf->download("Kode_Akun_Penerimaan_{$date}.pdf");
+    }
+
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountCode;
 use Illuminate\Http\Request;
+use PDF;
+use Carbon\Carbon;
 
 class AccountCodeController extends Controller
 {
@@ -87,4 +89,17 @@ class AccountCodeController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    // fungsi export pdf
+    public function downloadAccountCodePdf()
+    {
+        $accountCodes = AccountCode::all();
+
+        // Mendapatkan tanggal dan waktu saat ini
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        $pdf = PDF::loadView('components.custom.pdf.downloadAccountCodePdf', ['accountCodes' => $accountCodes]);
+        return $pdf->download("Kode_Akun_{$date}.pdf");
+    }
+
 }

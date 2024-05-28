@@ -99,10 +99,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('unit-kerja', [WorkUnitController::class, 'store'])->name('work_unit.store');
         Route::patch('unit-kerja/{workUnit}/update', [WorkUnitController::class, 'update'])->name('work_unit.update');
         Route::delete('unit-kerja/{workUnit}/hapus', [WorkUnitController::class, 'destroy'])->name('work_unit.delete');
+        Route::get('/download-work-unit-pdf', [WorkUnitController::class, 'downloadWorkUnitPdf'])->name('download.workunit.pdf');
         Route::get('satuan-belanja', [ExpenditureUnitController::class, 'index'])->name('expenditure_unit.index');
         Route::post('satuan-belanja', [ExpenditureUnitController::class, 'store'])->name('expenditure_unit.store');
         Route::patch('satuan-belanja/{expenditureUnit}/update', [ExpenditureUnitController::class, 'update'])->name('expenditure_unit.update');
         Route::delete('satuan-belanja/{expenditureUnit}/hapus', [ExpenditureUnitController::class, 'destroy'])->name('expenditure_unit.delete');
+        Route::get('/download-expenditure-unit-pdf', [ExpenditureUnitController::class, 'downloadExpenditureUnitPdf'])->name('download.expenditure.unit.pdf');
         Route::get('sbm-sbi', [SBMSBIController::class, 'index'])->name('sbm_sbi.index');
         Route::post('sbm-sbi', [SBMSBIController::class, 'store'])->name('sbm_sbi.store');
         Route::get('pagu', [InstitutionalBudgetController::class, 'index'])->name('pagu.index');
@@ -110,11 +112,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('pagu-lembaga', [InstitutionalBudgetController::class, 'store'])->name('ins_budget.store');
         Route::get('pagu/unit/{year}', [UnitBudgetController::class, 'index'])->name('unit_budget.index');
         Route::post('pagu-unit', [UnitBudgetController::class, 'store'])->name('unit_budget.store');
+        Route::get('/download-pagu-pdf', [InstitutionalBudgetController::class, 'downloadPaguPdf'])->name('download.pagu.pdf');
         Route::get('kelola-user', [UserController::class, 'index'])->name('user.index');
         Route::post('user', [UserController::class, 'store'])->name('user.store')->middleware('can:create user');
         Route::post('user/{user}/resend-mail', [UserController::class, 'resendEmail'])->name('user.resend-mail');
         Route::patch('user/{user}/update', [UserController::class, 'update'])->name('user.update');
         Route::delete('user/{user}/hapus', [UserController::class, 'destroy'])->name('user.delete');
+        Route::get('/download-user-pdf', [UserController::class, 'downloadUserPdf'])->name('download.user.pdf');
+
 
         Route::resource('bendahara', TreasurerController::class)->names([
             'index' => 'treasurer.index',
@@ -160,10 +165,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('kode-akun', [AccountCodeController::class, 'store'])->name('account_code.store');
         Route::patch('kode-akun/{accountCode}/update', [AccountCodeController::class, 'update'])->name('account_code.update');
         Route::delete('kode-akun/{accountCode}/hapus', [AccountCodeController::class, 'destroy'])->name('account_code.delete');
+        Route::get('/download-account-code-pdf', [AccountCodeController::class, 'downloadAccountCodePdf'])->name('download.account.code.pdf');
         Route::get('adm-penerimaan/kode-akun', [AccountCodeReceptionController::class, 'index'])->name('account_code_reception.index');
         Route::post('adm-penerimaan/kode-akun', [AccountCodeReceptionController::class, 'store'])->name('account_code_reception.store');
         Route::patch('adm-penerimaan/kode-akun/{accountCodeReception}/update', [AccountCodeReceptionController::class, 'update'])->name('account_code_reception.update');
         Route::delete('adm-penerimaan/kode-akun/{accountCodeReception}/hapus', [AccountCodeReceptionController::class, 'destroy'])->name('account_code_reception.delete');
+        Route::get('/download-account-code-reception-pdf', [AccountCodeReceptionController::class, 'downloadAccountCodeReceptionPdf'])->name('download.account.code.reception.pdf');
+
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');
