@@ -70,6 +70,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('/download-misi-pdf', [RenstraController::class, 'downloadMissionPdf'])->name('download.mission.pdf');
         Route::get('/download-mission-excel', [RenstraController::class, 'downloadMissionExcel'])->name('download.mission.excel');
         Route::get('iku', [RenstraController::class, 'iku'])->name('iku.index');
+        Route::patch('/iku/{iku}/update', [RenstraController::class, 'updateIku'])->name('iku.update');
         Route::get('/download-iku-pdf', [RenstraController::class, 'downloadIkuPdf'])->name('download.iku.pdf');
         Route::get('/download-iku-excel', [RenstraController::class, 'downloadIkuExcel'])->name('download.iku.excel');
         Route::post('tambah-iku', [RenstraController::class, 'storeIku'])->name('iku.store');
@@ -171,7 +172,6 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::patch('adm-penerimaan/kode-akun/{accountCodeReception}/update', [AccountCodeReceptionController::class, 'update'])->name('account_code_reception.update');
         Route::delete('adm-penerimaan/kode-akun/{accountCodeReception}/hapus', [AccountCodeReceptionController::class, 'destroy'])->name('account_code_reception.delete');
         Route::get('/download-account-code-reception-pdf', [AccountCodeReceptionController::class, 'downloadAccountCodeReceptionPdf'])->name('download.account.code.reception.pdf');
-
     });
     Route::prefix('penganggaran')->group(function () {
         Route::get('dipa/log/{dipa}', [DipaController::class, 'log'])->name('dipa.log');

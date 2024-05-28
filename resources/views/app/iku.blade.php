@@ -103,6 +103,10 @@
                                                 onclick="confirmDelete2({{ $iku->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
                                             </a>
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="openEditModal({{ $iku->id }}, '{{ $iku->description }}','{{ $iku->renstra_mission_id }}')">
+                                                <i class="text-white" data-feather="edit-2"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -184,6 +188,46 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalTitle">Edit Sasaran Kegiatan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-form" action="" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="form-group">
+                            <label>Description</label>
+                            {{-- <input type="text" id="iku_id_edit" name="id" class="form-control" required> --}}
+                            <input type="text" id="iku_description_edit" name="description" class="form-control"
+                                required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>Misi</label>
+                            <select class="form-select @error('misi') is-invalid @enderror" id="iku_misi_edit"
+                                name="misi">
+                                <option selected value="">Pilih Misi...</option>
+                                @foreach ($missions as $mission)
+                                    <option value="{{ $mission->id }}"
+                                        {{ old('misi') == $mission->id ? 'selected' : '' }}>
+                                        {{ $mission->description }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Add other fields as needed -->
+                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
         <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
@@ -199,6 +243,19 @@
             window.addEventListener('load', function() {
                 feather.replace();
             })
+
+            function openEditModal(id, desc, mision) {
+                // Populate the form fields
+                // document.getElementById('iku_id_edit').value = name;
+                document.getElementById('iku_misi_edit').value = mision;
+                document.getElementById('iku_description_edit').value = desc;
+                // document.getElementById('performance_indicator_value_end').value = value_end;
+                // Update the form action URL
+                document.getElementById('edit-form').action = '/admin/renstra/iku/' + id + '/update';
+
+                // Show the modal
+                new bootstrap.Modal(document.getElementById('editModal')).show();
+            }
 
             function confirmDelete2(index) {
                 Swal.fire({

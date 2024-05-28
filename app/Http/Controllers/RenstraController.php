@@ -67,6 +67,8 @@ class RenstraController extends Controller
         return response()->json(['error' => 'Misi tidak ditemukan.'], 404);
     }
 
+
+
     public function deleteMission(Request $request)
     {
         RenstraMission::find($request->id)->delete();
@@ -109,6 +111,25 @@ class RenstraController extends Controller
             ]);
         return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM berhasil ditambahkan.');
     }
+
+    public function updateIku(RenstraIndicator $iku, Request $request)
+    {
+        $validatedData = $request->validate([
+            // 'id' => 'required|exists:renstra_missions,id',
+            'description' => 'required|string|max:255',
+            'misi' => 'integer|max:255'
+        ]);
+        if ($iku) {
+            $iku->update([
+                'description' => $validatedData['description'],
+                'renstra_mission_id' => $validatedData['misi']
+            ]);
+            return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM berhasil update.');
+        }
+
+        return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM gagal diupdate.');
+    }
+
     // Add this method to your RenstraController
 
     public function deleteIku(Request $request)
