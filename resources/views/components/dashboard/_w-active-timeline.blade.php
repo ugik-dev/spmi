@@ -21,18 +21,22 @@
         <div class="w-chart-section">
             <div class="w-detail">
                 @php
-                    if ($timelinesActive->category == 'creat') {
-                        $ket = 'Pembuatan Dipa Definitif';
-                    } elseif ($timelinesActive->category == 'pra-creat') {
-                        $ket = 'Pembuatan Dipa Indikatif';
-                    } elseif ($timelinesActive->category == 'revison') {
-                        $ket = 'Revisi Dipa';
-                    } else {
-                        $ket = ' - ';
+                    if ($timelinesActive->category ?? false) {
+                        if ($timelinesActive->category == 'creat') {
+                            $ket = 'Pembuatan Dipa Definitif';
+                        } elseif ($timelinesActive->category == 'pra-creat') {
+                            $ket = 'Pembuatan Dipa Indikatif';
+                        } elseif ($timelinesActive->category == 'revison') {
+                            $ket = 'Revisi Dipa';
+                        } else {
+                            $ket = ' - ';
+                        }
                     }
                 @endphp
-                <p class="w-title">{{ $ket . ' Tahun ' . $timelinesActive->year }}</p>
-                <p class="w-stats">{{ $timelinesActive->end }}</p>
+                @if ($timelinesActive)
+                    <p class="w-title">{{ $ket . ' Tahun ' . $timelinesActive->year }}</p>
+                    <p class="w-stats">{{ $timelinesActive->end }}</p>
+                @endif
             </div>
 
         </div>

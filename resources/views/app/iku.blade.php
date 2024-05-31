@@ -35,6 +35,10 @@
                 height: 30px;
                 color: #dc3545;
             }
+
+            .select2-container--open {
+                z-index: 999999 !important;
+            }
         </style>
         <!--  END CUSTOM STYLE FILE  -->
     </x-slot>
@@ -140,11 +144,10 @@
                 <div class="modal-body">
                     <form action="{{ route('iku.store') }}" method="POST">
                         @csrf
-
                         <div class="mb-4 row align-items-center">
-                            <div class="col-sm-12">
-                                <select class="form-select @error('misi') is-invalid @enderror" id="selectTypeRole"
-                                    name="misi">
+                            <div class="col-sm-12" id="WrapperSelect2">
+                                <select class="form-select select2 @error('misi') is-invalid @enderror w-100"
+                                    style="width: 100% !important" name="misi" id="MisiSelect2">
                                     <option selected value="">Pilih Misi...</option>
                                     @foreach ($missions as $mission)
                                         <option value="{{ $mission->id }}"
@@ -208,7 +211,8 @@
                         </div>
                         <div class="form-group mt-3">
                             <label>Misi</label>
-                            <select class="form-select @error('misi') is-invalid @enderror" id="iku_misi_edit"
+                            <select style="width: 100% important"
+                                class="form-select @error('misi') is-invalid @enderror " id="iku_misi_edit"
                                 name="misi">
                                 <option selected value="">Pilih Misi...</option>
                                 @foreach ($missions as $mission)
@@ -238,10 +242,20 @@
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/jszip.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
             window.addEventListener('load', function() {
                 feather.replace();
+            })
+            $('#MisiSelect2').select2({
+                dropdownParent: $('#WrapperSelect2'),
+            })
+
+
+            $('#iku_misi_edit').select2({
+                dropdownParent: $('#editModal'),
             })
 
             function openEditModal(id, desc, mision) {
