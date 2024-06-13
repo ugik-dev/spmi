@@ -15,7 +15,9 @@
         <link rel="stylesheet" href="{{ asset('plugins/sweetalerts2/sweetalerts2.css') }}">
         @vite(['resources/scss/light/plugins/sweetalerts2/custom-sweetalert.scss'])
         @vite(['resources/scss/dark/plugins/sweetalerts2/custom-sweetalert.scss'])
-        <!-- Select2 CSS -->
+        <link rel="stylesheet" href="{{ asset('plugins/table/datatable/datatables.css') }}">
+        @vite(['resources/scss/light/plugins/table/datatable/dt-global_style.scss'])
+        @vite(['resources/scss/dark/plugins/table/datatable/dt-global_style.scss'])
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
@@ -68,8 +70,8 @@
     <div class="row layout-top-spacing">
         <div class="col-lg-12 layout-spacing">
             <div class="statbox widget box box-shadow">
-                <div class="widget-content widget-content-area">
-                    <div class="p-2 container">
+                <div style="min-height:50vh;" class="widget-content widget-content-area">
+                    <div class="p-3 container">
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -96,91 +98,58 @@
                         @endif
                     </div>
 
-                    <div class="text-start" style="display: flex; justify-content: space-between;">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Sasaran Kegiatan
                         </button>
-                        <div class="download">
-                            <a href="{{ route('download.performance-indicator.excel') }}"
-                                class="btn btn-success">Excel</a>
-                            <a href="{{ route('download.performance-indicator.pdf') }}" class="btn btn-danger">PDF</a>
-                        </div>
                     </div>
 
-                    <!-- Filter and Search Form -->
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <form id="filterForm" class="d-flex align-items-center px-4" method="GET"
-                            action="{{ route('performance_indicator.index') }}">
-                            <label for="perPage" class="me-2">Show</label>
-                            <select id="perPage" name="perPage" class="form-control me-2" style="width: auto;"
-                                onchange="this.form.submit()">
-                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
-                                <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20</option>
-                                <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
-                            </select>
-                            <label for="perPage" class="me-2">entries</label>
-                        </form>
-
-                        <form id="searchForm" class="d-flex align-items-center">
-                            <input type="text" id="searchInput" name="search" class="form-control"
-                                placeholder="Search..." value="{{ $search }}">
-                        </form>
-
-                    </div>
-
-                    <div class="table-responsive mt-4">
-                        <table class="table table-bordered">
-                            <thead class="text-center">
+                    <div class="container px-3">
+                        <table id="performanceIndicator-table" class="table table-bordered table-hover">
+                            <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
-                                    <th scope="col">IKSP</th>
+                                    <th scope="col">Indikator Kinerja Sasaran Kegiatan</th>
                                     <th scope="col">Sasaran Kegiatan</th>
-                                    {{-- <th scope="col">Target</th> --}}
                                     <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $counter = 1; @endphp
                                 @foreach ($programTargetsHasPerformanceIndicators as $programTarget)
-                                    @foreach ($programTarget->performanceIndicators as $index => $performanceIndicator)
+                                    @foreach ($programTarget->performanceIndicators as $performanceIndicator)
                                         <tr>
-                                            @if ($index == 0)
-                                                <td rowspan="{{ count($programTarget->performanceIndicators) }}">
-                                                    {{ $loop->parent->iteration }}</td>
-                                                <td rowspan="{{ count($programTarget->performanceIndicators) }}">
-                                                    {{ $programTarget->name }}</td>
-                                            @endif
+                                            <td>{{ $counter++ }}</td>
+                                            <td>{{ $programTarget->name }}</td>
                                             <td>{{ $performanceIndicator->name }}</td>
-                                            {{-- <td>{{ number_format((float) $performanceIndicator->value, 2, '.') }}</td> --}}
-                                            <td class="d-flex justify-content-center text-start">
-                                                <button type="button" class="btn btn-sm btn-primary mx-1"
-                                                    onclick="openEditModal({{ $performanceIndicator->id }}, '{{ $performanceIndicator->name }}')">
-                                                    <i class="text-white" data-feather="edit-2"></i>
-                                                </button>
-
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
-                                                    role="button"
-                                                    onclick="confirmDelete({{ $performanceIndicator->id }});">
-                                                    <i class="text-white" data-feather="trash-2"></i>
-                                                </a>
-                                                <!-- Hidden form for delete request -->
-                                                <form id="delete-form-{{ $performanceIndicator->id }}"
-                                                    action="{{ route('performance_indicator.delete', $performanceIndicator->id) }}"
-                                                    method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
+                                            <td class="align-middle">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <a type="button" class="btn btn-sm btn-warning mx-1"
+                                                        onclick="openEditModal({{ $performanceIndicator->id }}, '{{ $performanceIndicator->name }}', '{{ $programTarget->id }}', '{{ $programTarget->name }}')">
+                                                        <i class="text-white" data-feather="edit-2"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                        role="button"
+                                                        onclick="confirmDelete({{ $performanceIndicator->id }});">
+                                                        <i class="text-white" data-feather="trash-2"></i>
+                                                    </a>
+                                                    <!-- Hidden form for delete request -->
+                                                    <form id="delete-form-{{ $performanceIndicator->id }}"
+                                                        action="{{ route('performance_indicator.delete', $performanceIndicator->id) }}"
+                                                        method="POST" style="display: none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $programTargetsHasPerformanceIndicators->appends(['perPage' => $perPage, 'search' => $search])->links() }}
-                        <!-- Pagination -->
                     </div>
-
                 </div>
             </div>
         </div>
@@ -208,24 +177,21 @@
                 <div class="modal-body">
                     <form action="{{ route('performance_indicator.store') }}" method="POST">
                         @csrf
-
-                        <div class="form-group">
-                            <label for="program_target">IKSP</label>
+                        <div class="form-group mb-4">
+                            <label for="program_target"><b>Indikator Kinerja Sasaran Program</b></label>
                             <select id="program_target" name="program_target_id" class="form-control select2">
-                                <option value="">Pilih IKSP</option>
+                                <option value="">Pilih Indikator Kinerja Sasaran Program</option>
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
-
-                        <div class="form-group d-flex align-items-center my-2">
+                        <div class="form-group d-flex align-items-center mb-2">
                             <button type="button" id="add-performance_indicator"
                                 class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="performance_indicator" class="ms-2 py-0 mb-0">Sasaran Kegiatan</label>
                         </div>
-
-                        <div id="performance_indicator-inputs" class="mt-2">
+                        <div id="performance_indicator-inputs" class="mb-4">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="performance_indicator[]" class="form-control">
@@ -234,10 +200,8 @@
                                 </button>
                             </div>
                         </div>
-
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
-                            type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                        <button class="btn btn-success text-center align-items-center float-end" type="submit">
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
 
@@ -246,6 +210,7 @@
             </div>
         </div>
     </div>
+
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
         aria-hidden="true">
@@ -253,24 +218,35 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle">Edit Sasaran Kegiatan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label>Sasaran Kegiatan</label>
+                        <div class="form-group mb-3">
+                            <label><b>Indikator Kinerja Sasaran Program</b></label>
+                            <select id="program_target_edit" name="program_target" class="form-control select2"
+                                disabled>
+                                <option value="">Pilih Indikator Kinerja Sasaran Program</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label><b>Sasaran Kegiatan</b></label>
                             <input type="text" id="performance_indicator_name" name="name"
                                 class="form-control" required>
                         </div>
-                        {{-- <div class="form-group mt-3">
-                            <label>Target</label>
-                            <input type="text" id="performance_indicator_value" name="value"
-                                class="form-control" required>
-                        </div> --}}
-                        <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>
@@ -282,20 +258,31 @@
         <script src="{{ asset('plugins/global/vendors.min.js') }}"></script>
         <script src="{{ asset('plugins/editors/quill/quill.js') }}"></script>
         <script src="{{ asset('plugins/sweetalerts2/sweetalerts2.min.js') }}"></script>
-        <!-- Select2 JS -->
+        <script src="{{ asset('plugins/table/datatable/datatables.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/jszip.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/pdfmake/pdfmake.min.js') }}"></script>
+        <script src="{{ asset('plugins-rtl/table/datatable/pdfmake/vfs_fonts.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
-            function openEditModal(id, name) {
+            function openEditModal(id, name, programTargetId, programTargetName) {
                 // Populate the form fields
                 document.getElementById('performance_indicator_name').value = name;
 
-                // Update the form action URL
+                // Populate the dropdown and set the selected value
+                const programTargetEdit = document.getElementById('program_target_edit');
+                programTargetEdit.innerHTML = `<option value="${programTargetId}" selected>${programTargetName}</option>`;
+
+                // Set the form action
                 document.getElementById('edit-form').action = '/admin/perkin/sasaran-kegiatan/' + id + '/update';
 
                 // Show the modal
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             }
+
 
             window.addEventListener('load', function() {
                 feather.replace();
@@ -324,6 +311,49 @@
                 });
             }
             document.addEventListener('DOMContentLoaded', function() {
+                $('#performanceIndicator-table').DataTable({
+                    "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
+                        "<'table-responsive'tr>" +
+                        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "buttons": [{
+                            text: 'PDF',
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href =
+                                    "{{ route('download.performance-indicator.pdf') }}";
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: 'Excel',
+                            className: 'btn btn-success', // Warna biru
+                            exportOptions: {
+                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                            },
+                            filename: function() {
+                                var d = new Date();
+                                var n = d.toISOString();
+                                return 'Sasaran_Program_' + n;
+                            },
+                        }
+                    ],
+                    "oLanguage": {
+                        "oPaginate": {
+                            "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                            "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                        },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "drawCallback": function(settings) {
+                        feather.replace();
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 10
+                });
 
                 const missionContainer = document.getElementById('performance_indicator-inputs');
 
@@ -351,7 +381,44 @@
             $('#exampleModalCenter').on('shown.bs.modal', function() {
                 $('#program_target').select2({
                     dropdownParent: $('#exampleModalCenter'),
-                    placeholder: 'Pilih IKSP',
+                    placeholder: 'Pilih Indikator Kinerja Sasarab Program',
+                    theme: 'bootstrap-5',
+                    ajax: {
+                        transport: function(params, success, failure) {
+                            // Using Axios to fetch the data
+                            axios.get(`{{ route('program_targets.index') }}`, {
+                                    params: {
+                                        search: params.data.term,
+                                    }
+                                })
+                                .then(function(response) {
+                                    // Call the `success` function with the formatted results
+                                    success({
+                                        results: response.data.map(function(item) {
+                                            return {
+                                                id: item.id,
+                                                text: item.name
+                                            };
+                                        })
+                                    });
+                                })
+                                .catch(function(error) {
+                                    // Call the `failure` function in case of an error
+                                    failure(error);
+                                });
+                        },
+                        delay: 250,
+                        cache: true
+                    }
+                });
+            }).on('hidden.bs.modal', function() {
+                $('#program_target').select2('destroy');
+            });
+
+            $('#exampleModalCenter').on('shown.bs.modal', function() {
+                $('#program_target_edit').select2({
+                    dropdownParent: $('#exampleModalCenter'),
+                    placeholder: 'Pilih Indikator Kinerja Sasarab Program',
                     theme: 'bootstrap-5',
                     ajax: {
                         transport: function(params, success, failure) {
@@ -384,7 +451,7 @@
                 });
 
             }).on('hidden.bs.modal', function() {
-                $('#program_target').select2('destroy');
+                $('#program_target_edit').select2('destroy');
             });
         </script>
     </x-slot>

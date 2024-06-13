@@ -17,7 +17,7 @@ class RenstraController extends Controller
     {
         $renstra = Renstra::first();
 
-        return view('app.vision', ['title' => 'VISI', 'renstra' => $renstra]);
+        return view('app.vision', ['title' => 'Visi', 'renstra' => $renstra]);
     }
 
     public function updateVision(Request $request)
@@ -37,6 +37,7 @@ class RenstraController extends Controller
     {
         $renstra = Renstra::with('missions')->first();
         return view('app.mission', ['title' => 'Misi', 'renstra' => $renstra]);
+        
     }
 
     public function storeMission(Request $request)
@@ -67,8 +68,6 @@ class RenstraController extends Controller
         return response()->json(['error' => 'Misi tidak ditemukan.'], 404);
     }
 
-
-
     public function deleteMission(Request $request)
     {
         RenstraMission::find($request->id)->delete();
@@ -85,7 +84,7 @@ class RenstraController extends Controller
 
         // Generate the PDF
         $pdf = PDF::loadView('components.custom.pdf.downloadMissionPdf', ['missions' => $missions]);
-        return $pdf->download("Mission_PDF_{$date}.pdf");
+        return $pdf->download("Misi_{$date}.pdf");
     }
 
     public function iku()
@@ -101,15 +100,16 @@ class RenstraController extends Controller
     public function storeIku(Request $request)
     {
         $validatedData = $request->validate([
+            'misi' => 'required|integer',
             'iku.*' => 'required|string', // Validate each iku input
-            // 'misi' => 'required|integer', // Validate each iku input
         ]);
         foreach ($validatedData['iku'] as $data)
             RenstraIndicator::create([
-                // 'renstra_mission_id' => $validatedData['misi'], 
+                // 'renstra_mission_id' => $validatedData['misi'],
+                'renstra_mission_id' => $validatedData['misi'], 
                 'description' => $data
             ]);
-        return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM berhasil ditambahkan.');
+        return redirect()->route('iku.index')->with('success', 'Sasaran Program berhasil ditambahkan.');
     }
 
     public function updateIku(RenstraIndicator $iku, Request $request)
@@ -124,10 +124,10 @@ class RenstraController extends Controller
                 'description' => $validatedData['description'],
                 'renstra_mission_id' => $validatedData['misi']
             ]);
-            return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM berhasil update.');
+            return redirect()->route('iku.index')->with('success', 'Sasaran Program berhasil update.');
         }
 
-        return redirect()->route('iku.index')->with('success', 'SASARAN PROGRAM gagal diupdate.');
+        return redirect()->route('iku.index')->with('success', 'Sasaran Program gagal diupdate.');
     }
 
     // Add this method to your RenstraController
@@ -142,7 +142,6 @@ class RenstraController extends Controller
     public function getRenstraIku(Request $request)
     {
         $search = $request->input('search', '');
-        $limit = $request->input('limit', 10); // Default to 10 if not provided
 
         $query = RenstraIndicator::query();
 
@@ -150,7 +149,7 @@ class RenstraController extends Controller
             $query->where('description', 'LIKE', "%{$search}%");
         }
 
-        $programTargets = $query->limit($limit)->get(['id', 'description']);
+        $programTargets = $query->get(['id', 'description']);
 
         return response()->json($programTargets);
     }
@@ -165,6 +164,6 @@ class RenstraController extends Controller
 
         // Update the path to match the location of your Blade file
         $pdf = PDF::loadView('components.custom.pdf.downloadIkuPdf', ['ikus' => $ikus]);
-        return $pdf->download("Sasaran_Program_PDF_{$date}.pdf");
+        return $pdf->download("Sasaran_Program_{$date}.pdf");
     }
 }

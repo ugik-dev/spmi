@@ -15,7 +15,7 @@ class ProgramTargetController extends Controller
     public function index()
     {
         $programTargets = ProgramTarget::with('iku')->get();
-        return view('app.program-target', ['title' => 'Sasaran Program', 'programTargets' => $programTargets]);
+        return view('app.program-target', ['title' => 'IKSP', 'programTargets' => $programTargets]);
     }
 
     /**
@@ -72,11 +72,11 @@ class ProgramTargetController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             // 'iku_id' => 'required|number|max:255'
-            'iku_id' => 'nullable|exists:renstra_indicators,id',
+            // 'iku_id' => 'nullable|exists:renstra_indicators,id',
 
         ]);
 
-        $programTarget->update(['name' => $request->name, 'renstra_indicator_id' => $request->iku_id]);
+        $programTarget->update(['name' => $request->name]);
 
         return redirect()->route('program_target.index')->with('success', 'Sasaran Program berhasil diupdate.');
     }
@@ -96,7 +96,6 @@ class ProgramTargetController extends Controller
     public function getProgramTargets(Request $request)
     {
         $search = $request->input('search', '');
-        $limit = $request->input('limit', 10); // Default to 10 if not provided
 
         $query = ProgramTarget::query();
 
@@ -104,7 +103,7 @@ class ProgramTargetController extends Controller
             $query->where('name', 'LIKE', "%{$search}%");
         }
 
-        $programTargets = $query->limit($limit)->get(['id', 'name']);
+        $programTargets = $query->get(['id', 'name']);
 
         return response()->json($programTargets);
     }
@@ -116,6 +115,6 @@ class ProgramTargetController extends Controller
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
         $pdf = PDF::loadView('components.custom.pdf.downloadIkspPdf', ['programTargets' => $programTargets]);
-        return $pdf->download("IKSP_PDF_{$date}.pdf");
+        return $pdf->download("IKSP_{$date}.pdf");
     }
 }

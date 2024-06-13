@@ -29,7 +29,7 @@ class PerformanceIndicatorController extends Controller
         }
 
         $programTargetsHasPerformanceIndicators = $query->paginate($perPage);
-        $title = 'Sasaran Program';
+        $title = 'Sasaran Kegiatan';
 
         return view('app.performance-indicator', compact('title', 'programTargetsHasPerformanceIndicators', 'perPage', 'search'));
     }
@@ -91,8 +91,9 @@ class PerformanceIndicatorController extends Controller
         // $performanceIndicator->value = $request->value;
         $performanceIndicator->save();
 
-        // Redirect with a success message
+        // Redirect or send a response back
         return redirect()->route('performance_indicator.index')->with('success', 'Sasaran Kegiatan berhasil diperbarui.');
+        // return response()->json(['success' => true, 'message' => 'Sasaran Kegiatan berhasil diperbarui']);
     }
 
     /**
@@ -116,7 +117,7 @@ class PerformanceIndicatorController extends Controller
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
         $pdf = PDF::loadView('components.custom.pdf.downloadPerformanceIndicatorPdf', compact('programTargetsHasPerformanceIndicators'));
-        return $pdf->download("Performance-Indicators-Report-{$date}.pdf");
+        return $pdf->download("Sasaran_Kegiatan_{$date}.pdf");
     }
 
     // download excel
@@ -135,7 +136,6 @@ class PerformanceIndicatorController extends Controller
     public function getPerformanceIndicator(Request $request)
     {
         $search = $request->input('search', '');
-        $limit = $request->input('limit', 10); // Default to 10 if not provided
 
         $query = PerformanceIndicator::query();
 
@@ -143,9 +143,9 @@ class PerformanceIndicatorController extends Controller
             $query->where('name', 'LIKE', "%{$search}%");
         }
 
-        $programTargets = $query->limit($limit)->get(['id', 'name']);
+        $performanceIndicators = $query->get(['id', 'name']);
 
-        return response()->json($programTargets);
+        return response()->json($performanceIndicators);
     }
 
     // fungsi search data

@@ -103,8 +103,8 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <div class="table-responsive my-4 p-2">
-                    <table id="receipt-table" class="table table-bordered">
+                <div class="table-responsive px-4">
+                    <table id="receipt-table" class="table table-bordered table-hover">
                         <thead>
                             <tr class="text-center">
                                 <th scope="col">Jenis Kuitansi</th>
@@ -126,9 +126,9 @@
                                     <td>{{ ucfirst(__($receipt->type)) }}</td>
                                     <td>{!! status_receipt($receipt->status) !!}</td>
                                     <td>{!! $receipt->status == 'accept' ? status_app_keuangan($receipt->status_money_app) : '' !!}</td>
-                                    <td>{{ $receipt->description }}</td>
+                                    <td class="text-start">{{ $receipt->description }}</td>
                                     <td>{{ $receipt->activity_date }}</td>
-                                    <td>Rp {{ number_format($receipt->amount, 0, ',', '.') }}</td>
+                                    <td>Rp{{ number_format($receipt->amount, 0, ',', '.') }}</td>
                                     <td> @php
                                         $firstIteration = true;
                                     @endphp
@@ -195,21 +195,11 @@
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
                     "buttons": [{
-                            extend: 'pdfHtml5',
                             text: 'PDF',
-                            className: 'btn btn-danger', // Warna biru
-                            exportOptions: {
-                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
-                            },
-                            filename: function() {
-                                var d = new Date();
-                                var n = d.toISOString();
-                                return 'PDF_Export_' + n;
-                            },
-                            customize: function(doc) {
-                                doc.styles.tableHeader.alignment = 'left'; // Contoh penyesuaian
-                                // Tambahkan kustomisasi pdfmake Anda di sini
-                                doc.content[1].table.widths = ['auto', '*', '*'];
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href =
+                                    "{{ route('payment-receipt.exportUsulanKuitansi-pdf') }}";
                             }
                         },
                         {
@@ -217,12 +207,14 @@
                             text: 'Excel',
                             className: 'btn btn-success', // Warna biru
                             exportOptions: {
-                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7,
+                                    8, 9
+                                ] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
                             },
                             filename: function() {
                                 var d = new Date();
                                 var n = d.toISOString();
-                                return 'Excel_Export_' + n;
+                                return 'Usulan_Kuitansi_Pembayaran_' + n;
                             },
                         }
                     ],

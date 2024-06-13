@@ -80,21 +80,21 @@
                         @endif
                     </div>
 
-                    <div class="d-flex justify-content-center justify-content-sm-start">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20 ms-3" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Indikator Kinerja Sasaran Program
                         </button>
                     </div>
 
-                    <div class="container p-3">
+                    <div class="container px-3">
                         <table id="zero-config" class="table table-bordered table-hover">
                             <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
                                     <th scope="col">Sasaran Program</th>
-                                    <th scope="col">IKSP (Indikator Kinerja Sasaran Program)</th>
+                                    <th scope="col">Indikator Kinerja Sasaran Program</th>
                                     <th scope="col" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -104,23 +104,25 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $programTarget->iku?->description }}</td>
                                         <td>{{ $programTarget->name }}</td>
-                                        <td class="d-flex justify-content-center text-start">
-                                            <button type="button" class="btn btn-sm btn-primary mx-1"
-                                                onclick="openEditModal({{ $programTarget->id }}, '{{ $programTarget->name }}','{{ $programTarget->renstra_indicator_id }}','{{ $programTarget->iku?->description }}')">
-                                                <i class="text-white" data-feather="edit-2"></i>
-                                            </button>
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a type="button" class="btn btn-sm btn-warning mx-1"
+                                                    onclick="openEditModal({{ $programTarget->id }}, '{{ $programTarget->name }}','{{ $programTarget->renstra_indicator_id }}','{{ $programTarget->iku?->description }}')">
+                                                    <i class="text-white" data-feather="edit-2"></i>
+                                                </a>
 
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
-                                                role="button" onclick="confirmDelete({{ $programTarget->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-                                            <!-- Hidden form for delete request -->
-                                            <form id="delete-form-{{ $programTarget->id }}"
-                                                action="{{ route('program_target.delete', $programTarget->id) }}"
-                                                method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                    role="button" onclick="confirmDelete({{ $programTarget->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                                <!-- Hidden form for delete request -->
+                                                <form id="delete-form-{{ $programTarget->id }}"
+                                                    action="{{ route('program_target.delete', $programTarget->id) }}"
+                                                    method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -132,6 +134,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -154,23 +157,21 @@
                 <div class="modal-body">
                     <form action="{{ route('program_target.store') }}" method="POST">
                         @csrf
-                        <div class="form-group">
-                            <label for="iku_id">SASARAN PROGRAM</label>
+                        <div class="form-group mb-4">
+                            <label for="iku_id"><b>Sasaran Program</b></label>
                             <select id="iku_id" name="iku_id" class="form-control select2">
-                                <option value="">Pilih SASARAN PROGRAM</option>
+                                <option value="">Pilih Sasaran Program</option>
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
-                        <div class="form-group d-flex align-items-center">
-                            <button type="button" id="add-program_target"
-                                class="btn btn-sm btn-primary py-0 px-2 mt-2 ">
+                        <div class="form-group d-flex align-items-center mb-2">
+                            <button type="button" id="add-program_target" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="program_target" class="ms-2 py-0 mb-0"> Indikator Kinerja Sasaran
                                 Program</label>
                         </div>
-
-                        <div id="program_target-inputs" class="mt-2">
+                        <div id="program_target-inputs" class="mb-4">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="program_target[]" class="form-control">
@@ -179,42 +180,52 @@
                                 </button>
                             </div>
                         </div>
-
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
-
-
                 </div>
 
             </div>
         </div>
     </div>
+
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalTitle">Edit Sasaran Program</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editModalTitle">Edit Indikator Kinerja Sasaran Program</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label for="iku_id_edit">SASARAN PROGRAM</label>
-                            <select id="iku_id_edit" name="iku_id" class="form-control select2">
-                                <option value="">Pilih SASARAN PROGRAM</option>
+                        <div class="form-group mb-3">
+                            <label><b>Sasaran Program</b></label>
+                            <select id="iku_id_edit" name="iku_id" class="form-control select2" disabled>
+                                <option value="">Pilih Sasaran Program</option>
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
-                        <input type="text" id="program_target_name" name="name" class="form-control" required>
+                        <div class="form-group mb-3">
+                            <label><b>Indikator Kinerja Sasaran Program</b></label>
+                            <textarea type="text" id="program_target_name" name="name" class="form-control" rows="4" required></textarea>
+                        </div>
                         <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>
@@ -241,11 +252,6 @@
                 document.getElementById('program_target_name').value = name;
                 $("#iku_id_edit").append("<option value='" + iku + "' selected>" + iku_desc + "</option>");
                 $('#iku_id_edit').trigger('change');
-                // $("#iku_id_edit").select2('data', {
-                //     id: iku,
-                //     text: 's'
-                // });
-                // Update the form action URL
                 document.getElementById('edit-form').action = '/admin/perkin/iksp/' + id + '/update';
 
                 // Show the modal
@@ -314,10 +320,14 @@
                         "sSearchPlaceholder": "Search...",
                         "sLengthMenu": "Results :  _MENU_",
                     },
+                    "drawCallback": function(settings) {
+                        feather.replace();
+                    },
                     "stripeClasses": [],
                     "lengthMenu": [7, 10, 20, 50],
                     "pageLength": 10
                 });
+
                 const missionContainer = document.getElementById('program_target-inputs');
 
                 document.getElementById('add-program_target').addEventListener('click', function() {
@@ -327,7 +337,7 @@
                         <button type="button" class="btn btn-danger remove-program_target">
                             <i data-feather="trash"></i>
                         </button>
-                      </div>`;
+                    </div>`;
                     missionContainer.insertAdjacentHTML('beforeend', newInput);
                     feather.replace();
                     updateNumbering();
@@ -343,7 +353,7 @@
                 $('#exampleModalCenter').on('shown.bs.modal', function() {
                     $('#iku_id').select2({
                         dropdownParent: $('#exampleModalCenter'),
-                        placeholder: 'Pilih SASARAN PROGRAM',
+                        placeholder: 'Pilih Sasaran Program',
                         theme: 'bootstrap-5',
                         ajax: {
                             transport: function(params, success, failure) {
@@ -378,6 +388,7 @@
                 }).on('hidden.bs.modal', function() {
                     $('#iku_id').select2('destroy');
                 });
+
                 $('#editModal').on('shown.bs.modal', function() {
                     $('#iku_id_edit').select2({
                         dropdownParent: $('#editModal'),

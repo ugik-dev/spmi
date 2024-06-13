@@ -84,13 +84,13 @@
                 <x-custom.alerts />
 
                 <div class="table-responsive px-4">
-                    <div class="me-1 mt-4">
+                    <div class="d-flex me-1 mt-4 center-input-button">
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#createModal">
                             Input User
                         </button>
                     </div>
-                    <table id="user-table" class="table table-bordered">
+                    <table id="user-table" class="table table-bordered table-hover">
                         <thead class="bg-primary text-center">
                             <tr>
                                 <th scope="col" style="width:40px;">No.</th>
@@ -119,50 +119,47 @@
                                     <td>{{ $user->employee->workUnit->name ?? '-' }}</td>
                                     <td>{{ $user->email ?? '-' }}
                                         ({{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }})</td>
-                                    <td class="text-start">
-                                        {{-- <button type="button" class="btn btn-sm btn-info"
-                                            data-bs-target="#changePasswordModal" data-bs-toggle="modal">
-                                            <i data-feather="key"></i>
-                                        </button> --}}
-                                        <button type="button"
-                                            class="btn btn-primary btn-sm d-flex align-items-center my-1"
-                                            data-bs-target="#editModal" data-bs-toggle="modal"
-                                            data-user="{{ $user }}"
-                                            data-update-url="{{ route('user.update', $user) }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="feather feather-edit-2">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg>
-                                        </button>
-
-                                        <a href="javascript:void(0);"
-                                            class="btn btn-danger btn-sm d-flex align-items-center my-1" role="button"
-                                            onclick="confirmDelete({{ $user->id }});">
-                                            <i class="text-white" data-feather="trash-2"></i>
-                                        </a>
-                                        <!-- Hidden form for delete request -->
-                                        <form id="delete-form-{{ $user->id }}"
-                                            action="{{ route('user.delete', $user->id) }}" method="POST"
-                                            style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-
-                                        <a href="javascript:void(0);"
-                                            class="btn btn-success btn-sm d-flex align-items-center my-1"
-                                            style="font-size:4px" role="button"
-                                            onclick="resendMail({{ $user->id }});">
-                                            <i class="text-white" data-feather="send"></i>
-                                        </a>
-                                        <!-- Hidden form for delete request -->
-                                        <form id="resend-form-{{ $user->id }}"
-                                            action="{{ route('user.resend-mail', $user->id) }}" method="POST"
-                                            style="display: none;">
-                                            @csrf
-                                            @method('POST')
-                                        </form>
+                                    <td class="align-middle">
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <a href="javascript:void(0);"
+                                                class="btn btn-sm btn-success d-flex align-items-center me-1"
+                                                style="font-size:4px" role="button"
+                                                onclick="resendMail({{ $user->id }});">
+                                                <i class="text-white" data-feather="send"></i>
+                                            </a>
+                                            <!-- Hidden form for delete request -->
+                                            <form id="resend-form-{{ $user->id }}"
+                                                action="{{ route('user.resend-mail', $user->id) }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                                @method('POST')
+                                            </form>
+                                            <a type="button"
+                                                class="btn btn-sm btn-warning d-flex align-items-center me-1 ms-1"
+                                                data-bs-target="#editModal" data-bs-toggle="modal"
+                                                data-user="{{ $user }}"
+                                                data-update-url="{{ route('user.update', $user) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-edit-2">
+                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                            <a href="javascript:void(0);"
+                                                class="btn btn-sm btn-danger d-flex align-items-center ms-1"
+                                                role="button" onclick="confirmDelete({{ $user->id }});">
+                                                <i class="text-white" data-feather="trash-2"></i>
+                                            </a>
+                                            <!-- Hidden form for delete request -->
+                                            <form id="delete-form-{{ $user->id }}"
+                                                action="{{ route('user.delete', $user->id) }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -175,29 +172,9 @@
     <x-modal modalId="createModal" modalTitle="Tambahkan User" size="lg">
         <x-user.create-form :workUnits="$work_units" :identityTypes="$identity_types" :roles="$roles" />
     </x-modal>
-    <x-modal modalId="editModal" modalTitle="Edit User">
+    <x-modal modalId="editModal" modalTitle="Edit User" size="lg">
         <x-user.edit-form :workUnits="$work_units" :identityTypes="$identity_types" :roles="$roles" />
     </x-modal>
-    <!-- TODO: Finish Change Password -->
-    {{-- <x-modal modalId="changePasswordModal" modalTitle="Ganti Password">
-        <form id="form-change-password" action="" method="post" autocomplete="off">
-            @csrf
-            <label class="form-label">Password</label>
-            <div class="input-group has-validation">
-                <input name="password" type="password" class="form-control" id="password-field"
-                    autocomplete="new-password" required>
-                <span class="input-group-text">
-                    <i data-feather="eye" class="feather icon-eye" id="togglePassword" style="cursor: pointer;"></i>
-                </span>
-                @error('password')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button type="submit" class="btn btn-warning my-3">Ganti Password</button>
-        </form>
-    </x-modal> --}}
-
 
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>

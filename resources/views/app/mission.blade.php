@@ -125,7 +125,7 @@
                         @endif
                     </div>
 
-                    <div class="text-center d-flex justify-content-between align-items-center px-4">
+                    <div class="text-center d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
@@ -134,7 +134,7 @@
                     </div>
 
                     <div class="table-responsive px-4">
-                        <table id="zero-config" class="table table-bordered">
+                        <table id="zero-config" class="table table-bordered table-hover">
                             <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
@@ -147,16 +147,19 @@
                                     <tr>
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $mission->description }}</td>
-                                        <td class="d-flex justify-content-center text-start">
-                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm mx-1"
-                                                role="button"
-                                                onclick="editMission({{ $mission->id }}, '{{ $mission->description }}');">
-                                                <i class="text-white" data-feather="edit-2"></i>
-                                            </a>
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
-                                                role="button" onclick="confirmDeleteMission({{ $mission->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a href="javascript:void(0);" class="btn btn-warning btn-sm me-1"
+                                                    role="button"
+                                                    onclick="openEditMissionModal({{ $mission->id }}, '{{ $mission->description }}');">
+                                                    <i class="text-white" data-feather="edit-2"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm ms-1"
+                                                    role="button"
+                                                    onclick="confirmDeleteMission({{ $mission->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -194,14 +197,14 @@
                     <form action="{{ route('mission.store') }}" method="POST">
                         @csrf
 
-                        <div class="form-group d-flex align-items-center">
+                        <div class="form-group d-flex align-items-center mb-2">
                             <button type="button" id="add-mission" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="mission" class="ms-2 py-0 mb-0">Misi</label>
                         </div>
 
-                        <div id="mission-inputs" class="mt-2">
+                        <div id="mission-inputs">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="mission[]" class="form-control">
@@ -211,13 +214,48 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end mt-3 py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    {{-- edit modal --}}
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalTitle">Edit Misi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-form" action="{{ route('mission.update') }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="form-group mb-3">
+                            <label><b>Misi</b></label>
+                            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <input type="hidden" name="id" id="mission_id">
+                        <!-- Add other fields as needed -->
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -237,6 +275,18 @@
             window.addEventListener('load', function() {
                 feather.replace();
             })
+
+            function openEditMissionModal(id, description) {
+                // Populate the form fields
+                document.getElementById('description').value = description;
+                document.getElementById('mission_id').value = id;
+                // Update the form action URL
+                document.getElementById('edit-form').action = '/mission/update';
+
+                // Show the modal
+                var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                editModal.show();
+            }
 
             function confirmDeleteMission(index) {
                 Swal.fire({
@@ -279,57 +329,57 @@
                     });
             }
 
-            function editMission(id, description) {
-                Swal.fire({
-                    title: 'Edit Misi',
-                    input: 'textarea',
-                    inputAttributes: {
-                        'style': 'width: 100%; height: 100px; margin: auto;' // Gaya untuk textarea
-                    },
-                    inputValue: description,
-                    showCancelButton: true,
-                    showCloseButton: true,
-                    confirmButtonText: 'Simpan',
-                    confirmButtonColor: '#4361ee',
-                    cancelButtonText: 'Batal',
-                    cancelButtonColor: 'rgb(221, 51, 51)',
-                    width: '600px',
-                    padding: '2em',
-                    customClass: {
-                        title: 'custom-title-editMission',
-                        confirmButton: 'btn btn-primary wave-effect',
-                        cancelButton: 'btn btn-danger wave-effect'
-                    },
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'Anda harus mengisi deskripsi misi!';
-                        }
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        axios.post('{{ route('mission.update') }}', {
-                                id: id,
-                                description: result.value
-                            })
-                            .then(function(response) {
-                                Swal.fire(
-                                    'Diperbarui!',
-                                    'Misi telah diperbarui.',
-                                    'success'
-                                ).then(() => {
-                                    window.location.reload();
-                                });
-                            })
-                            .catch(function(error) {
-                                Swal.fire(
-                                    'Gangguan!',
-                                    'Terjadi gangguan saat memperbarui misi.',
-                                    'error'
-                                );
-                            });
-                    }
-                });
-            }
+            // function editMission(id, description) {
+            //     Swal.fire({
+            //         title: 'Edit Misi',
+            //         input: 'textarea',
+            //         inputAttributes: {
+            //             'style': 'width: 100%; height: 100px; margin: auto;' // Gaya untuk textarea
+            //         },
+            //         inputValue: description,
+            //         showCancelButton: true,
+            //         showCloseButton: true,
+            //         confirmButtonText: 'Simpan',
+            //         confirmButtonColor: '#4361ee',
+            //         cancelButtonText: 'Batal',
+            //         cancelButtonColor: 'rgb(221, 51, 51)',
+            //         width: '600px',
+            //         padding: '2em',
+            //         customClass: {
+            //             title: 'custom-title-editMission',
+            //             confirmButton: 'btn btn-primary wave-effect',
+            //             cancelButton: 'btn btn-danger wave-effect'
+            //         },
+            //         inputValidator: (value) => {
+            //             if (!value) {
+            //                 return 'Anda harus mengisi deskripsi misi!';
+            //             }
+            //         }
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             axios.post('{{ route('mission.update') }}', {
+            //                     id: id,
+            //                     description: result.value
+            //                 })
+            //                 .then(function(response) {
+            //                     Swal.fire(
+            //                         'Diperbarui!',
+            //                         'Misi telah diperbarui.',
+            //                         'success'
+            //                     ).then(() => {
+            //                         window.location.reload();
+            //                     });
+            //                 })
+            //                 .catch(function(error) {
+            //                     Swal.fire(
+            //                         'Gangguan!',
+            //                         'Terjadi gangguan saat memperbarui misi.',
+            //                         'error'
+            //                     );
+            //                 });
+            //         }
+            //     });
+            // }
 
             function updateNumbering() {
                 const missionInputs = document.querySelectorAll('#mission-inputs .input-group');
@@ -360,7 +410,7 @@
                             filename: function() {
                                 var d = new Date();
                                 var n = d.toISOString();
-                                return 'Misi_Excel_' + n;
+                                return 'Misi_' + n;
                             },
                         }
                     ],
@@ -381,7 +431,6 @@
                     "lengthMenu": [7, 10, 20, 50],
                     "pageLength": 10,
                 });
-
 
                 const missionContainer = document.getElementById('mission-inputs');
 

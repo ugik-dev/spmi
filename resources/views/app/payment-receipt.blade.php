@@ -104,8 +104,8 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <div class="table-responsive my-4 p-2">
-                    <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1">
+                <div class="table-responsive px-4">
+                    <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1 center-input-button">
                         <div class="d-flex flex-wrap gap-1 my-2">
                             <button id="add-activity_btn" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
                                 data-bs-target="#createModal">Rekam Kuitansi Pembayaran
@@ -117,7 +117,7 @@
                             <button id="delete-dipa" class="btn btn-outline-danger shadow-sm bs-tooltip">Hapus</button>
                         </div>
                     </div>
-                    <table id="receipt-table" class="table table-bordered">
+                    <table id="receipt-table" class="table table-bordered table-hover">
                         <thead>
                             <tr class="text-center">
                                 <th scope="col">Jenis Kuitansi</th>
@@ -137,9 +137,9 @@
                                 <tr>
                                     <td>{{ ucfirst(__($receipt->type)) }}</td>
                                     <td>{!! status_receipt($receipt->status) !!}</td>
-                                    <td>{{ $receipt->description }}</td>
+                                    <td class="text-start">{{ $receipt->description }}</td>
                                     <td>{{ $receipt->activity_date }}</td>
-                                    <td>Rp {{ number_format($receipt->amount, 0, ',', '.') }}</td>
+                                    <td>Rp{{ number_format($receipt->amount, 0, ',', '.') }}</td>
                                     <td>
                                         @php
                                             $firstIteration = true;
@@ -158,14 +158,15 @@
                                     </td>
                                     <td>{{ $receipt->treasurer->name ?? '-' }}</td>
                                     <td>{{ $receipt->ppk->name }}</td>
-                                    <td>{{ $receipt->provider }} {{ $receipt->provider_organization }}</td>
+                                    <td>{{ $receipt->provider }}
+                                        {{ $receipt->provider_organization }}</td>
                                     <td class="text-center">
-                                        <a class="btn-group btn btn-sm btn-primary temporary-edit"
+                                        <a class="btn-group btn btn-sm btn-primary temporary-edit my-1"
                                             href="{{ route('payment-receipt.detail', $receipt) }}">
                                             <i data-feather="eye"></i>
                                         </a>
 
-                                        <button type="button" class="btn btn-sm btn-primary temporary-edit"
+                                        <a type="button" class="btn btn-sm btn-warning temporary-edit my-1"
                                             data-bs-target="#editModal" data-bs-toggle="modal"
                                             data-receipt="{{ $receipt }}"
                                             data-update-url="{{ route('payment-receipt.update', $receipt) }}">
@@ -175,9 +176,9 @@
                                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
                                                 </path>
                                             </svg>
-                                        </button>
+                                        </a>
 
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm my-1" role="button"
                                             onclick="window.confirmDelete({{ $receipt->id }});">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -208,6 +209,7 @@
             </x-custom.statbox>
         </div>
     </div>
+
     <!-- Create Modal -->
     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalTitle"
         aria-hidden="true" data-bs-focus="false">
@@ -215,14 +217,23 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createModalTitle">Rekam Data Kuitansi Pembayaran</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="form-create" action="{{ route('payment-receipt.store') }}" method="POST">
                         @csrf
                         <div class="mb-4 row">
-                            <label for="selectTypeReceipt" class="col-sm-2 col-form-label">Jenis Kuitansi</label>
-                            <div class="col-sm-8">
+                            <label for="selectTypeReceipt" class="col-sm-3 col-form-label">Jenis Kuitansi</label>
+                            <div class="col-sm-9">
                                 <select name="type" class="form-select" id="selectTypeReceipt">
                                     <option selected disabled value="">Pilih Jenis Kuitansi...</option>
                                     <option value="direct">Pembayaran Langsung</option>
@@ -231,9 +242,9 @@
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="selectPerjadinReceipt" class="col-sm-2 col-form-label">Perjalanan
+                            <label for="selectPerjadinReceipt" class="col-sm-3 col-form-label">Perjalanan
                                 Dinas</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <select name="perjadin" class="form-select" id="selectPerjadinReceipt">
                                     <option selected disabled value="">Pilih ...</option>
                                     <option value="Y">Perjalanan Dinas</option>
@@ -242,99 +253,99 @@
                             </div>
                         </div>
                         <div class="mb-4 row" id="wrapperSpdNumber">
-                            <label for="inputSpdNumber" class="col-sm-2 col-form-label">Nomor SPD
+                            <label for="inputSpdNumber" class="col-sm-3 col-form-label">Nomor SPD
                             </label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <input type="text" class="form-control" name="spd_number" id="inputSpdNumber">
                             </div>
                         </div>
                         <div class="mb-4 row" id="wrapperSpdTujuan">
-                            <label for="inputSpdTujuan" class="col-sm-2 col-form-label">Tujuan SPD
+                            <label for="inputSpdTujuan" class="col-sm-3 col-form-label">Tujuan SPD
                             </label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <input type="text" class="form-control" name="spd_tujuan" id="inputSpdTujuan">
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputDisbursementDescription" class="col-sm-2 col-form-label">Uraian
+                            <label for="inputDisbursementDescription" class="col-sm-3 col-form-label">Uraian
                                 Pencairan</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <input type="text" class="form-control" name="description"
                                     id="inputDisbursementDescription">
                             </div>
                         </div>
                         <div class="mb-4 row pelaksanaWrapper ">
-                            <label for="selectActivityExecutor" class="col-sm-2 col-form-label">Pelaksana
+                            <label for="selectActivityExecutor" class="col-sm-3 col-form-label">Pelaksana
                                 Kegiatan</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <select class="form-select" name="activity_implementer" id="createSelectPelaksana">
                                     <option selected disabled value="">Pilih Pelaksana...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4 row pengikutWrapper " id="pengikutWrapper">
-                            <label for="selectActivityExecutor" class="col-sm-2 col-form-label">Pengikut
+                            <label for="selectActivityExecutor" class="col-sm-3 col-form-label">Pengikut
                                 Kegiatan</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <select class="form-select" style="width:100% !important" multiple="multiple"
                                     name="activity_followings[]" id="createSelectPengikut">
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputActivityDate" class="col-sm-2 col-form-label">Tanggal Kegiatan</label>
-                            <div class="col-sm-8 flatpickr">
+                            <label for="inputActivityDate" class="col-sm-3 col-form-label">Tanggal Kegiatan</label>
+                            <div class="col-sm-9 flatpickr">
                                 <input id="activityDate" name="activity_date" class="form-control  text-dark"
                                     type="date" placeholder="Pilih tanggal..">
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputAmount" class="col-sm-2 col-form-label">Jumlah</label>
-                            <div class="col-sm-8">
+                            <label for="inputAmount" class="col-sm-3 col-form-label">Jumlah</label>
+                            <div class="col-sm-9">
                                 <input type="text" name="amount" class="form-control" id="inputAmount">
                             </div>
                         </div>
                         <div class="mb-4 row treasurerWrapper ">
-                            <label for="selectActivityExecutor" class="col-sm-2 col-form-label">Bendahara</label>
-                            <div class="col-sm-8">
+                            <label for="selectActivityExecutor" class="col-sm-3 col-form-label">Bendahara</label>
+                            <div class="col-sm-9">
                                 <select class="form-select" name="treasurer" id="createSelectTreasurer">
                                     <option selected disabled value="">Pilih Bendahara...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4 row ppkWrapper">
-                            <label for="createSelectPPK" class="col-sm-2 col-form-label">PPK</label>
-                            <div class="col-sm-8">
+                            <label for="createSelectPPK" class="col-sm-3 col-form-label">PPK</label>
+                            <div class="col-sm-9">
                                 <select class="form-select" name="ppk" id="createSelectPPK">
                                     <option selected disabled value="">Pilih PPK...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputSupplierName" class="col-sm-2 col-form-label">Penyedia PIC</label>
-                            <div class="col-sm-8">
+                            <label for="inputSupplierName" class="col-sm-3 col-form-label">Penyedia PIC</label>
+                            <div class="col-sm-9">
                                 <input type="text" name="provider" class="form-control" id="inputSupplierName">
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputSupplierOrganizationName" class="col-sm-2 col-form-label">Penyedia
+                            <label for="inputSupplierOrganizationName" class="col-sm-3 col-form-label">Penyedia
                                 Badan</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-9">
                                 <input type="text" name="provider_organization" class="form-control"
                                     id="inputSupplierOrganizationName">
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="selectActivityCode" class="col-sm-2 col-form-label">Kode Kegiatan</label>
-                            <div class="col-sm-8">
+                            <label for="selectActivityCode" class="col-sm-3 col-form-label">Kode Kegiatan</label>
+                            <div class="col-sm-9">
                                 <select class="form-select" id="selectActivityCode">
                                     <option selected disabled value="">Pilih Kode Kegiatan...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="selectAccountCode" class="col-sm-2 col-form-label">Kode Akun</label>
-                            <div class="col-sm-8">
+                            <label for="selectAccountCode" class="col-sm-3 col-form-label">Kode Akun</label>
+                            <div class="col-sm-9">
                                 <select class="form-select" id="selectAccountCode" name="bi_id">
                                     <option selected disabled value="">Pilih Kode Akun...</option>
                                 </select>
@@ -371,7 +382,7 @@
                             </div>
                         </div> --}}
                         <button id="submitFormCreate" disabled
-                            class="btn btn-primary text-center align-items-center mt-2 py-auto" type="submit">
+                            class="btn btn-primary text-center align-items-center float-end py-auto" type="submit">
                             <span class="icon-name">Simpan</span>
                         </button>
                     </form>
@@ -483,21 +494,10 @@
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
                     "buttons": [{
-                            extend: 'pdfHtml5',
                             text: 'PDF',
-                            className: 'btn btn-danger', // Warna biru
-                            exportOptions: {
-                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
-                            },
-                            filename: function() {
-                                var d = new Date();
-                                var n = d.toISOString();
-                                return 'PDF_Export_' + n;
-                            },
-                            customize: function(doc) {
-                                doc.styles.tableHeader.alignment = 'left'; // Contoh penyesuaian
-                                // Tambahkan kustomisasi pdfmake Anda di sini
-                                doc.content[1].table.widths = ['auto', '*', '*'];
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('payment-receipt.export-pdf') }}";
                             }
                         },
                         {
@@ -505,12 +505,14 @@
                             text: 'Excel',
                             className: 'btn btn-success', // Warna biru
                             exportOptions: {
-                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
+                                columns: [0, 1, 2, 3, 4, 5, 6, 7,
+                                    8
+                                ] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
                             },
                             filename: function() {
                                 var d = new Date();
                                 var n = d.toISOString();
-                                return 'Excel_Export_' + n;
+                                return 'Kuitansi_Pembayaran_' + n;
                             },
                         }
                     ],

@@ -10,6 +10,10 @@
             border-collapse: collapse;
         }
 
+        h2 {
+            text-align: center;
+        }
+
         th,
         td {
             border: 1px solid black;
@@ -28,27 +32,29 @@
 </head>
 
 <body>
-    <h2>Performance Indicators Report</h2>
+    <h2>Indikator Kinerja Sasaran Program</h2>
     <table>
         <thead class="text-center">
             <tr>
                 <th>No.</th>
-                <th>Sasaran Program</th>
-                <th>Indikator Kinerja</th>
+                <th>Indikator Kinerja Sasaran Program</th>
+                <th>Sasaran Kegiatan</th>
             </tr>
         </thead>
         <tbody>
+            @php
+                $indexCounter = 1;
+            @endphp
             @foreach ($programTargetsHasPerformanceIndicators as $programTarget)
-                @foreach ($programTarget->performanceIndicators as $index => $performanceIndicator)
+                @foreach ($programTarget->performanceIndicators as $performanceIndicator)
                     <tr>
-                        @if ($index == 0)
-                            <td rowspan="{{ count($programTarget->performanceIndicators) }}">
-                                {{ $loop->parent->iteration }}</td>
-                            <td rowspan="{{ count($programTarget->performanceIndicators) }}">{{ $programTarget->name }}
-                            </td>
-                        @endif
+                        <td>{{ $indexCounter }}</td>
+                        <td>{{ $programTarget->name }}</td>
                         <td>{{ $performanceIndicator->name }}</td>
                     </tr>
+                    @php
+                        $indexCounter++;
+                    @endphp
                 @endforeach
             @endforeach
         </tbody>

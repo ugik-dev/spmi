@@ -152,6 +152,7 @@ class PaymentReceiptController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
     public function update(Request $request, Receipt $receipt)
     {
         try {
@@ -235,6 +236,7 @@ class PaymentReceiptController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
     public function destroy(Receipt $receipt)
     {
         try {
@@ -244,6 +246,7 @@ class PaymentReceiptController extends Controller
         }
         return redirect()->back()->with('success', 'Data bendahara berhasil dihapus.');
     }
+
     public function totalAmountByBudgetImplementationDetail(Request $request, $detail)
     {
         try {
@@ -256,8 +259,6 @@ class PaymentReceiptController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
-
-
 
     public function print_kwitansi(Request $request, Receipt $receipt)
     {
@@ -320,6 +321,7 @@ class PaymentReceiptController extends Controller
             // return back()->with('error', $e->getMessage());
         }
     }
+
     public function print2(Request $request, Receipt $receipt)
     {
         try {
@@ -366,5 +368,42 @@ class PaymentReceiptController extends Controller
             Log::error($e);
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    // export pdf rekam kuitansi pembayaran
+    public function exportToPDF()
+    {
+        $title = 'Rekam Kuitansi Pembayaran';
+        $receipts = Receipt::all(); // Sesuaikan dengan query Anda untuk mendapatkan data kuitansi
+
+        // Get the current date and time
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Load view dari folder yang ditentukan
+        $pdf = PDF::loadView('components.custom.payment-receipt.export-pdf', compact('title', 'receipts'));
+        
+        // Atur format kertas dan orientasi
+        $pdf->setPaper('A4', 'landscape');
+
+        // Simpan atau kirim file PDF ke browser
+        return $pdf->download("Kuitansi_Pembayaran_{$date}.pdf");
+    }
+
+    // export pdf usulan kuitansi pembayaran
+    public function usulanKuitansiPembayaranPdf(){
+        $title = 'Usulan Kuitansi Pembayaran';
+        $receipts = Receipt::all(); // Sesuaikan dengan query Anda untuk mendapatkan data kuitansi
+
+        // Get the current date and time
+        $date = Carbon::now()->format('Y-m-d_H-i-s');
+
+        // Load view dari folder yang ditentukan
+        $pdf = PDF::loadView('components.custom.payment-receipt.exportUsulanKuitansi-pdf', compact('title', 'receipts'));
+        
+        // Atur format kertas dan orientasi
+        $pdf->setPaper('A4', 'landscape');
+
+        // Simpan atau kirim file PDF ke browser
+        return $pdf->download("Usulan_Kuitansi_Pembayaran_{$date}.pdf");
     }
 }

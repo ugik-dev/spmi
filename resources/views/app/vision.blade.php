@@ -52,7 +52,7 @@
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalCenterTitle">Input Visi
@@ -72,15 +72,16 @@
                     <form action="{{ route('vision.update') }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label for="vision">Visi</label>
-                            <input type="text" name="vision" class="form-control form-control-lg" id="vision"
-                                value="{{ old('vision', $renstra->vision ?? '') }}" placeholder="Input Visi" required>
+                        <div class="form-group mb-4">
+                            <textarea name="vision" class="form-control form-control-lg" id="vision" rows="4" placeholder="Input Visi"
+                                required>{{ old('vision', $renstra->vision ?? '') }}</textarea>
                             @error('vision')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">Simpan</button>
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-success">Simpan</button>
+                        </div>
                     </form>
                 </div>
 

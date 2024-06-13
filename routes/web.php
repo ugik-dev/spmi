@@ -67,6 +67,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('tambah-misi', [RenstraController::class, 'storeMission'])->name('mission.store');
         Route::post('update-misi', [RenstraController::class, 'updateMission'])->name('mission.update');
         Route::post('hapus-misi', [RenstraController::class, 'deleteMission'])->name('mission.delete');
+        Route::get('misi/data', [RenstraController::class, 'getRenstraMission'])->name('mission.data');
         Route::get('/download-misi-pdf', [RenstraController::class, 'downloadMissionPdf'])->name('download.mission.pdf');
         Route::get('/download-mission-excel', [RenstraController::class, 'downloadMissionExcel'])->name('download.mission.excel');
         Route::get('iku', [RenstraController::class, 'iku'])->name('iku.index');
@@ -138,6 +139,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         ]);
         Route::post('timeline/store_update', [TimelineController::class, 'store_update'])->name('timeline.store_update');
         Route::get('timeline/rekap/{timeline}', [TimelineController::class, 'rekap'])->name('timeline.rekap');
+        Route::get('/download-timeline-pdf', [TimelineController::class, 'downloadTimelinePdf'])->name('download.timeline.pdf');
 
         // PPK Routes
         Route::resource('ppk', PPKController::class);
@@ -244,6 +246,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             'update' => 'payment-receipt.update',
             'destroy' => 'payment-receipt.destroy',
         ]);
+        Route::get('/payment-receipt/export-pdf', [PaymentReceiptController::class, 'exportToPDF'])->name('payment-receipt.export-pdf');
         Route::get('rekam-kuitansi/berkas/{receipt}', [ReceiptController::class, 'showFile'])
             ->name('receipt.show-file');
         Route::get('rekam-kuitansi/print-kwitansi/{receipt}', [PaymentReceiptController::class, 'print_kwitansi'])->name('payment-receipt.print-kwitansi');
@@ -251,6 +254,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('rekam-kuitansi/print-tiket/{receipt}/{verif?}', [PaymentReceiptController::class, 'print_ticket'])->name('payment-receipt.print-ticket');
         Route::get('kuitansi/detail/{receipt}', [PaymentReceiptController::class, 'detail'])->name('payment-receipt.detail');
         Route::get('kuitansi/', [PaymentReceiptController::class, 'list'])->name('payment-receipt.list');
+        Route::get('/payment-receipt/usulanKuitansiPembayaranPdf', [PaymentReceiptController::class, 'usulanKuitansiPembayaranPdf'])->name('payment-receipt.exportUsulanKuitansi-pdf');
 
         Route::prefix('receipt-action/{receipt}')->name('receipt-action.')->controller(ReceiptActionController::class)->group(function () {
             Route::post('upload-berkas', 'upload_berkas')->name('upload-berkas');
@@ -273,6 +277,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             'destroy' => 'payment-verification.destroy',
         ]);
     });
+    
     Route::prefix('cetak-laporan')->group(function () {
         Route::get('laporan-fa-detail', [DetailedFAReportController::class, 'index'])->name('detailed-FA-report.index');
         Route::get('laporan-fa-detail-excel/{dipa}', [DetailedFAReportController::class, 'excel'])->name('detailed-FA-report.excel');

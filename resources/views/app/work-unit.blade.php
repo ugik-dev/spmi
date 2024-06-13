@@ -82,16 +82,16 @@
                         @endif
                     </div>
 
-                    <div class="text-center d-flex justify-content-center justify-content-sm-start px-4">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Unit Kerja
                         </button>
                     </div>
 
                     <div class="table-responsive px-4">
-                        <table id="zero-config" class="table table-bordered">
+                        <table id="zero-config" class="table table-bordered table-hover">
                             <thead class="text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
@@ -110,24 +110,24 @@
                                         <td>{{ $workUnit->code ?? '-' }}</td>
                                         <td>{{ $workUnit->ppkUnit->name ?? '-' }}</td>
                                         <td>{{ $workUnit->kepalaUnit->name ?? '-' }}</td>
-                                        <td class="d-flex justify-content-center text-start">
-                                            <button type="button" class="btn btn-primary btn-sm mx-1"
-                                                onclick="openEditModal({{ $workUnit->id }}, '{{ $workUnit->name }}', '{{ $workUnit->code }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
-                                                <i class="text-white" data-feather="edit-2"></i>
-                                            </button>
-
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
-                                                role="button" onclick="confirmDelete({{ $workUnit->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-                                            <!-- Hidden form for delete request -->
-                                            <form id="delete-form-{{ $workUnit->id }}"
-                                                action="{{ route('work_unit.delete', $workUnit->id) }}" method="POST"
-                                                style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a type="button" class="btn btn-warning btn-sm mx-1"
+                                                    onclick="openEditModal({{ $workUnit->id }}, '{{ $workUnit->name }}', '{{ $workUnit->code }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
+                                                    <i class="text-white" data-feather="edit-2"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                    role="button" onclick="confirmDelete({{ $workUnit->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                                <!-- Hidden form for delete request -->
+                                                <form id="delete-form-{{ $workUnit->id }}"
+                                                    action="{{ route('work_unit.delete', $workUnit->id) }}"
+                                                    method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -143,69 +143,61 @@
     <!-- Create Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalCenterTitle">Input Unit Kerja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('work_unit.store') }}" method="POST">
                         @csrf
-                        <div class="form-group d-flex align-items-center my-2">
-                            {{-- <button type="button" id="add-work_unit" class="btn btn-sm btn-primary py-0 px-2">
-                                <i data-feather="plus"></i>
-                            </button> --}}
-                            <label for="work_unit" class="ms-2 py-0 mb-0">Unit Kerja</label>
-                        </div>
-
-                        <div id="work_unit-inputs" class="mt-2">
+                        <div id="work_unit-inputs">
                             <div class="">
                                 {{-- <span class="input-group-text">1.</span> --}}
-                                <div class="mb-4 row">
-                                    <label for="work_unit_name" class="col-sm-2 col-form-label">Nama Unit Kerja</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" name="work_unit_name" class="form-control"
-                                            placeholder="Nama Unit Kerja">
-                                    </div>
+                                <div class="form-group mb-3">
+                                    <label for="work_unit_name"><b>Nama Unit Kerja</b></label>
+                                    <input type="text" name="work_unit_name" class="form-control"
+                                        placeholder="Nama Unit Kerja">
                                 </div>
-                                <div class="mb-4 row">
-                                    <label for="work_unit_code" class="col-sm-2 col-form-label">Kode</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" name="work_unit_code" class="form-control"
-                                            placeholder="Kode Unit Kerja">
-                                    </div>
+                                <div class="form-group mb-3">
+                                    <label for="work_unit_code"><b>Kode</b></label>
+                                    <input type="text" name="work_unit_code" class="form-control"
+                                        placeholder="Kode Unit Kerja">
                                 </div>
-                                <div class="mb-4 row ppkWrapper">
-                                    <label for="createSelectPPK" class="col-sm-2 col-form-label">PPK</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select" name="ppk" id="createSelectPPK">
-                                            <option selected disabled value="">Pilih PPK...</option>
-                                            @foreach ($ppks as $ppk)
-                                                <option value="{{ $ppk->id }}">{{ $ppk->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="form-group mb-3 ppkWrapper">
+                                    <label for="createSelectPPK"><b>PPK</b></label>
+                                    <select class="form-select" name="ppk" id="createSelectPPK">
+                                        <option selected disabled value="">Pilih PPK...</option>
+                                        @foreach ($ppks as $ppk)
+                                            <option value="{{ $ppk->id }}">{{ $ppk->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="mb-4 row ppkWrapper">
-                                    <label for="createSelectPPK" class="col-sm-2 col-form-label">KEPALA UNIT
-                                        KERJA</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select" name="kepala" id="createSelectPPK">
-                                            <option selected disabled value="">Pilih KEPALA UNIT
-                                                KERJA...</option>
-                                            @foreach ($kepalas as $kepala)
-                                                <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="form-group mb-3 ppkWrapper">
+                                    <label for="createSelectPPK"><b>Kepala Unit Kerja</b></label>
+                                    <select class="form-select" name="kepala" id="createSelectPPK">
+                                        <option selected disabled value="">Pilih Kepala Unit Kerja...</option>
+                                        @foreach ($kepalas as $kepala)
+                                            <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
                 </div>
@@ -220,22 +212,31 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle">Edit Unit Kerja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label>Unit Kerja</label>
+                        <div class="form-group mb-3">
+                            <label><b>Unit Kerja</b></label>
                             <input type="text" id="work_unit_name" name="name" class="form-control" required>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>Kode</label>
+                        <div class="form-group mb-3">
+                            <label><b>Kode</b></label>
                             <input type="text" id="work_unit_code" name="code" class="form-control" required>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>PPK</label>
+                        <div class="form-group mb-3">
+                            <label><b>PPK</b></label>
                             <select class="form-select" name="ppk" id="edit_ppk">
                                 <option selected disabled value="">Pilih PPK...</option>
                                 @foreach ($ppks as $ppk)
@@ -243,19 +244,17 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>KEPALA UNIT
-                                KERJA</label>
+                        <div class="form-group mb-3">
+                            <label><b>Kepala Unit Kerja</b></label>
                             <select class="form-select" name="kepala" id="edit_kepala">
-                                <option selected disabled value="">Pilih KEPALA UNIT
-                                    KERJA...</option>
+                                <option selected disabled value="">Pilih Kepala Unit Kerja...</option>
                                 @foreach ($kepalas as $kepala)
                                     <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>

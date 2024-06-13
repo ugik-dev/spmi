@@ -104,7 +104,15 @@ class IkskController extends Controller
         // Mendapatkan tanggal dan waktu saat ini
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
+        // Set options for Dompdf
+        $options = new \Dompdf\Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $options->set('isRemoteEnabled', true);
+
+        $pdf = new \Dompdf\Dompdf($options);
+
         $pdf = PDF::loadView('components.custom.pdf.downloadIkskPdf', ['performanceIndicators' => $performanceIndicators]);
-        return $pdf->download("Indikator_Kinerja_Sasaran_Kegiatan_{$date}.pdf");
+        return $pdf->download("IKSK_{$date}.pdf");
     }
 }

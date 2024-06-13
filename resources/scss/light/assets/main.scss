@@ -613,7 +613,11 @@ span {
     }
 }
 
-
+@media (max-width: 767.98px) {
+    .center-input-button {
+        justify-content: center !important;
+    }
+}
 
 @media (max-width: 575px) {
     /* Card Style 3 */

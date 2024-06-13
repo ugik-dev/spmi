@@ -65,7 +65,6 @@
                                 </ul>
                             </div>
                         @endif
-
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
@@ -82,16 +81,16 @@
                         @endif
                     </div>
 
-                    <div class="d-flex justify-content-center justify-content-md-start">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20 ms-md-4" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Satuan Belanja
                         </button>
                     </div>
 
                     <div class="table-responsive px-4">
-                        <table id="zero-config" class="table table-bordered">
+                        <table id="zero-config" class="table table-bordered table-hover">
                             <thead class="bg-primary text-white text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
@@ -106,24 +105,25 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $expenditureUnit->name }}</td>
                                         <td>{{ $expenditureUnit->code ?? '-' }}</td>
-                                        <td class="text-center ">
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="openEditModal({{ $expenditureUnit->id }}, '{{ $expenditureUnit->name }}', '{{ $expenditureUnit->code }}')">
-                                                <i class="text-white" data-feather="edit-2"></i>
-                                            </button>
-
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete({{ $expenditureUnit->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-                                            <!-- Hidden form for delete request -->
-                                            <form id="delete-form-{{ $expenditureUnit->id }}"
-                                                action="{{ route('expenditure_unit.delete', $expenditureUnit->id) }}"
-                                                method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a type="button" class="btn btn-sm btn-warning mx-1"
+                                                    onclick="openEditModal({{ $expenditureUnit->id }}, '{{ $expenditureUnit->name }}', '{{ $expenditureUnit->code }}')">
+                                                    <i class="text-white" data-feather="edit-2"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger mx-1"
+                                                    role="button"
+                                                    onclick="confirmDelete({{ $expenditureUnit->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                                <!-- Hidden form for delete request -->
+                                                <form id="delete-form-{{ $expenditureUnit->id }}"
+                                                    action="{{ route('expenditure_unit.delete', $expenditureUnit->id) }}"
+                                                    method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -144,19 +144,29 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalCenterTitle">Input Satuan Belanja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('expenditure_unit.store') }}" method="POST">
                         @csrf
-                        <div class="form-group d-flex align-items-center my-2">
-                            <button type="button" id="add-expenditure_unit" class="btn btn-sm btn-primary py-0 px-2">
+                        <div class="form-group d-flex align-items-center mb-2">
+                            <button type="button" id="add-expenditure_unit"
+                                class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="expenditure_unit" class="ms-2 py-0 mb-0">Satuan Belanja</label>
                         </div>
 
-                        <div id="expenditure_unit-inputs" class="mt-2">
+                        <div id="expenditure_unit-inputs" class="mb-4">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="expenditure_unit_name[]" class="form-control"
@@ -169,9 +179,9 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
                 </div>
@@ -186,24 +196,33 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle">Edit Satuan Belanja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label>Satuan Belanja</label>
+                        <div class="form-group mb-3">
+                            <label><b>Satuan Belanja</b></label>
                             <input type="text" id="expenditure_unit_name" name="name" class="form-control"
                                 required>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>Kode</label>
+                        <div class="form-group mb-3">
+                            <label><b>Kode</b></label>
                             <input type="text" id="expenditure_unit_code" name="code" class="form-control"
                                 required>
                         </div>
                         <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>

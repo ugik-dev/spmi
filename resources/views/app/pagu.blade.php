@@ -131,13 +131,13 @@
                         @endif
                     </div>
 
-                    <div class="text-center d-flex justify-content-between align-items-center px-4">
-                        <button class="btn btn-primary shadow-sm" id="addBtn">Tambah Tahun
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
+                        <button type="button" class="btn btn-primary btn-md" id="addBtn">Tambah Pagu Lembaga
                         </button>
                     </div>
 
                     <div class="table-responsive px-4">
-                        <table id="receipt-table" class="table table-bordered">
+                        <table id="receipt-table" class="table table-bordered table-hover">
                             <thead>
                                 <tr class="text-center">
                                     <th scope="col">Tahun</th>
@@ -155,35 +155,31 @@
                                                 class="btn btn-info btn-sm" role="button">
                                                 Lihat
                                             </a></td>
-                                        <td class="text-center">
-                                            {{-- <a class="btn-group btn btn-sm btn-primary temporary-edit"
-                                                href="{{ route('payment-receipt.detail', $receipt) }}">
-                                                <i data-feather="eye"></i>
-                                            </a> --}}
-
-                                            <button type="button" class="btn btn-sm btn-primary contentEdit"
-                                                data-index="{{ $index }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-edit-2">
-                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                    </path>
-                                                </svg>
-                                            </button>
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete({{ $receipt->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-
-
-                                            <!-- Hidden form for delete request -->
-                                            <form id="delete-form-{{ $receipt->id }}"
-                                                action="{{ route('timeline.destroy', $receipt->id) }}" method="POST"
-                                                style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a type="button" class="btn btn-sm btn-warning contentEdit mx-1"
+                                                    data-index="{{ $index }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="feather feather-edit-2">
+                                                        <path
+                                                            d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger mx-1"
+                                                    role="button" onclick="confirmDelete({{ $receipt->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                                <!-- Hidden form for delete request -->
+                                                <form id="delete-form-{{ $receipt->id }}"
+                                                    action="{{ route('timeline.destroy', $receipt->id) }}"
+                                                    method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -197,37 +193,42 @@
     <!-- Create Modal -->
     <div class="modal fade" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="contentModalTitle"
         aria-hidden="true" data-bs-focus="false">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="contentModalTitle">Form {{ $title }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="contentForm" method="POST">
                         @csrf
                         <input id="dataId" name="id" hidden>
-                        <div class="mb-4 row">
-                            <label for="inputActivityDate" class="col-sm-2 col-form-label">Tahun</label>
-                            <div class="col-sm-8 flatpickr">
-                                <input name="year" id="year" required class="form-control active text-dark"
-                                    type="text" placeholder="">
-                            </div>
+                        <div class="form-group mb-3">
+                            <label for="inputActivityDate"><b>Tahun</b></label>
+                            <input name="year" id="year" required class="form-control active text-dark"
+                                type="text" placeholder="">
                         </div>
-                        <div class="mb-4 row">
-                            <label for="inputActivityDate" class="col-sm-2 col-form-label">Pagu</label>
-                            <div class="col-sm-8 flatpickr">
-                                <input name="nominal" id="nominal" required
-                                    class="mask-nominal form-control active text-dark" type="text" placeholder="">
-                            </div>
+                        <div class="form-group mb-3">
+                            <label for="inputActivityDate"><b>Pagu</b></label>
+                            <input name="nominal" id="nominal" required
+                                class="mask-nominal form-control active text-dark" type="text" placeholder="">
                         </div>
                         <button id="contentStore" data-btnAction="store"
-                            class="btn btn-primary text-center align-items-center mt-2 py-auto" type="submit">
-                            <span class="icon-name">Simpan</span>
+                            class="btn btn-success text-center align-items-center float-end py-auto" type="submit">
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                         <button id="contentUpdate" data-btnAction="update"
-                            class="btn btn-primary text-center align-items-center mt-2 py-auto" type="submit">
-                            <span class="icon-name">Update</span>
+                            class="btn btn-warning text-center align-items-center float-end py-auto" type="submit">
+                            </i><span class="icon-name">Update</span>
                         </button>
                     </form>
                 </div>

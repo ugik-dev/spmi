@@ -17,6 +17,9 @@
         <link rel="stylesheet" href="{{ asset('plugins/table/datatable/datatables.css') }}">
         @vite(['resources/scss/light/plugins/table/datatable/dt-global_style.scss'])
         @vite(['resources/scss/dark/plugins/table/datatable/dt-global_style.scss'])
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
         <style>
             .table-hover tbody tr:hover {
                 background-color: #f5f5f5;
@@ -78,9 +81,9 @@
                         @endif
                     </div>
 
-                    <div class="text-center d-flex justify-content-between align-items-center px-4">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Sasaran Program
                         </button>
@@ -102,15 +105,17 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $iku->mission?->description }}</td>
                                         <td>{{ $iku->description }}</td>
-                                        <td class="text-center">
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete2({{ $iku->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="openEditModal({{ $iku->id }}, '{{ $iku->description }}','{{ $iku->renstra_mission_id }}')">
-                                                <i class="text-white" data-feather="edit-2"></i>
-                                            </button>
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a type="button" class="btn btn-sm btn-warning me-1"
+                                                    onclick="openEditModal({{ $iku->id }}, '{{ $iku->description }}','{{ $iku->renstra_mission_id }}')">
+                                                    <i class="text-white" data-feather="edit-2"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger ms-1"
+                                                    role="button" onclick="confirmDelete2({{ $iku->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -122,6 +127,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -144,7 +150,8 @@
                 <div class="modal-body">
                     <form action="{{ route('iku.store') }}" method="POST">
                         @csrf
-                        <div class="mb-4 row align-items-center">
+                        <div class="mb-4 form-group">
+                            <label><b>Misi</b></label>
                             <div class="col-sm-12" id="WrapperSelect2">
                                 <select class="form-select select2 @error('misi') is-invalid @enderror w-100"
                                     style="width: 100% !important" name="misi" id="MisiSelect2">
@@ -162,14 +169,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group d-flex align-items-center">
+                        <div class="form-group d-flex align-items-center mb-2">
                             <button type="button" id="add-iku" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="iku" class="ms-2 py-0 mb-0">Sasaran Program</label>
                         </div>
 
-                        <div id="iku-inputs" class="mt-2">
+                        <div id="iku-inputs" class="mb-4">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="iku[]" class="form-control">
@@ -179,41 +186,43 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
-
-
                 </div>
-
             </div>
         </div>
     </div>
+
+    <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle">Edit Sasaran Kegiatan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label>Description</label>
-                            {{-- <input type="text" id="iku_id_edit" name="id" class="form-control" required> --}}
-                            <input type="text" id="iku_description_edit" name="description" class="form-control"
-                                required>
-                        </div>
-                        <div class="form-group mt-3">
-                            <label>Misi</label>
+                        <div class="form-group mb-3">
+                            <label><b>Misi</b></label>
                             <select style="width: 100% important"
                                 class="form-select @error('misi') is-invalid @enderror " id="iku_misi_edit"
-                                name="misi">
+                                name="misi" disabled>
                                 <option selected value="">Pilih Misi...</option>
                                 @foreach ($missions as $mission)
                                     <option value="{{ $mission->id }}"
@@ -224,8 +233,14 @@
                             </select>
                         </div>
 
+                        <div class="form-group mb-3">
+                            <label><b>Sasaran Program</b></label>
+                            {{-- <input type="text" id="iku_id_edit" name="id" class="form-control" required> --}}
+                            <textarea type="text" id="iku_description_edit" name="description" class="form-control" rows="4" required> </textarea>
+                        </div>
+
                         <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>
@@ -242,17 +257,16 @@
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/jszip.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
             window.addEventListener('load', function() {
                 feather.replace();
             })
+
             $('#MisiSelect2').select2({
                 dropdownParent: $('#WrapperSelect2'),
             })
-
 
             $('#iku_misi_edit').select2({
                 dropdownParent: $('#editModal'),
@@ -287,7 +301,6 @@
                 });
             }
 
-
             function deleteSasaranProgram(index) {
                 // Assuming you have a route defined in Laravel to handle the deletion that expects the index
                 axios.post("{{ route('iku.delete') }}", {
@@ -321,6 +334,7 @@
                     input.querySelector('.input-group-text').textContent = `${index + 1}.`;
                 });
             }
+
             document.addEventListener('DOMContentLoaded', function() {
                 $('#iku-table').DataTable({
                     "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
@@ -343,7 +357,7 @@
                             filename: function() {
                                 var d = new Date();
                                 var n = d.toISOString();
-                                return 'Sasaran_Program_Excel' + n;
+                                return 'Sasaran_Program_' + n;
                             },
                         }
                     ],
@@ -374,7 +388,7 @@
                         <button type="button" class="btn btn-danger remove-iku">
                             <i data-feather="trash"></i>
                         </button>
-                      </div>`;
+                    </div>`;
                     ikuContainer.insertAdjacentHTML('beforeend', newInput);
                     feather.replace();
                     updateNumbering();

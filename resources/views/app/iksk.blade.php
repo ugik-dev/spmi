@@ -90,16 +90,16 @@
                         @endif
                     </div>
 
-                    <div class="text-center d-flex justify-content-between align-items-center px-4">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Indikator Kinerja Sasaran Kegiatan
                         </button>
                     </div>
 
                     <div class="table-responsive px-4">
-                        <table id="iksk-table" class="table table-bordered">
+                        <table id="iksk-table" class="table table-bordered table-hover">
                             <thead class="bg-light text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
@@ -110,10 +110,11 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $counter = 1; @endphp
                                 @forelse ($perforceHasIksk as $index => $performanceIksk)
                                     @foreach ($performanceIksk->iksks as $iksk)
                                         <tr>
-                                            <td>{{ $loop->parent->iteration }}</td>
+                                            <td>{{ $counter++ }}</td>
                                             <td>{{ $performanceIksk->name }}</td>
                                             <td>{{ $iksk->name }}</td>
                                             <td>
@@ -126,23 +127,25 @@
                                                     {{ number_format((float) $iksk->value_end, 2, '.') }}
                                                 @endif
                                             </td>
-                                            <td class="d-flex justify-content-center text-start">
-                                                <button type="button" class="btn btn-sm btn-primary"
-                                                    onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}','{{ $iksk->type }}','{{ $iksk->value_end }}')">
-                                                    <i class="text-white" data-feather="edit-2"></i>
-                                                </button>
+                                            <td class="align-middle">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <a type="button" class="btn btn-sm btn-warning"
+                                                        onclick="openEditModal({{ $iksk->id }}, '{{ $iksk->name }}','{{ number_format((float) $iksk->value, 2, '.') }}','{{ $iksk->type }}','{{ $iksk->value_end }}')">
+                                                        <i class="text-white" data-feather="edit-2"></i>
+                                                    </a>
 
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
-                                                    role="button" onclick="confirmDelete({{ $iksk->id }});">
-                                                    <i class="text-white" data-feather="trash-2"></i>
-                                                </a>
-                                                <!-- Hidden form for delete request -->
-                                                <form id="delete-form-{{ $iksk->id }}"
-                                                    action="{{ route('iksk.delete', $iksk->id) }}" method="POST"
-                                                    style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                        role="button" onclick="confirmDelete({{ $iksk->id }});">
+                                                        <i class="text-white" data-feather="trash-2"></i>
+                                                    </a>
+                                                    <!-- Hidden form for delete request -->
+                                                    <form id="delete-form-{{ $iksk->id }}"
+                                                        action="{{ route('iksk.delete', $iksk->id) }}" method="POST"
+                                                        style="display: none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -185,8 +188,8 @@
                     <form action="{{ route('iksk.store') }}" method="POST">
                         @csrf
 
-                        <div class="form-group">
-                            <label for="performance_indicator">Sasaran Kegiatan</label>
+                        <div class="form-group mb-4">
+                            <label for="performance_indicator"><b>Sasaran Kegiatan</b></label>
                             <select id="performance_indicator" name="performance_indicator_id"
                                 class="form-control select2">
                                 <option value="">Pilih Sasaran Kegiatan</option>
@@ -194,14 +197,14 @@
                             </select>
                         </div>
 
-                        <div class="form-group d-flex align-items-center my-2">
+                        <div class="form-group d-flex align-items-center mb-2">
                             <button type="button" id="add-iksk" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="iksk" class="ms-2 py-0 mb-0">Indikator Kinerja Sasaran Kegiatan</label>
                         </div>
 
-                        <div id="iksk-inputs" class="mt-2">
+                        <div id="iksk-inputs" class="mb-4">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="iksk[]" class="form-control">
@@ -211,9 +214,9 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
 
@@ -229,19 +232,28 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle">Edit Indikator Kinerja Sasaran Kegiatan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label>Indikator Kinerja Sasaran Kegiatan</label>
-                            <input type="text" id="performance_indicator_name" name="name"
-                                class="form-control" required>
+                        <div class="form-group mb-3">
+                            <label><b>Indikator Kinerja Sasaran Kegiatan</b></label>
+                            <textarea type="text" id="performance_indicator_name" name="name" class="form-control" rows="4"
+                                required></textarea>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>Tipe</label>
+                        <div class="form-group mb-3">
+                            <label><b>Tipe</b></label>
                             <select type="text" name="type_value" id="type_value" class="form-control" required>
                                 <option value="decimal">Desimal</option>
                                 <option value="persen">Persentase (%)</option>
@@ -249,19 +261,19 @@
                             </select>
                         </div>
 
-                        <div class="form-group mt-3">
-                            <label>Target</label>
+                        <div class="form-group mb-3">
+                            <label><b>Target</b></label>
                             <input type="text" id="performance_indicator_value" name="value"
                                 class="form-control" required>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>Sampai</label>
+                        <div class="form-group mb-3">
+                            <label><b>Sampai</b></label>
                             <input type="text" id="performance_indicator_value_end" name="value_end"
                                 class="form-control">
                         </div>
 
                         <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>
@@ -294,7 +306,6 @@
                 // Show the modal
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             }
-
 
             function confirmDelete(id) {
                 Swal.fire({
@@ -341,7 +352,7 @@
                             filename: function() {
                                 var d = new Date();
                                 var n = d.toISOString();
-                                return 'IKSK_Excel_' + n;
+                                return 'IKSK_' + n;
                             },
                         }
                     ],
@@ -397,7 +408,6 @@
                             axios.get(`{{ route('performance_indicators.index') }}`, {
                                     params: {
                                         search: params.data.term,
-                                        limit: 10
                                     }
                                 })
                                 .then(function(response) {

@@ -82,16 +82,16 @@
                         @endif
                     </div>
 
-                    <div class="d-flex justify-content-center justify-content-sm-start">
+                    <div class="d-flex justify-content-between align-items-center px-4 center-input-button">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-md w-20 ms-4" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal"
                             data-bs-target="#exampleModalCenter">
                             Input Kode Akun
                         </button>
                     </div>
 
                     <div class="table-responsive px-4">
-                        <table id="zero-config" class="table table-bordered">
+                        <table id="zero-config" class="table table-bordered table-hover">
                             <thead class="bg-primary text-white text-center">
                                 <tr>
                                     <th scope="col" style="width:40px;">No.</th>
@@ -106,24 +106,24 @@
                                         <td style="width:40px;">{{ $loop->iteration }}</td>
                                         <td>{{ $accountCode->code ?? '-' }}</td>
                                         <td>{{ $accountCode->name }}</td>
-                                        <td class="text-center ">
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="openEditModal({{ $accountCode->id }}, '{{ $accountCode->name }}', '{{ $accountCode->code }}')">
-                                                <i class="text-white" data-feather="edit-2"></i>
-                                            </button>
-
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                                onclick="confirmDelete({{ $accountCode->id }});">
-                                                <i class="text-white" data-feather="trash-2"></i>
-                                            </a>
-                                            <!-- Hidden form for delete request -->
-                                            <form id="delete-form-{{ $accountCode->id }}"
-                                                action="{{ route('account_code.delete', $accountCode->id) }}"
-                                                method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a type="button" class="btn btn-sm btn-warning mx-1"
+                                                    onclick="openEditModal({{ $accountCode->id }}, '{{ $accountCode->name }}', '{{ $accountCode->code }}')">
+                                                    <i class="text-white" data-feather="edit-2"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger mx-1"
+                                                    role="button" onclick="confirmDelete({{ $accountCode->id }});">
+                                                    <i class="text-white" data-feather="trash-2"></i>
+                                                </a>
+                                                <!-- Hidden form for delete request -->
+                                                <form id="delete-form-{{ $accountCode->id }}"
+                                                    action="{{ route('account_code.delete', $accountCode->id) }}"
+                                                    method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -143,20 +143,30 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Input Kode Akun</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Input Kode Akun Penganggaran dan Pembayaran
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('account_code.store') }}" method="POST">
                         @csrf
-                        <div class="form-group d-flex align-items-center my-2">
+                        <div class="form-group d-flex align-items-center mb-2">
                             <button type="button" id="add-account_code" class="btn btn-sm btn-primary py-0 px-2">
                                 <i data-feather="plus"></i>
                             </button>
                             <label for="account_code" class="ms-2 py-0 mb-0">Kode Akun</label>
                         </div>
 
-                        <div id="account_code-inputs" class="mt-2">
+                        <div id="account_code-inputs" class="mb-4">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">1.</span>
                                 <input type="text" name="account_code_name[]" class="form-control"
@@ -169,9 +179,9 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-success text-center align-items-center mt-1 mt-2 py-auto"
+                        <button class="btn btn-success text-center align-items-center float-end py-auto"
                             type="submit">
-                            <i data-feather="save"></i><span class="icon-name">Simpan</span>
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                     </form>
                 </div>
@@ -186,24 +196,33 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle">Edit Kode Akun</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="edit-form" action="" method="POST">
                         @csrf
                         @method('PATCH')
-                        <div class="form-group">
-                            <label>Kode Akun</label>
+                        <div class="form-group mb-3">
+                            <label><b>Kode Akun</b></label>
                             <input type="text" id="account_code_name" name="name" class="form-control"
                                 required>
                         </div>
-                        <div class="form-group mt-3">
-                            <label>Kode</label>
+                        <div class="form-group mb-3">
+                            <label><b>Kode</b></label>
                             <input type="text" id="account_code_code" name="code" class="form-control"
                                 required>
                         </div>
                         <!-- Add other fields as needed -->
-                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <button type="submit" class="btn btn-warning float-end">Update</button>
                     </form>
                 </div>
             </div>

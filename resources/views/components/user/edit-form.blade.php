@@ -109,7 +109,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="inputEmail" class="col-sm-3 col-form-label">Password (*kosongkan jika tidak diganti)</label>
+        <label for="inputEmail" class="col-sm-4 col-form-label">Password (*kosongkan jika tidak diganti)</label>
         <div class="col-sm-8">
             <input type="password" class="form-control @error('password') is-invalid @enderror" id="inputPassword"
                 name="password" value="{{ old('password') }}">
@@ -119,8 +119,8 @@
         </div>
     </div>
     <div class="d-flex justify-content-end">
-        <button id="submitButton" class="btn btn-primary" type="submit">
-            <span class="icon-name">Simpan</span>
+        <button id="submitButton" class="btn btn-warning" type="submit">
+            <span class="icon-name">update</span>
         </button>
     </div>
 </form>

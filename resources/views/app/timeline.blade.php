@@ -104,65 +104,62 @@
         <div class="col-lg-12 layout-spacing">
             <x-custom.statbox>
                 <x-custom.alerts />
-                <div class="table-responsive my-4 p-2">
-                    <div class="d-flex flex-wrap justify-content-between py-2 my-2 me-1">
-                        <div class="d-flex flex-wrap gap-1 my-2">
-                            <button class="btn btn-primary shadow-sm" id="addBtn">Tambah Timeline
+                <div class="table-responsive px-4">
+                    <div class="d-flex flex-wrap justify-content-between py-2 mt-4 me-1 center-input-button">
+                        <div class="d-flex flex-wrap gap-1">
+                            <button class="btn btn-primary" id="addBtn">Tambah Timeline
                             </button>
                         </div>
                     </div>
-                    <table id="receipt-table" class="table table-bordered">
+                    <table id="receipt-table" class="table table-bordered table-hover">
                         <thead>
                             <tr class="text-center">
-                                <th scope="col">Jenis </th>
+                                <th scope="col">Jenis</th>
                                 <th scope="col">Metode Approval</th>
                                 <th scope="col">Tahun</th>
-                                <th scope="col">Dari </th>
+                                <th scope="col">Dari</th>
                                 <th scope="col">Sampai</th>
-                                <th scope="col">User </th>
+                                <th scope="col">User</th>
                                 <th scope="col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($timelines as $index => $receipt)
                                 <tr>
-                                    <td>{{ strtoupper(categoryTimeline($receipt->category)) }}</td>
+                                    <td class="text-start">{{ strtoupper(categoryTimeline($receipt->category)) }}</td>
                                     <td>{!! $receipt->metode !!}</td>
                                     <td>{{ $receipt->year }}</td>
                                     <td>{{ $receipt->start }}</td>
                                     <td>{{ $receipt->end }}</td>
                                     <td>{{ $receipt->user->name }}</td>
-                                    <td class="text-center">
-                                        {{-- <a class="btn-group btn btn-sm btn-primary temporary-edit"
-                                            href="{{ route('payment-receipt.detail', $receipt) }}">
-                                            <i data-feather="eye"></i>
-                                        </a> --}}
-
-                                        <button type="button" class="btn btn-sm btn-primary contentEdit"
-                                            data-index="{{ $index }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="feather feather-edit-2">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg>
-                                        </button>
-                                        <a href="{{ route('timeline.rekap', $receipt->id) }}"
-                                            class="btn btn-sm btn-primary">
-                                            Rekapitulasi
-                                        </a>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" role="button"
-                                            onclick="confirmDelete({{ $receipt->id }});">
-                                            <i class="text-white" data-feather="trash-2"></i>
-                                        </a>
-
-                                        <!-- Hidden form for delete request -->
-                                        <form id="delete-form-{{ $receipt->id }}"
-                                            action="{{ route('timeline.destroy', $receipt->id) }}" method="POST"
-                                            style="display: none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                    <td class="align-middle">
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <a href="{{ route('timeline.rekap', $receipt->id) }}"
+                                                class="btn btn-sm btn-primary mx-1 ">
+                                                Rekapitulasi
+                                            </a>
+                                            <a type="button" class="btn btn-sm btn-warning contentEdit mx-1"
+                                                data-index="{{ $index }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-edit-2">
+                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
+                                                role="button" onclick="confirmDelete({{ $receipt->id }});">
+                                                <i class="text-white" data-feather="trash-2"></i>
+                                            </a>
+                                            <!-- Hidden form for delete request -->
+                                            <form id="delete-form-{{ $receipt->id }}"
+                                                action="{{ route('timeline.destroy', $receipt->id) }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -175,19 +172,28 @@
     <!-- Create Modal -->
     <div class="modal fade" id="contentModal" tabindex="-1" role="dialog" aria-labelledby="contentModalTitle"
         aria-hidden="true" data-bs-focus="false">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="contentModalTitle">Form {{ $title }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    <h5 class="modal-title" id="contentModalTitle">Input {{ $title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18">
+                            </line>
+                            <line x1="6" y1="6" x2="18" y2="18">
+                            </line>
+                        </svg>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="contentForm" method="POST">
                         @csrf
                         <input id="dataId" name="id" hidden>
                         <div class="mb-4 row">
-                            <label for="category" class="col-sm-2 col-form-label">Jenis</label>
-                            <div class="col-sm-8">
+                            <label for="category" class="col-sm-3 col-form-label">Jenis</label>
+                            <div class="col-sm-9">
                                 <select name="category" class="form-select" id="category" required>
                                     <option selected disabled value="">...</option>
                                     <option value="pra-creat">Indikatif Dipa</option>
@@ -197,8 +203,8 @@
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="metode" class="col-sm-2 col-form-label">Metode Approval</label>
-                            <div class="col-sm-8">
+                            <label for="metode" class="col-sm-3 col-form-label">Metode Approval</label>
+                            <div class="col-sm-9">
                                 <select name="metode" class="form-select" id="metode" required>
                                     <option selected disabled value="">...</option>
                                     <option value="ppk">PPK</option>
@@ -207,34 +213,34 @@
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputActivityDate" class="col-sm-2 col-form-label">Periode</label>
-                            <div class="col-sm-8 flatpickr">
+                            <label for="inputActivityDate" class="col-sm-3 col-form-label">Periode</label>
+                            <div class="col-sm-9 flatpickr">
                                 <input name="year" id="year" required class="form-control active text-dark"
                                     type="text" placeholder="">
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputActivityDate" class="col-sm-2 col-form-label">Dari</label>
-                            <div class="col-sm-8 flatpickr">
+                            <label for="inputActivityDate" class="col-sm-3 col-form-label">Dari</label>
+                            <div class="col-sm-9 flatpickr">
                                 <input id="start" name="start"
                                     class="form-control flatpickr flatpickr-input active text-dark"
                                     type="datetime-local" placeholder="Pilih tanggal.." required>
                             </div>
                         </div>
                         <div class="mb-4 row">
-                            <label for="inputActivityDate" class="col-sm-2 col-form-label">Sampai</label>
-                            <div class="col-sm-8 flatpickr">
+                            <label for="inputActivityDate" class="col-sm-3 col-form-label">Sampai</label>
+                            <div class="col-sm-9 flatpickr">
                                 <input id="end" name="end"
                                     class="form-control flatpickr flatpickr-input active text-dark"
                                     type="datetime-local" placeholder="Pilih tanggal.." required>
                             </div>
                         </div>
                         <button id="contentStore" data-btnAction="store"
-                            class="btn btn-primary text-center align-items-center mt-2 py-auto" type="submit">
-                            <span class="icon-name">Simpan</span>
+                            class="btn btn-success text-center align-items-center float-end py-auto" type="submit">
+                            <i data-feather="save" class="me-2"></i><span class="icon-name">Simpan</span>
                         </button>
                         <button id="contentUpdate" data-btnAction="update"
-                            class="btn btn-primary text-center align-items-center mt-2 py-auto" type="submit">
+                            class="btn btn-warning text-center align-items-center float-end py-auto" type="submit">
                             <span class="icon-name">Update</span>
                         </button>
                     </form>
@@ -293,21 +299,10 @@
                         "<'table-responsive'tr>" +
                         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
                     "buttons": [{
-                            extend: 'pdfHtml5',
                             text: 'PDF',
-                            className: 'btn btn-danger', // Warna biru
-                            exportOptions: {
-                                columns: [0, 1, 2] // Indeks kolom yang ingin Anda ekspor (dimulai dari 0)
-                            },
-                            filename: function() {
-                                var d = new Date();
-                                var n = d.toISOString();
-                                return 'PDF_Export_' + n;
-                            },
-                            customize: function(doc) {
-                                doc.styles.tableHeader.alignment = 'left'; // Contoh penyesuaian
-                                // Tambahkan kustomisasi pdfmake Anda di sini
-                                doc.content[1].table.widths = ['auto', '*', '*'];
+                            className: 'buttons-pdf buttons-html5 btn btn-danger',
+                            action: function(e, dt, node, config) {
+                                window.location.href = "{{ route('download.timeline.pdf') }}";
                             }
                         },
                         {

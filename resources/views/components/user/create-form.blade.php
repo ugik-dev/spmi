@@ -1,7 +1,7 @@
 <form id="form-create" action="{{ route('user.store') }}" method="POST" novalidate>
     @csrf
     <div class="mb-4 row align-items-center">
-        <label for="selectTypeRole" class="col-sm-3 col-form-label">Pilih Role</label>
+        <label for="selectTypeRole" class="col-sm-4 col-form-label">Pilih Role</label>
         <div class="col-sm-8">
             <select class="form-select @error('user_role') is-invalid @enderror" id="selectTypeRole" name="user_role"
                 required>
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center headOfWrapper">
-        <label for="selectHeadOf" class="col-sm-3 col-form-label">Staff (opsional)</label>
+        <label for="selectHeadOf" class="col-sm-4 col-form-label">Staff (opsional)</label>
         <div class="col-sm-8">
             <select class="form-select" style=" width: 100% !important" name="head_id" id="selectHeadOf">
                 <option selected disabled value="">Pilih Staff...</option>
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="letter_reference" class="col-sm-3 col-form-labe">Referensi Nomor Surat</label>
+        <label for="letter_reference" class="col-sm-4 col-form-labe">Referensi Nomor Surat</label>
         <div class="col-sm-8">
             <input type="text" class="form-control @error('letter_reference') is-invalid @enderror"
                 id="letter_reference" name="letter_reference" value="{{ old('letter_reference') }}">
@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="inputFullName" class="col-sm-3 col-form-label">Nama Lengkap</label>
+        <label for="inputFullName" class="col-sm-4 col-form-label">Nama Lengkap</label>
         <div class="col-sm-8">
             <input type="text" class="form-control @error('user_name') is-invalid @enderror" id="inputFullName"
                 name="user_name" value="{{ old('user_name') }}" required>
@@ -46,7 +46,7 @@
     </div>
     <!-- Employee Section -->
     <div class="mb-4 row align-items-center">
-        <label for="inputPosition" class="col-sm-3 col-form-label">Jabatan</label>
+        <label for="inputPosition" class="col-sm-4 col-form-label">Jabatan</label>
         <div class="col-sm-8">
             <input type="text" class="form-control @error('position') is-invalid @enderror" id="inputPosition"
                 name="position" value="{{ old('position') }}" required>
@@ -56,7 +56,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="inputNumberId" class="col-sm-3 col-form-label">Jenis Identitas</label>
+        <label for="inputNumberId" class="col-sm-4 col-form-label">Jenis Identitas</label>
         <div class="col-sm-8">
             <select class="form-select @error('identity_type') is-invalid @enderror" id="selectIdentityType"
                 name="identity_type" required>
@@ -73,7 +73,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="inputNumberId" class="col-sm-3 col-form-label">Nomor Identitas</label>
+        <label for="inputNumberId" class="col-sm-4 col-form-label">Nomor Identitas</label>
         <div class="col-sm-8">
             <input type="text" class="form-control @error('identity_number') is-invalid @enderror" id="inputNumberId"
                 name="identity_number" value="{{ old('identity_number') }}" required>
@@ -83,7 +83,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="inputNumberId" class="col-sm-3 col-form-label">Unit Kerja</label>
+        <label for="inputNumberId" class="col-sm-4 col-form-label">Unit Kerja</label>
         <div class="col-sm-8">
             <select class="form-select @error('work_unit') is-invalid @enderror" id="selectWorkUnit" name="work_unit"
                 required>
@@ -100,7 +100,7 @@
     </div>
 
     <div class="mb-4 row align-items-center">
-        <label for="inputEmail" class="col-sm-3 col-form-label">Email</label>
+        <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
         <div class="col-sm-8">
             <input type="email" class="form-control @error('email') is-invalid @enderror" id="inputEmail"
                 name="email" value="{{ old('email') }}" required>
@@ -110,7 +110,7 @@
         </div>
     </div>
     <div class="mb-4 row align-items-center">
-        <label for="inputEmail" class="col-sm-3 col-form-label">Password</label>
+        <label for="inputEmail" class="col-sm-4 col-form-label">Password</label>
         <div class="col-sm-8">
             <input type="password" class="form-control @error('password') is-invalid @enderror" id="inputPassword"
                 name="password" value="{{ old('password') }}" required>
@@ -119,8 +119,8 @@
             @enderror
         </div>
     </div>
-    <div class="d-flex justify-content-end">
-        <button id="submitButton" class="btn btn-primary" type="submit">
+    <div class="d-flex justify-content-end me-6">
+        <button id="submitButton" class="btn btn-success" type="submit">
             <span class="icon-name">Simpan</span>
         </button>
     </div>
