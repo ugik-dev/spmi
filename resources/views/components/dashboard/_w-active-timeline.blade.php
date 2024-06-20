@@ -23,7 +23,7 @@
                 @php
                     if ($timelinesActive->category ?? false) {
                         if ($timelinesActive->category == 'creat') {
-                            $ket = 'Pembuatan Dipa Definitif';
+                            $ket = 'Pembuatan Dipa Definitive';
                         } elseif ($timelinesActive->category == 'pra-creat') {
                             $ket = 'Pembuatan Dipa Indikatif';
                         } elseif ($timelinesActive->category == 'revison') {

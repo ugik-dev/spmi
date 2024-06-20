@@ -64,7 +64,7 @@
                         <div class="t-content">
                             @php
                                 if ($timeline->category == 'creat') {
-                                    $ket = 'Masa Pembuatan Dipa Definitif';
+                                    $ket = 'Masa Pembuatan Dipa Definitive';
                                 } elseif ($timeline->category == 'pra-creat') {
                                     $ket = 'Masa Pembuatan Dipa Indikatif';
                                 } elseif ($timeline->category == 'revison') {

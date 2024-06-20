@@ -197,7 +197,7 @@
                                 <select name="category" class="form-select" id="category" required>
                                     <option selected disabled value="">...</option>
                                     <option value="pra-creat">Indikatif Dipa</option>
-                                    <option value="creat">Pembuatan Dipa</option>
+                                    <option value="creat">Definitive Dipa</option>
                                     <option value="revision">Revisi</option>
                                 </select>
                             </div>

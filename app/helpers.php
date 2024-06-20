@@ -11,7 +11,7 @@ if (!function_exists('categoryTimeline')) {
     function categoryTimeline($data)
     {
         if ($data == 'creat') {
-            return "Pembuatan Usulan";
+            return "Definitive";
         } else if ($data == 'revision') {
             return "Revisi";
         } else if ($data == 'pra-creat') {

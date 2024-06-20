@@ -208,7 +208,7 @@ class DipaByBIExport implements FromCollection, WithHeadings, WithStyles,  WithC
 
                 // dd($this->dipa->timeline);
                 if ($this->dipa->timeline->category == 'creat') {
-                    $ket = "Usulan Definitif";
+                    $ket = "Usulan Definitive";
                 } else  if ($this->dipa->timeline->category == 'pra-creat') {
                     $ket = "Usulan Indikatif";
                 } else  if ($this->dipa->timeline->category == 'revison') {
