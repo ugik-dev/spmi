@@ -280,8 +280,6 @@
                 // Populate the form fields
                 document.getElementById('description').value = description;
                 document.getElementById('mission_id').value = id;
-                // Update the form action URL
-                document.getElementById('edit-form').action = '/mission/update';
 
                 // Show the modal
                 var editModal = new bootstrap.Modal(document.getElementById('editModal'));

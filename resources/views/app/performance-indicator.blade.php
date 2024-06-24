@@ -381,7 +381,7 @@
             $('#exampleModalCenter').on('shown.bs.modal', function() {
                 $('#program_target').select2({
                     dropdownParent: $('#exampleModalCenter'),
-                    placeholder: 'Pilih Indikator Kinerja Sasarab Program',
+                    placeholder: 'Pilih Indikator Kinerja Sasaran Program',
                     theme: 'bootstrap-5',
                     ajax: {
                         transport: function(params, success, failure) {

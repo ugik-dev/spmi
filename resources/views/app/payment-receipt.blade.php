@@ -390,6 +390,7 @@
             </div>
         </div>
     </div>
+
     <!-- COA Modal -->
     {{-- <div class="modal fade" id="COAModal" tabindex="-1" role="dialog" aria-labelledby="COAModalTitle"
         aria-hidden="true" data-bs-focus="false">
