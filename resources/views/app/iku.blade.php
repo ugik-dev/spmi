@@ -202,7 +202,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalTitle">Edit Sasaran Kegiatan</h5>
+                    <h5 class="modal-title" id="editModalTitle">Edit Sasaran Program</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -222,7 +222,7 @@
                             <label><b>Misi</b></label>
                             <select style="width: 100% important"
                                 class="form-select @error('misi') is-invalid @enderror " id="iku_misi_edit"
-                                name="misi" disabled>
+                                name="misi">
                                 <option selected value="">Pilih Misi...</option>
                                 @foreach ($missions as $mission)
                                     <option value="{{ $mission->id }}"
@@ -274,8 +274,10 @@
 
             function openEditModal(id, desc, mision) {
                 // Populate the form fields
+                console.log(mision)
                 // document.getElementById('iku_id_edit').value = name;
-                document.getElementById('iku_misi_edit').value = mision;
+                // document.getElementById('iku_misi_edit').value = mision;
+                $('#iku_misi_edit').val(mision).trigger('change');
                 document.getElementById('iku_description_edit').value = desc;
                 // document.getElementById('performance_indicator_value_end').value = value_end;
                 // Update the form action URL
