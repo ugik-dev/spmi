@@ -81,7 +81,7 @@ class InstitutionalBudgetController extends Controller
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
         $pdf = PDF::loadView('components.custom.pdf.downloadPaguPdf', ['pagus' => $pagus]);
-        return $pdf->download("Pagu_Lembaga_PDF_{$date}.pdf");
+        return $pdf->download("Pagu_Lembaga_{$date}.pdf");
     }
 
 }

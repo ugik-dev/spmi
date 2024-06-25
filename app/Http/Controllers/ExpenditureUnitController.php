@@ -83,7 +83,7 @@ class ExpenditureUnitController extends Controller
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
         $pdf = PDF::loadView('components.custom.pdf.downloadExpenditureUnitPdf', ['expenditureUnits' => $expenditureUnits]);
-        return $pdf->download("Satuan_Belanja_PDF_{$date}.pdf");
+        return $pdf->download("Satuan_Belanja_{$date}.pdf");
     }
 
 }

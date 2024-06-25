@@ -58,14 +58,14 @@ class RenstraController extends Controller
             'id' => 'required|exists:renstra_missions,id',
             'description' => 'required|string|max:255'
         ]);
-
+    
         $mission = RenstraMission::find($validatedData['id']);
         if ($mission) {
             $mission->update(['description' => $validatedData['description']]);
-            return response()->json(['success' => 'Misi berhasil diperbarui.']);
+            return redirect()->route('mission.index')->with('success', 'Misi berhasil diperbarui.');
         }
-
-        return response()->json(['error' => 'Misi tidak ditemukan.'], 404);
+    
+        return redirect()->route('mission.index')->with('error', 'Misi tidak ditemukan.');
     }
 
     public function deleteMission(Request $request)

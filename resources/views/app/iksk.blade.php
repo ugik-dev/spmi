@@ -225,6 +225,7 @@
             </div>
         </div>
     </div>
+
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle"
         aria-hidden="true">

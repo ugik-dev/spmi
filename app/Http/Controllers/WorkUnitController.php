@@ -84,6 +84,6 @@ class WorkUnitController extends Controller
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
         $pdf = PDF::loadView('components.custom.pdf.downloadWorkUnitPdf', ['workUnits' => $workUnits]);
-        return $pdf->download("Unit_Kerja_PDF_{$date}.pdf");
+        return $pdf->download("Unit_Kerja_{$date}.pdf");
     }
 }

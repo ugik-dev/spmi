@@ -65,7 +65,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::patch('edit-visi', [RenstraController::class, 'updateVision'])->name('vision.update');
         Route::get('misi', [RenstraController::class, 'mission'])->name('mission.index');
         Route::post('tambah-misi', [RenstraController::class, 'storeMission'])->name('mission.store');
-        Route::post('update-misi', [RenstraController::class, 'updateMission'])->name('mission.update');
+        Route::patch('update-misi', [RenstraController::class, 'updateMission'])->name('mission.update');
         Route::post('hapus-misi', [RenstraController::class, 'deleteMission'])->name('mission.delete');
         Route::get('misi/data', [RenstraController::class, 'getRenstraMission'])->name('mission.data');
         Route::get('/download-misi-pdf', [RenstraController::class, 'downloadMissionPdf'])->name('download.mission.pdf');
