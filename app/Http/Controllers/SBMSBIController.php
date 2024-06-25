@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\SBMSBI;
+use App\Supports\Disk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 class SBMSBIController extends Controller
 {
@@ -56,9 +58,22 @@ class SBMSBIController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SBM_SBI $sBM_SBI)
+    public function show($jenis)
     {
-        //
+        $sbmsbi = SBMSBI::firstOrFail();
+        if ($jenis == 'sbm') {
+            $path = $sbmsbi->sbm_path;
+        } else if ($jenis == "sbi") {
+            $path = $sbmsbi->sbi_path;
+        } else {
+            return;
+        }
+        $filePath = Storage::disk(Disk::SBMSBIAttachment)->path($path);
+        $fileMimeType = mime_content_type($filePath);
+        return Response::file($filePath, [
+            'Content-Type' => $fileMimeType,
+        ]);
+        dd($sbmsbi);
     }
 
     /**

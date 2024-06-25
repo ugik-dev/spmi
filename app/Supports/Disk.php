@@ -6,4 +6,5 @@ final class Disk
 {
     public const ActivityRecapAttachment = 'activity_recap:attachment';
     public const BerkasAttachment = 'receipt:attachment';
+    public const SBMSBIAttachment = 'public';
 }

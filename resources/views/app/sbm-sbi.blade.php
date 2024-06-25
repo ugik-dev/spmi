@@ -49,14 +49,16 @@
                             <div class="col-md-6">
 
                                 @if (isset($sbmsbi) && Storage::disk('public')->exists($sbmsbi->sbm_path))
-                                    <a href="{{ Storage::disk('public')->url($sbmsbi->sbm_path) }}" target="_blank"><i
-                                            data-feather="eye"></i> Lihat SBM</a>
+                                    <a href="{{ url('admin/pengaturan/sbm-sbi/show-file/sbm') }}" target="_blank"><i
+                                            data-feather="eye"></i>
+                                        Lihat SBM</a>
                                 @endif
                             </div>
                             <div class="col-md-6">
                                 @if (isset($sbmsbi) && Storage::disk('public')->exists($sbmsbi->sbi_path))
-                                    <a href="{{ Storage::disk('public')->url($sbmsbi->sbi_path) }}" target="_blank"><i
-                                            data-feather="eye"></i> Lihat SBI</a>
+                                    <a href="{{ url('admin/pengaturan/sbm-sbi/show-file/sbi') }}" target="_blank"><i
+                                            data-feather="eye"></i>
+                                        Lihat SBI</a>
                                 @endif
                             </div>
                         </div>
@@ -96,6 +98,17 @@
     <!--  BEGIN CUSTOM SCRIPTS FILE  -->
     <x-slot:footerFiles>
         <script src="{{ asset('plugins/editors/quill/quill.js') }}"></script>
+        <script>
+            function handleViewFile(url, mimeType) {
+                if (mimeType === 'application/pdf' || mimeType === 'image/jpeg') {
+                    // Membuka file dalam tab baru jika PDF atau gambar
+                    window.open(url, '_blank');
+                } else if (mimeType === 'application/zip') {
+                    // Mengunduh file jika zip
+                    window.location.href = url;
+                }
+            }
+        </script>
     </x-slot>
     <!--  END CUSTOM SCRIPTS FILE  -->
     </x-base-layout>

@@ -108,6 +108,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('satuan-belanja/{expenditureUnit}/hapus', [ExpenditureUnitController::class, 'destroy'])->name('expenditure_unit.delete');
         Route::get('/download-expenditure-unit-pdf', [ExpenditureUnitController::class, 'downloadExpenditureUnitPdf'])->name('download.expenditure.unit.pdf');
         Route::get('sbm-sbi', [SBMSBIController::class, 'index'])->name('sbm_sbi.index');
+        Route::get('sbm-sbi/show-file/{jenis}', [SBMSBIController::class, 'show'])->name('sbm_sbi.show-file');
         Route::post('sbm-sbi', [SBMSBIController::class, 'store'])->name('sbm_sbi.store');
         Route::get('pagu', [InstitutionalBudgetController::class, 'index'])->name('pagu.index');
         Route::get('pagu-lembaga', [InstitutionalBudgetController::class, 'index'])->name('ins_budget.index');
@@ -277,7 +278,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             'destroy' => 'payment-verification.destroy',
         ]);
     });
-    
+
     Route::prefix('cetak-laporan')->group(function () {
         Route::get('laporan-fa-detail', [DetailedFAReportController::class, 'index'])->name('detailed-FA-report.index');
         Route::get('laporan-fa-detail-excel/{dipa}', [DetailedFAReportController::class, 'excel'])->name('detailed-FA-report.excel');
