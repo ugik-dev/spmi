@@ -248,7 +248,7 @@
                 document.getElementById('account_code_code').value = code;
 
                 // Update the form action URL
-                document.getElementById('edit-form').action = '/admin/pengaturan/penerimaan/kode-akun/' + id + '/update';
+                document.getElementById('edit-form').action = '/admin/codeAccount/adm-penerimaan/kode-akun/' + id + '/update';
 
                 // Show the modal
                 new bootstrap.Modal(document.getElementById('editModal')).show();
