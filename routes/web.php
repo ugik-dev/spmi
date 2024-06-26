@@ -113,7 +113,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('pagu', [InstitutionalBudgetController::class, 'index'])->name('pagu.index');
         Route::get('pagu-lembaga', [InstitutionalBudgetController::class, 'index'])->name('ins_budget.index');
         Route::post('pagu-lembaga', [InstitutionalBudgetController::class, 'store'])->name('ins_budget.store');
+        Route::post('pagu-lembaga/{id}/hapus', [InstitutionalBudgetController::class, 'delete'])->name('ins_budget.delete');
         Route::get('pagu/unit/{year}', [UnitBudgetController::class, 'index'])->name('unit_budget.index');
+        Route::get('pagu/unit/{year}/excel', [UnitBudgetController::class, 'excel'])->name('unit_budget.excel');
         Route::post('pagu-unit', [UnitBudgetController::class, 'store'])->name('unit_budget.store');
         Route::get('/download-pagu-pdf', [InstitutionalBudgetController::class, 'downloadPaguPdf'])->name('download.pagu.pdf');
         Route::get('kelola-user', [UserController::class, 'index'])->name('user.index');

@@ -118,7 +118,7 @@ class TimelineController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        return redirect()->back()->with('success', 'Data bendahara berhasil dihapus.');
+        return redirect()->back()->with('success', 'Data Timeline berhasil dihapus.');
     }
 
     // fungsi download pdf IKU
@@ -126,10 +126,10 @@ class TimelineController extends Controller
     {
         $timelines = Timeline::all();
 
-         // Mendapatkan tanggal dan waktu saat ini
+        // Mendapatkan tanggal dan waktu saat ini
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 
-         // Update the path to match the location of your Blade file
+        // Update the path to match the location of your Blade file
         $pdf = PDF::loadView('components.custom.pdf.downloadTimelinePdf', ['timelines' => $timelines]);
         return $pdf->download("Timeline_{$date}.pdf");
     }

@@ -18,7 +18,6 @@ class InstitutionalBudgetController extends Controller
         $title = 'Pagu Lembaga';
         $institutionalBudget = InstitutionalBudget::first();
         $pagus = PaguLembaga::get();
-
         return view('app.pagu', compact('title', 'pagus'));
         // return view('app.institutional-budget', compact('title', 'institutionalBudget'));
     }
@@ -67,9 +66,15 @@ class InstitutionalBudgetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(InstitutionalBudget $institutionalBudget)
+    public function delete(PaguLembaga $id)
     {
-        //
+        try {
+            $id->delete();
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Data pagu berhasil dihapus.');
     }
 
     // fungsi export pdf
@@ -83,5 +88,4 @@ class InstitutionalBudgetController extends Controller
         $pdf = PDF::loadView('components.custom.pdf.downloadPaguPdf', ['pagus' => $pagus]);
         return $pdf->download("Pagu_Lembaga_{$date}.pdf");
     }
-
 }

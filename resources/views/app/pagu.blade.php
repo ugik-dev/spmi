@@ -169,15 +169,15 @@
                                                     </svg>
                                                 </a>
                                                 <a href="javascript:void(0);" class="btn btn-sm btn-danger mx-1"
-                                                    role="button" onclick="confirmDelete({{ $receipt->id }});">
+                                                    role="button" onclick="confirmDelete2({{ $receipt->id }});">
                                                     <i class="text-white" data-feather="trash-2"></i>
                                                 </a>
                                                 <!-- Hidden form for delete request -->
                                                 <form id="delete-form-{{ $receipt->id }}"
-                                                    action="{{ route('timeline.destroy', $receipt->id) }}"
+                                                    action="{{ route('ins_budget.delete', $receipt->id) }}"
                                                     method="POST" style="display: none;">
                                                     @csrf
-                                                    @method('DELETE')
+                                                    @method('POST')
                                                 </form>
                                             </div>
                                         </td>
@@ -260,6 +260,22 @@
                 feather.replace();
             })
 
+            function confirmDelete2(id) {
+                Swal.fire({
+                    title: 'Anda yakin ingin hapus?',
+                    text: "Data tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-' + id).submit();
+                    }
+                });
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
                 const dataContent = @json($pagus);
                 const theadTh = document.querySelectorAll('thead tr th');
@@ -278,6 +294,7 @@
                     'nominal': $('#contentModal').find('#nominal'),
                     'year': $('#contentModal').find('#year'),
                 }
+
                 $('#receipt-table').DataTable({
                     "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex flex-column flex-sm-row justify-content-center align-items-center justify-content-sm-end mt-sm-0 mt-3'Bf>>>" +
                         "<'table-responsive'tr>" +
