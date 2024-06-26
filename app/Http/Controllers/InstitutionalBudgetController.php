@@ -81,7 +81,6 @@ class InstitutionalBudgetController extends Controller
     public function downloadPaguPdf()
     {
         $pagus = PaguLembaga::all();
-
         // Mendapatkan tanggal dan waktu saat ini
         $date = Carbon::now()->format('Y-m-d_H-i-s');
 

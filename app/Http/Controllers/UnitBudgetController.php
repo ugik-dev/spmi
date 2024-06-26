@@ -7,6 +7,8 @@ use App\Models\PaguUnit;
 use App\Models\UnitBudget;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
+use App\Exports\PaguUnitExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UnitBudgetController extends Controller
 {
@@ -31,7 +33,21 @@ class UnitBudgetController extends Controller
 
         return view('app.pagu-unit', compact('title', 'workUnits', 'paguLembaga'));
     }
+    public function excel($year)
+    {
+        $title = 'Pagu Unit';
+        $paguLembaga = PaguLembaga::where('year', '=', $year)->firstOrFail();
+        $workUnits = WorkUnit::with('unitBudgets', 'paguUnit')
+            ->with(['paguUnit' => function ($q) use ($paguLembaga) {
+                $q->where('pagu_lembaga_id', $paguLembaga->id);
+            }])
+            ->get();
 
+        // dd($workUnits);
+        $filename = "pagu-unit-{$paguLembaga->year}.xlsx";
+        return Excel::download(new PaguUnitExport($paguLembaga, $workUnits), $filename);
+        // return view('app.pagu-unit', compact('title', 'workUnits', 'paguLembaga'));
+    }
     /**
      * Show the form for creating a new resource.
      */

@@ -71,6 +71,9 @@
                             </div>
                         @endif
                         <div class="d-flex justify-content-center justify-content-md-end">
+                            <a href="{{ route('unit_budget.excel', $paguLembaga->year) }}"
+                                class="btn btn-success btn-md me-2">Export Excel</a>
+                            {{-- <button id="save-unit_budgets" class="btn btn-primary btn-md">Simpan Data</button> --}}
                             <button id="save-unit_budgets" class="btn btn-primary btn-md">Simpan Data</button>
                         </div>
                         <div class="table-responsive my-4">
@@ -83,6 +86,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php $total = 0 @endphp
                                     @forelse ($workUnits as $unitBudget)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
@@ -93,11 +97,19 @@
                                                     {{ $unitBudget->name }}
                                                 </div>
                                             </td>
-                                            <td class="pagu text-center">{{ $unitBudget->paguUnit[0]->nominal ?? '0' }}
+                                            <td class="pagu text-center counter-factory">
+                                                {{ $unitBudget->paguUnit[0]->nominal ?? '0' }}
                                             </td>
+                                            @php $total += $unitBudget->paguUnit[0]->nominal ?? '0'  @endphp
                                         </tr>
                                     @empty
                                     @endforelse
+                                    <tr>
+                                        <td colspan="2"><b>TOTAL</b></td>
+                                        <td class="text-center" id="total_pagu">
+                                            {{ $total ?? '0' }}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
 
@@ -124,61 +136,6 @@
                         .map(select => select.value) // get the values
                         .filter(value => value !== ''); // exclude empty (unselected) values
                 }
-
-                function canAddRow() {
-                    return selectedValues.length < workUnits.length;
-                }
-
-                // function addRow() {
-                //     var lastRowSelect = document.querySelector('#unit_budget-table tr:last-child .select-work_unit');
-                //     if (!lastRowSelect || lastRowSelect.value === '' || lastRowSelect.value === 'Pilih Unit Kerja') {
-                //         Swal.fire("Attention", "Silahkan pilih unit kerja sebelum menambah baris baru.", "warning");
-                //         return;
-                //     }
-                //     if (!canAddRow()) {
-                //         Swal.fire("Full", "Unit kerja sudah terpilih semua.", "info");
-                //         return;
-                //     }
-                //     var table = document.getElementById("unit_budget-table");
-                //     var rowCount = table.rows.length;
-                //     var row = table.insertRow(rowCount);
-
-                //     // Create and insert cells (`<td>`) in the row
-                //     var cell1 = row.insertCell(0);
-                //     var cell2 = row.insertCell(1);
-                //     var cell3 = row.insertCell(2);
-                //     var cell4 = row.insertCell(3);
-
-                //     // Populate cells
-                //     cell1.innerHTML = rowCount; // For No.
-                //     cell2.innerHTML =
-                //         '<div class="form-group my-auto"><select class="form-select select-work_unit"></select></div>';
-                //     cell3.innerHTML = 'Rp ' + new Intl.NumberFormat('id-ID').format('0'); // For pagu
-                //     cell3.className = 'pagu text-center';
-                //     cell4.innerHTML =
-                //         '<button onclick="addRow()" type="button" class="btn btn-secondary text-white addRowButton"><i data-feather="plus" class="text-white"></i></button>';
-                //     cell4.className = 'text-center';
-
-                //     var newSelect = row.querySelector('.select-work_unit');
-                //     var defaultOption = document.createElement('option');
-                //     defaultOption.textContent = 'Pilih Unit Kerja';
-                //     defaultOption.value = '';
-                //     newSelect.appendChild(defaultOption);
-
-
-                //     var existingOptions = document.querySelector('.select-work_unit').options;
-                //     for (var i = 0; i < existingOptions.length; i++) {
-                //         if (!selectedValues.includes(existingOptions[i].value)) {
-                //             var option = existingOptions[i].cloneNode(true);
-                //             newSelect.appendChild(option);
-                //         }
-                //     }
-
-                //     // Attach event listener to new select
-                //     newSelect.addEventListener('change', handleSelectChange);
-                //     $(newSelect).val("")
-                //     feather.replace();
-                // }
 
                 function handleSelectChange() {
                     var selectedValue = this.value;
@@ -226,6 +183,21 @@
                     var formattedValue = 'Rp ' + new Intl.NumberFormat('id-ID').format(unmaskedValue);
                     var cell = inputElement.parentElement;
                     cell.innerHTML = formattedValue;
+                    // hitungPagu();
+                    console.log(hitungPagu())
+                }
+
+                function hitungPagu() {
+                    var total = 0;
+                    $('.counter-factory').each(function() {
+                        var valueText = $(this).text();
+                        var numericValue = parseInt(valueText.replace(/[^0-9]/g, ''), 10);
+                        total += numericValue;
+                    });
+                    var formattedValue = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+                    console.log(formattedValue)
+                    $('#total_pagu').html(formattedValue)
+                    return total;
                 }
 
                 function saveUnitBudgets() {
@@ -261,7 +233,6 @@
                 })
 
                 document.addEventListener('DOMContentLoaded', function() {
-
                     $('.pagu').each(function() {
                         var oldPaguText = $(this).text();
                         $(this).text('Rp ' + new Intl.NumberFormat('id-ID').format(oldPaguText))
@@ -269,10 +240,11 @@
                     })
                     // $('.addRowButton').on('click', addRow);
                     $('#unit_budget-table').on('click', makeEditable);
-                    var selects = document.querySelectorAll('.select-work_unit');
-                    selects.forEach(function(select) {
-                        select.addEventListener('change', handleSelectChange);
-                    });
+                    // var selects = document.querySelectorAll('.select-work_unit');
+                    // selects.forEach(function(select) {
+                    //     select.addEventListener('change', handleSelectChange);
+                    // });
+
                     document.getElementById('save-unit_budgets').addEventListener('click', saveUnitBudgets);
                 });
             </script>
