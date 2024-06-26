@@ -107,7 +107,7 @@
                                     <tr>
                                         <td colspan="2"><b>TOTAL</b></td>
                                         <td class="text-center" id="total_pagu">
-                                            {{ $total ?? '0' }}
+                                            Rp {{ number_format($total, 0, ',', '.') ?? '0' }}
                                         </td>
                                     </tr>
                                 </tbody>
