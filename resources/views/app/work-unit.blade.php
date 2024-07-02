@@ -113,7 +113,8 @@
                                         <td class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <a type="button" class="btn btn-warning btn-sm mx-1"
-                                                    onclick="openEditModal({{ $workUnit->id }}, '{{ $workUnit->name }}', '{{ $workUnit->code }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
+                                                    onclick="openEditModal({{ $workUnit->id }}, '{{ addslashes($workUnit->name) }}', '{{ addslashes($workUnit->code) }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
+
                                                     <i class="text-white" data-feather="edit-2"></i>
                                                 </a>
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm mx-1"
