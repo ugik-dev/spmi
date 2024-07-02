@@ -206,7 +206,7 @@ class DipaController extends Controller
 
                 if ($dipa->timeline->metode == 'ppk') {
                     if (empty($dipa->unit->ppkUnit->email)) {
-                        return response()->json(['message' => 'Tidak dapat mengirimkan email ke Kepala Unit'], 500);
+                        return response()->json(['message' => 'Tidak dapat mengirimkan email ke PPK'], 500);
                     };
                     Mail::to($dipa->unit->ppkUnit->email)->send(new MailPermohonanDipa($dipa));
                     $dipa->status = 'wait-ppk';
@@ -215,7 +215,7 @@ class DipaController extends Controller
                         $q->where('name', 'KPA (REKTOR)');
                     })->first();
                     if (empty($rektor->email)) {
-                        return response()->json(['message' => 'Tidak dapat mengirimkan email ke Kepala Unit'], 500);
+                        return response()->json(['message' => 'Tidak dapat mengirimkan email ke Rektor'], 500);
                     };
                     Mail::to($rektor->email)->send(new MailPermohonanDipa($dipa));
                     $dipa->status = 'wait-kpa';
