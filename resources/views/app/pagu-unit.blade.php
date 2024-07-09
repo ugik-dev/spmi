@@ -205,22 +205,22 @@
                     var rows = table.querySelectorAll('tbody tr');
                     var unitBudgets = [];
 
-                    rows.forEach(function(row, index) {
-                        var unitId = row.querySelector('.work_unit_id').value;
-                        var pagu = row.querySelector('.pagu').textContent.replace(/[Rp. ,]/g, '');
+                    rows.forEach(function(row) {
+                        var unitIdElement = row.querySelector('.work_unit_id');
+                        var paguElement = row.querySelector('.pagu');
 
-                        if (unitId && pagu) { // Ensure both values are present
+                        if (unitIdElement && paguElement) {
                             unitBudgets.push({
                                 pagu_lembaga_id: '{{ $paguLembaga->id }}',
-                                work_unit_id: unitId,
-                                pagu: pagu
+                                work_unit_id: unitIdElement.value,
+                                pagu: paguElement.textContent.replace(/[Rp. ,]/g, '')
                             });
                         }
                     });
 
                     // POST request using Axios
                     axios.post('{{ route('unit_budget.store') }}', unitBudgets)
-                        .then(function(response) {
+                        .then(function() {
                             Swal.fire("Success", "Pagu unit berhasil disimpan.", "success")
                                 .then(() => window.location.reload());
                         })
@@ -228,6 +228,9 @@
                             Swal.fire("Error", "Error saving data: " + error, "error");
                         });
                 }
+
+                document.getElementById('save-unit_budgets').addEventListener('click', saveUnitBudgets);
+
                 window.addEventListener('load', function() {
                     feather.replace();
                 })
