@@ -117,6 +117,11 @@
                                     <td>{{ $user->employee->position ?? '-' }}</td>
                                     {{-- @dd($user->employee->workUnit) --}}
                                     <td>{{ $user->employee->workUnit->name ?? '-' }}</td>
+                                    @php
+                                        // if ($user->id == 3) {
+                                        //     dd($user);
+                                        // }
+                                    @endphp
                                     <td>{{ $user->email ?? '-' }}
                                         ({{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }})</td>
                                     <td class="align-middle">
@@ -138,6 +143,7 @@
                                                 class="btn btn-sm btn-warning d-flex align-items-center me-1 ms-1"
                                                 data-bs-target="#editModal" data-bs-toggle="modal"
                                                 data-user="{{ $user }}"
+                                                data-nik="{{ $user->employee->id ?? '' }}"
                                                 data-update-url="{{ route('user.update', $user) }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2"
@@ -331,13 +337,15 @@
                 })
                 $("#editModal").on('shown.bs.modal', async function(e) {
                     let updateUrl = $(e.relatedTarget).data('updateUrl');
-                    const formEdit = $("#form-edit");
-                    const user = $(e.relatedTarget).data('user');
+                    var formEdit = $("#form-edit");
+                    var user = $(e.relatedTarget).data('user');
+                    var nik = $(e.relatedTarget).data('nik').toString();
+                    console.log(nik)
                     formEdit.attr('action', updateUrl);
                     formEdit.find('#selectTypeRole').val(user.roles[0].name ?? null).trigger('change');
                     formEdit.find('input[name="user_name"]').val(user.name);
                     formEdit.find('input[name="position"]').val(user.employee?.position);
-                    formEdit.find('input[name="identity_number"]').val(user.employee?.id);
+                    formEdit.find('input[name="identity_number"]').val(nik);
                     formEdit.find('#selectWorkUnit').val(user.employee?.work_unit_id ?? null);
                     formEdit.find('input[name="email"]').val(user.email);
                     formEdit.find('#selectIdentityType').val(user.employee?.identity_type);
@@ -346,7 +354,7 @@
 
                     formEdit.find('input[name="letter_reference"]').val(user.employee?.letter_reference);
 
-                    console.log(user);
+                    // console.log(user);
                     if (user.roles[0].name == 'PPK') {
                         var selectedTreasurerOption = new Option(
                             `${user.employee?.head_id  ?? ''} `,
