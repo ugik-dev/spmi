@@ -81,6 +81,7 @@ class Dipa extends Model
     {
 
         $query->select('dipas.*');
+        $query->join('work_units', 'dipas.work_unit_id', '=', 'work_units.id');
 
         if (Auth::user()->hasRole('SUPER ADMIN PERENCANAAN')) {
             if ($approval) {
@@ -138,8 +139,6 @@ class Dipa extends Model
                     ;
                 });
             } else {
-
-
                 $query = $query
                     ->leftJoin('timelines as t', 't.id', 'dipas.timeline_id')
                     ->where(function ($query) {
@@ -193,6 +192,16 @@ class Dipa extends Model
             }
             $query = $query->where('user_id',  Auth::user()->id);
         }
+        if ($approval) {
+            $query->orWhere(function ($query) {
+                $query->where('work_units.kepala', Auth::user()->id)->whereIn('dipas.status', ['wait-kp', 'reject-kp']);
+            });
+        } else {
+            $query->orWhere(function ($query) {
+                $query->where('work_units.kepala', Auth::user()->id)->whereIn('dipas.status', ['wait-kpa', 'reject-kpa', 'wait-kp', 'reject-kp', 'wait-ppk', 'reject-ppk', 'wait-perencanaan', 'reject-perencanaan', 'wait-spi', 'reject-spi', 'accept', 'release']);
+            });
+        }
+
 
         if ($findId) {
             $query = $query->where('dipas.id', $findId);
@@ -202,7 +211,8 @@ class Dipa extends Model
             }
         }
 
-        // dd($query()->get());
+
+        // dd($query->get());
         return $query;
     }
 }

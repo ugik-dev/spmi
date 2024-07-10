@@ -192,8 +192,9 @@ class DipaController extends Controller
         try {
             if (
                 in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
-                $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                Auth::user()->hasRole(['KEPALA UNIT KERJA'])
+                $dipa->unit->kepala == Auth::user()->id
+                // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                // Auth::user()->hasRole(['KEPALA UNIT KERJA'])
             ) {
             } else {
                 return response()->json(['error' => true,  'message' => 'Anda tidak berhak melalukan aksi ini'], 500);

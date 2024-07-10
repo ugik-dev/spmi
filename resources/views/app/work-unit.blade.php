@@ -18,6 +18,9 @@
         <link rel="stylesheet" href="{{ asset('plugins/table/datatable/datatables.css') }}">
         @vite(['resources/scss/light/plugins/table/datatable/dt-global_style.scss'])
         @vite(['resources/scss/dark/plugins/table/datatable/dt-global_style.scss'])
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
         <style>
             td,
@@ -113,7 +116,7 @@
                                         <td class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <a type="button" class="btn btn-warning btn-sm mx-1"
-                                                    onclick="openEditModal({{ $workUnit->id }}, '{{ addslashes($workUnit->name) }}', '{{ addslashes($workUnit->code) }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}')">
+                                                    onclick="openEditModal({{ $workUnit->id }}, '{{ addslashes($workUnit->name) }}', '{{ addslashes($workUnit->code) }}','{{ $workUnit->ppk }}','{{ $workUnit->kepala }}','{{ $workUnit->kepalaUnit->name ?? '-' }}')">
 
                                                     <i class="text-white" data-feather="edit-2"></i>
                                                 </a>
@@ -160,7 +163,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('work_unit.store') }}" method="POST">
+                    <form action="{{ route('work_unit.store') }}" method="POST" id="form-create">
                         @csrf
                         <div id="work_unit-inputs">
                             <div class="">
@@ -184,13 +187,12 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group mb-3 ppkWrapper">
-                                    <label for="createSelectPPK"><b>Kepala Unit Kerja</b></label>
-                                    <select class="form-select" name="kepala" id="createSelectPPK">
+                                <div class="form-group mb-3 insertKepalaWrapper">
+                                    <label for="insertKepala"><b>Kepala Unit Kerja</b></label>
+                                    <select class="form-select" style="width:100% !important" name="kepala"
+                                        id="insertKepala">
                                         <option selected disabled value="">Pilih Kepala Unit Kerja...</option>
-                                        @foreach ($kepalas as $kepala)
-                                            <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
-                                        @endforeach
+
                                     </select>
                                 </div>
                             </div>
@@ -245,13 +247,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 editKepalaWrapper">
                             <label><b>Kepala Unit Kerja</b></label>
-                            <select class="form-select" name="kepala" id="edit_kepala">
+                            <select class="form-select" style="width: 100%" name="kepala" id="edit_kepala">
                                 <option selected disabled value="">Pilih Kepala Unit Kerja...</option>
-                                @foreach ($kepalas as $kepala)
-                                    <option value="{{ $kepala->id }}">{{ $kepala->name }}</option>
-                                @endforeach
+
                             </select>
                         </div>
                         <!-- Add other fields as needed -->
@@ -274,15 +274,24 @@
         <script src="{{ asset('plugins-rtl/table/datatable/button-ext/buttons.print.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/pdfmake/pdfmake.min.js') }}"></script>
         <script src="{{ asset('plugins-rtl/table/datatable/pdfmake/vfs_fonts.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
         <script>
-            function openEditModal(id, name, code, ppk, kepala) {
+            function openEditModal(id, name, code, ppk, kepala, namaKepala) {
                 // Populate the form fields
                 document.getElementById('work_unit_name').value = name;
                 document.getElementById('work_unit_code').value = code;
                 document.getElementById('edit_ppk').value = ppk;
-                document.getElementById('edit_kepala').value = kepala;
+                // document.getElementById('edit_kepala').value = kepala;
+
+                var option = new Option(
+                    namaKepala, // Displayed text
+                    kepala, // Value attribute
+                    true, // Default selected
+                    true // Selected
+                );
+                $('#edit_kepala').append(option).trigger('change');
 
                 // Update the form action URL
                 document.getElementById('edit-form').action = '/admin/pengaturan/unit-kerja/' + id + '/update';
@@ -364,20 +373,20 @@
 
                 const workUnitContainer = document.getElementById('work_unit-inputs');
 
-                document.getElementById('add-work_unit').addEventListener('click', function() {
-                    const index = workUnitContainer.querySelectorAll('.input-group').length + 1;
-                    const newInputGroup = `
-                                <div class="input-group mb-2">
-                                    <span class="input-group-text">${index}.</span>
-                                    <input type="text" name="work_unit_name[]" class="form-control" placeholder="Nama Unit Kerja">
-                                    <input type="text" name="work_unit_code[]" class="form-control" placeholder="Kode Unit Kerja">
-                                    <button type="button" class="btn btn-danger remove-work_unit">
-                                        <i data-feather="trash"></i>
-                                    </button>
-                                </div>`;
-                    workUnitContainer.insertAdjacentHTML('beforeend', newInputGroup);
-                    feather.replace();
-                });
+                // document.getElementById('add-work_unit').addEventListener('click', function() {
+                //     const index = workUnitContainer.querySelectorAll('.input-group').length + 1;
+                //     const newInputGroup = `
+        //                 <div class="input-group mb-2">
+        //                     <span class="input-group-text">${index}.</span>
+        //                     <input type="text" name="work_unit_name[]" class="form-control" placeholder="Nama Unit Kerja">
+        //                     <input type="text" name="work_unit_code[]" class="form-control" placeholder="Kode Unit Kerja">
+        //                     <button type="button" class="btn btn-danger remove-work_unit">
+        //                         <i data-feather="trash"></i>
+        //                     </button>
+        //                 </div>`;
+                //     workUnitContainer.insertAdjacentHTML('beforeend', newInputGroup);
+                //     feather.replace();
+                // });
 
                 workUnitContainer.addEventListener('click', function(event) {
                     if (event.target.classList.contains('remove-work_unit')) {
@@ -385,6 +394,74 @@
                         updateNumbering();
                     }
                 });
+                $('#insertKepala').select2({
+                    dropdownParent: $("#form-create").find('.insertKepalaWrapper'),
+                    placeholder: 'Pilih Kepala Unit',
+                    theme: 'bootstrap-5',
+                    ajax: {
+                        transport: function(params, success, failure) {
+                            // Using Axios to fetch the data
+                            axios.get(`{{ route('employees.search.pelaksana') }}`, {
+                                    params: {
+                                        search: params.data.term,
+                                        limit: 10
+                                    }
+                                })
+                                .then(function(response) {
+                                    // Call the `success` function with the formatted results
+                                    success({
+                                        results: response.data.map(function(item) {
+                                            return {
+                                                id: item.user_id,
+                                                text: item.name + ' - ' +
+                                                    item.id
+                                            };
+                                        })
+                                    });
+                                })
+                                .catch(function(error) {
+                                    // Call the `failure` function in case of an error
+                                    failure(error);
+                                });
+                        },
+                        delay: 250,
+                        cache: true
+                    }
+                }).on('change', function() {});
+                $('#edit_kepala').select2({
+                    dropdownParent: $("#edit-form").find('.editKepalaWrapper'),
+                    placeholder: 'Pilih Kepala Unit',
+                    theme: 'bootstrap-5',
+                    ajax: {
+                        transport: function(params, success, failure) {
+                            // Using Axios to fetch the data
+                            axios.get(`{{ route('employees.search.pelaksana') }}`, {
+                                    params: {
+                                        search: params.data.term,
+                                        limit: 10
+                                    }
+                                })
+                                .then(function(response) {
+                                    // Call the `success` function with the formatted results
+                                    success({
+                                        results: response.data.map(function(item) {
+                                            return {
+                                                id: item.user_id,
+                                                text: item.name + ' - ' +
+                                                    item.id
+                                            };
+                                        })
+                                    });
+                                })
+                                .catch(function(error) {
+                                    // Call the `failure` function in case of an error
+                                    failure(error);
+                                });
+                        },
+                        delay: 250,
+                        cache: true
+                    }
+                }).on('change', function() {});
 
                 function updateNumbering() {
                     const inputGroups = workUnitContainer.querySelectorAll('.input-group');

@@ -34,8 +34,10 @@
                     </div>
                 @endif
                 @if (in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
-                        $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
-                        Auth::user()->hasRole(['KEPALA UNIT KERJA']))
+                        $dipa->unit->kepala == Auth::user()->id
+                        // $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
+                        // Auth::user()->hasRole(['KEPALA UNIT KERJA'])
+                        )
                     <div class="float-end p-2">
                         <x-custom.dipa.kepala-modal :dipa="$dipa" />
                     </div>
