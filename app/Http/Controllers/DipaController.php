@@ -79,6 +79,7 @@ class DipaController extends Controller
             if (empty($dipa->unit->kepalaUnit->email)) {
                 return response()->json(['message' => 'Tidak dapat mengirimkan email ke Kepala Unit'], 500);
             };
+
             Mail::to($dipa->unit->kepalaUnit->email)->send(new MailPermohonanDipa($dipa));
             $dipa->total = $totalSum;
             $dipa->status = 'wait-kp';

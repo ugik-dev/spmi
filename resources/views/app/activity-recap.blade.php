@@ -200,7 +200,8 @@
 
                                                 {{-- "Change File" Button --}}
                                                 <button type="button" data-activity-id="{{ $activity->id }}"
-                                                    class="btn btn-secondary btn-sm ms-2 uploadBerkasBtn">
+                                                    class="btn btn-secondary btn-sm ms-2 uploadBerkasBtn"
+                                                    data-replace="{{ !empty($activity->activityRecap->attachment_path) ? 'Y' : 'N' }}">
                                                     <i class="feather icon-edit"></i>
                                                     {{ !empty($activity->activityRecap->attachment_path) ? 'Ganti File' : 'Upload File' }}
                                                 </button>
@@ -269,6 +270,9 @@
                                 <input accept=".pdf" class="form-control" type="file" name="file_upload"
                                     id="file_upload"></input>
                                 <span class="text-danger">*max 20Mb</span>
+                                <span class="text-danger" id="label-warning-gantifile"><b>*Mengganti file akan
+                                        menyebabkan status dipa menjadi draft
+                                        atau mengulang kembali prosedur!</b></span>
                             </div>
                         </div>
                         <button id="submitFormupload"
@@ -316,9 +320,16 @@
                     currentID = $(this).data('activity-id');
                     $('#uploadModal').modal('show')
                     $('#uploadModal').find('#activityId').val(currentID);
+                    replaceFile = $(this).data('replace');
+                    if (replaceFile == 'Y') {
+                        $('#label-warning-gantifile').show();
+                    } else {
+                        $('#label-warning-gantifile').hide();
+
+                    }
                     console.log(currentID);
 
-                })
+                });
                 $('#form-upload').submit(function(e) {
                     e.preventDefault();
 

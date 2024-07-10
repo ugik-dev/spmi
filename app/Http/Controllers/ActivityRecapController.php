@@ -59,7 +59,7 @@ class ActivityRecapController extends Controller
             ]);
             $activityID = $request->activityId;
             $activitiy = Activity::findOrFail($request->activityId);
-            if (!in_array($activitiy->dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-ppk'])) {
+            if (!in_array($activitiy->dipa->status, ['draft', 'reject', 'reject-perencanaan', 'reject-spi', 'reject-ppk', 'reject-kpa', 'reject-kp',])) {
                 return response()->json(['error' => true,  'message' => 'Masa Upload Berkas sudah habis'], 400);
             }
             if ($activitiy->dipa->user_id != Auth::user()->id) {
