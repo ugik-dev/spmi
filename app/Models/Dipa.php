@@ -147,7 +147,7 @@ class Dipa extends Model
                     })->orWhere('dipas.user_id', Auth::user()->id);
             }
         } else
-        if (Auth::user()->hasRole('SPI')) {
+        if (Auth::user()->hasRole('SPI') || Auth::user()->hasRole('KEPALA SPI')) {
             // if (Auth::user()->hasRole('KEPALA SPI')) {
             if ($approval) {
                 $query = $query->where('dipas.status', '=', 'wait-spi');
