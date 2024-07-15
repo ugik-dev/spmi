@@ -57,6 +57,30 @@
                     text-align: center;
                 }
             }
+
+            .table-wrapper {
+                position: relative;
+                max-height: 400px;
+                /* Set the desired height */
+                overflow-y: auto;
+            }
+
+            .table-wrapper thead th {
+                position: sticky;
+                top: 0;
+                background-color: white;
+                z-index: 2;
+            }
+
+            .table-wrapper tbody tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            /* Additional styling to prevent padding issues with Bootstrap */
+            .table-wrapper th,
+            .table-wrapper td {
+                padding: 0.75rem 1.25rem;
+            }
         </style>
         <!--  END CUSTOM STYLE FILE  -->
     </x-slot>

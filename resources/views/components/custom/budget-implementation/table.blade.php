@@ -67,98 +67,102 @@
             @endif
         </div>
     </div>
-    <table id="budget_implementation-table" class="table table-bordered">
-        <thead>
-            <!-- <tr>
-                <th class="invisible"></th>
-                <th style="background:none !important;border:none !important;border-radius:0 !important;width:fit-content !important;text-decoration-color:red !important;text-decoration-thickness:0.225rem !important;"
-                    class="text-dark h3 text-center fw-bold text-decoration-underline">
-                    Rp {{ number_format($totalSum, 0, ',', '.') }}
-                </th>
-            </tr> -->
-            <tr class="text-center">
-                <th hidden scope="col">Indikator</th>
-                <th scope="col">Kode</th>
-                <th scope="col">SubKomponen</th>
-                <th scope="col">Volume</th>
-                <th scope="col">Satuan</th>
-                <th scope="col">Harga Satuan</th>
-                <th scope="col">Jumlah Biaya</th>
-            </tr>
-        </thead>
-        <tbody class="dipa-table">
-            @php
-                $cr1 = 1;
-            @endphp
-            @foreach ($groupedBI as $activityCode => $accountGroups)
+    <div class="container table-wrapper">
+        <table id="budget_implementation-table" class="table table-bordered">
+            <thead>
+                <!-- <tr>
+                    <th class="invisible"></th>
+                    <th style="background:none !important;border:none !important;border-radius:0 !important;width:fit-content !important;text-decoration-color:red !important;text-decoration-thickness:0.225rem !important;"
+                        class="text-dark h3 text-center fw-bold text-decoration-underline">
+                        Rp {{ number_format($totalSum, 0, ',', '.') }}
+                    </th>
+                </tr> -->
+                <tr class="text-center">
+                    <th hidden scope="col">Indikator</th>
+                    <th scope="col">Kode</th>
+                    <th scope="col">SubKomponen</th>
+                    <th scope="col">Volume</th>
+                    <th scope="col">Satuan</th>
+                    <th scope="col">Harga Satuan</th>
+                    <th scope="col">Jumlah Biaya</th>
+                </tr>
+            </thead>
+            <tbody class="dipa-table">
                 @php
-                    $isActivityDisplayed = false;
-                    // $cr1 = 1;
+                    $cr1 = 1;
                 @endphp
-                @foreach ($accountGroups as $accountCode => $budgetImplementations)
-                    <!-- Activity Row -->
-                    @if (!$isActivityDisplayed)
-                        <tr data-crow="{{ $cr1 }}"
-                            @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
-                            data-bi="{{ $budgetImplementations->first()->id }}" @endif
-                            class="activity-row crow-{{ $cr1 }}">
-                            <td hidden>{{ $budgetImplementations->first()->activity->performance_indicator_id }}</td>
-                            <td>{{ $budgetImplementations->first()->activity->code }}</td>
-                            <td>{{ $budgetImplementations->first()->activity->name }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>Rp
-                                {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        @php
-                            $isActivityDisplayed = true;
-                            $cr2 = 1;
-                        @endphp
-                    @endif
-
-                    @foreach ($budgetImplementations as $budgetImplementation)
-                        @if ($budgetImplementation->accountCode)
-                            <!-- Account Code Row -->
-                            <tr data-crow="{{ $cr1 . '-' . $cr2 }}"
-                                @if ($dipa) data-bi="{{ $budgetImplementations->first()->id }}"
-                                data-account-code="{{ $budgetImplementation->accountCode->id }}" @endif
-                                class="account-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }}">
-                                <td hidden></td>
-                                <td>{{ $budgetImplementation->accountCode->code }}</td>
-                                <td>{{ $budgetImplementation->accountCode->name }}</td>
+                @foreach ($groupedBI as $activityCode => $accountGroups)
+                    @php
+                        $isActivityDisplayed = false;
+                        // $cr1 = 1;
+                    @endphp
+                    @foreach ($accountGroups as $accountCode => $budgetImplementations)
+                        <!-- Activity Row -->
+                        @if (!$isActivityDisplayed)
+                            <tr data-crow="{{ $cr1 }}"
+                                @if ($dipa) data-activity="{{ $budgetImplementations->first()->activity->id }}"
+                                data-bi="{{ $budgetImplementations->first()->id }}" @endif
+                                class="activity-row crow-{{ $cr1 }}">
+                                <td hidden>{{ $budgetImplementations->first()->activity->performance_indicator_id }}
+                                </td>
+                                <td>{{ $budgetImplementations->first()->activity->code }}</td>
+                                <td>{{ $budgetImplementations->first()->activity->name }}</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td>Rp
-                                    {{ number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.') }}
+                                    {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
                                 </td>
                             </tr>
+                            @php
+                                $isActivityDisplayed = true;
+                                $cr2 = 1;
+                            @endphp
                         @endif
-                        @php $cr3 = 1; @endphp
-                        @foreach ($budgetImplementation->details as $detail)
-                            @if ($detail)
-                                <!-- Expenditure Detail Row -->
-                                <tr data-crow="{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}"
-                                    @if ($dipa) data-expenditure="{{ $detail->id }}" @endif
-                                    class="expenditure-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }} crow-{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}">
-                                    <td hidden></td> <!-- Empty cells for activity and account columns -->
-                                    <td></td> <!-- Empty cells for activity and account columns -->
-                                    <td>{{ $detail->name }}</td>
-                                    <td>{{ $detail->volume }}</td>
-                                    <td>{{ $detail->expenditureUnit->code }}</td>
-                                    <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
-                                    <td class="count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}</td>
+
+                        @foreach ($budgetImplementations as $budgetImplementation)
+                            @if ($budgetImplementation->accountCode)
+                                <!-- Account Code Row -->
+                                <tr data-crow="{{ $cr1 . '-' . $cr2 }}"
+                                    @if ($dipa) data-bi="{{ $budgetImplementations->first()->id }}"
+                                    data-account-code="{{ $budgetImplementation->accountCode->id }}" @endif
+                                    class="account-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }}">
+                                    <td hidden></td>
+                                    <td>{{ $budgetImplementation->accountCode->code }}</td>
+                                    <td>{{ $budgetImplementation->accountCode->name }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Rp
+                                        {{ number_format($budgetImplementations->first()->account_total_sum, 0, ',', '.') }}
+                                    </td>
                                 </tr>
                             @endif
-                            @php $cr3++; @endphp
+                            @php $cr3 = 1; @endphp
+                            @foreach ($budgetImplementation->details as $detail)
+                                @if ($detail)
+                                    <!-- Expenditure Detail Row -->
+                                    <tr data-crow="{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}"
+                                        @if ($dipa) data-expenditure="{{ $detail->id }}" @endif
+                                        class="expenditure-row crow-{{ $cr1 }} crow-{{ $cr1 . '-' . $cr2 }} crow-{{ $cr1 . '-' . $cr2 . '-' . $cr3 }}">
+                                        <td hidden></td> <!-- Empty cells for activity and account columns -->
+                                        <td></td> <!-- Empty cells for activity and account columns -->
+                                        <td>{{ $detail->name }}</td>
+                                        <td>{{ $detail->volume }}</td>
+                                        <td>{{ $detail->expenditureUnit->code }}</td>
+                                        <td>Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
+                                        <td class="count_detail">Rp {{ number_format($detail->total, 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                @endif
+                                @php $cr3++; @endphp
+                            @endforeach
+                            @php $cr2++; @endphp
                         @endforeach
-                        @php $cr2++; @endphp
                     @endforeach
+                    @php $cr1++; @endphp
                 @endforeach
-                @php $cr1++; @endphp
-            @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
