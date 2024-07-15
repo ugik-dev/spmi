@@ -132,7 +132,6 @@
                                                 onclick="resendMail({{ $user->id }});">
                                                 <i class="text-white" data-feather="send"></i>
                                             </a>
-                                            <!-- Hidden form for delete request -->
                                             <form id="resend-form-{{ $user->id }}"
                                                 action="{{ route('user.resend-mail', $user->id) }}" method="POST"
                                                 style="display: none;">
@@ -153,18 +152,17 @@
                                                     </path>
                                                 </svg>
                                             </a>
-                                            <a href="javascript:void(0);"
+                                            {{-- <a href="javascript:void(0);"
                                                 class="btn btn-sm btn-danger d-flex align-items-center ms-1"
                                                 role="button" onclick="confirmDelete({{ $user->id }});">
                                                 <i class="text-white" data-feather="trash-2"></i>
                                             </a>
-                                            <!-- Hidden form for delete request -->
                                             <form id="delete-form-{{ $user->id }}"
                                                 action="{{ route('user.delete', $user->id) }}" method="POST"
                                                 style="display: none;">
                                                 @csrf
                                                 @method('DELETE')
-                                            </form>
+                                            </form> --}}
                                         </div>
                                     </td>
                                 </tr>
