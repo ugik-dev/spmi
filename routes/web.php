@@ -50,6 +50,8 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('ganti-password', [MyProfileController::class, 'change_password'])->name('my-profile.change-password');
+    Route::post('update-password', [MyProfileController::class, 'update_password'])->name('my-profile.update-password');
 
     // Mendefinisikan route resource dengan penyesuaian nama
     Route::resource('profile', MyProfileController::class)->names([
