@@ -104,7 +104,7 @@ class BudgetImplementationController extends Controller
         $groupedBI = BudgetImplementation::getGroupedDataWithTotals($dipa->id);
         $title = 'Daftar DIPA';
         $unitBudget = PaguUnit::unityear($dipa->year, $dipa->work_unit_id)->first();
-        // dd($groupedBI);
+        // dd($dipa->timeline);
         $totalSum = BudgetImplementationDetail::CountTotal($dipa->id);
         $btnExport = [
             'pdf' => true,

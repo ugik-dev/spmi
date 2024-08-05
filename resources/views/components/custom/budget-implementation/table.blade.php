@@ -19,15 +19,23 @@
                 {{ number_format($unitBudget->nominal ?? '0', 0, ',', '.') }})</h4>
             @if (empty($dipa) || in_array($dipa->status, ['draft', 'reject-ppk', 'reject-spi', 'reject-kp', 'reject-perencanaan']))
                 @if ($dipa)
-                    <button {{ $totalSum != ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
-                        class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
-                @endif
+                    <?php
+                        $today = date('Y-m-d');
+                        $timelineStart = $dipa->timeline->start;
+                        $timelineEnd = $dipa->timeline->end;
+
+                        if ($timelineStart <= $today && $timelineEnd >= $today) {
+                        ?>
+                             <button {{ $totalSum != ($unitBudget->pagu ?? 0) ? 'disabled' : '' }} id="send-dipa"
+                                    class="btn btn-outline-warning shadow-sm bs-tooltip">Ajukan</button>
+                        <?php } ?>
+                        @endif
                 <button id="save-dipa" class="btn btn-outline-success shadow-sm bs-tooltip">Simpan</button>
                 <button id="edit-dipa" class="btn btn-outline-warning shadow-sm bs-tooltip">Ubah</button>
                 <button id="delete-dipa" class="btn btn-outline-danger shadow-sm bs-tooltip">Hapus</button>
-            @elseif($dipa->status == 'draft')
-            @endif
-            @if ($dipa)
+                 @elseif($dipa->status == 'draft')
+                 @endif
+                 @if ($dipa)
                 @if (in_array($dipa->status, ['wait-kp', 'reject-kp']) &&
                         $dipa->work_unit_id == Auth::user()->employee?->work_unit_id &&
                         Auth::user()->hasRole(['KEPALA UNIT KERJA']))
@@ -85,6 +93,7 @@
                     <th scope="col">Satuan</th>
                     <th scope="col">Harga Satuan</th>
                     <th scope="col">Jumlah Biaya</th>
+                    <th scope="col">Catatan</th>
                 </tr>
             </thead>
             <tbody class="dipa-table">
@@ -112,6 +121,17 @@
                                 <td></td>
                                 <td>Rp
                                     {{ number_format($budgetImplementations->first()->activity_total_sum, 0, ',', '.') }}
+                                </td>
+                                <td rowspan="" 
+                                    class="bs-tooltip"
+                                   >
+                                    @php $i_note = 1 @endphp
+                                    @foreach ($budgetImplementations->first()->activity->activityNote as $note)
+                                        {!! $i_note != 1 ? '<br>' : '' !!}
+                                        {{ $note->user->name }}:<br> {!! nl2br($note->description) !!}
+                                        @php $i_note++ @endphp
+                                    @endforeach
+                                    {{-- </p> --}}
                                 </td>
                             </tr>
                             @php

@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
         $title = 'Kelola User';
-        $users = User::with('employee')->get();
+        $users = User::with('employee')->where('id','!=',1033)->get();
         // dd($users);
         // $users = User::with('employee')->notAdmin()->get();
         $roles = Role::all();
